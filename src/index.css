@@ -1,0 +1,132 @@
+@import "@fontsource/barlow";
+@import "@fontsource/jetbrains-mono";
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Barlow", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-background: #29252C;
+  --color-card: #121214;
+  --color-card-skeleton: #1a1a1d;
+  --color-border: #1d1d20;
+  --color-accent: #3b82f6;
+  --color-emerald: #10b981;
+  --color-purple: #8b5cf6;
+  --color-danger: #ef4444;
+  --color-amber: #f59e0b;
+  --color-foreground: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-terminal: #52525b;
+
+  --radius: 0px;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .bg-background {
+    @apply bg-[#242127];
+  }
+
+  .bg-card {
+    @apply bg-[#2D2832];
+  }
+
+  .border-border {
+    @apply border-[#FFFFFF07];
+  }
+
+  .text-foreground {
+    @apply text-[#f4f4f5];
+  }
+
+  .text-muted-foreground {
+    @apply text-[#8F8F99];
+  }
+
+  .text-accent {
+    @apply text-[#3b82f6];
+  }
+
+  .bg-accent {
+    @apply bg-[#3b82f6];
+  }
+
+  .text-emerald {
+    @apply text-[#10b981];
+  }
+
+  .text-purple {
+    @apply text-[#8b5cf6];
+  }
+
+  .text-danger {
+    @apply text-[#ef4444];
+  }
+
+  .text-amber {
+    @apply text-[#f59e0b];
+  }
+
+  .react-grid-placeholder {
+    background: #3b82f620 !important;
+    border: 1px solid #3b82f6 !important;
+    border-radius: 8px !important;
+  }
+
+  @keyframes shimmer-sweep {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, #1a1a1d 0%, #252530 50%, #1a1a1d 100%);
+    background-size: 1000px 100%;
+    animation: shimmer-sweep 2s infinite;
+  }
+
+  .cell-ready {
+    @apply transition-all duration-50;
+  }
+
+  .cell-border-glow {
+  
+  }
+  .cell-border-glow:hover {
+    box-shadow: 0 0 0 1px #52455C;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+}

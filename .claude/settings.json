@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(timeout 30 tail -f /private/tmp/claude-501/-Users-przemek-iGenie-i-genie-prototype/cf6c3ad5-6516-4289-b68a-972efc7a1945/tasks/bjtdi0p8c.output)",
+      "Bash(timeout 20 tail -f /private/tmp/claude-501/-Users-przemek-iGenie-i-genie-prototype/cf6c3ad5-6516-4289-b68a-972efc7a1945/tasks/bt8rj8z0d.output)",
+      "Bash(npm ls *)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(pkill -f \"npm\")",
+      "Read(//tmp/**)",
+      "Bash(pkill -9 -f \"vite\")",
+      "Bash(pkill -9 -f \"node\")",
+      "Read(//private/tmp/**)",
+      "Bash(node -e ' *)",
+      "Bash(pkill -9 -f \"vite\" || true *)",
+      "Bash(pkill -9 -f \"vite\\\\|node\")"
+    ],
+    "additionalDirectories": [
+      "/private/tmp"
+    ]
+  }
+}
