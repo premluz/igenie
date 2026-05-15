@@ -1,9 +1,9 @@
 import { create } from 'zustand'
-import { getScenario } from '@/scenarios'
+import { getScenario, scenarioMap } from '@/scenarios'
 
 // ============= TYPES =============
 
-export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'diverging-bar' | 'line-chart' | 'table' | 'narrative' | 'pulse-list'
+export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'diverging-bar' | 'line-chart' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources'
 
 export type CellStatus = 'thinking' | 'ready' | 'error'
 
@@ -13,6 +13,8 @@ export interface Cell {
   status: CellStatus
   title: string
   subtitle?: string
+  descriptionTop?: string
+  descriptionBottom?: string
   data: CellData | null
   error?: string
 }
@@ -32,6 +34,18 @@ export interface LogEntry {
 
 export type CellData = unknown
 
+export interface ViewFrame {
+  id: string
+  label: string
+  cells: Cell[]
+  rows?: Row[]
+  title?: string
+  description?: string
+  scrollY?: number
+  scenarioId?: string
+  detailId?: string
+}
+
 export interface PrestoStore {
   rows: Row[]
   activeScenario: string | null
@@ -40,7 +54,12 @@ export interface PrestoStore {
   agentStatus: 'idle' | 'thinking' | 'updating'
   cellTypeFilter: CellType | null
   cellTitleFilter: string
+  viewStack: ViewFrame[]
+  currentView: ViewFrame | null
   loadScenario: (id: string) => void
+  pushView: (view: ViewFrame) => void
+  popView: () => void
+  loadScenarioDetail: (scenarioId: string) => void
   runReasoning: (prompt: string) => void
   appendRow: (row: Omit<Row, 'id'>) => void
   replaceCell: (rowId: string, cellId: string, updates: Partial<Cell>) => void
@@ -50,12 +69,35 @@ export interface PrestoStore {
   clearCanvas: () => void
   setCellTypeFilter: (type: CellType | null) => void
   setCellTitleFilter: (title: string) => void
-  setCurrentPage: (page: 'listing' | 'detail') => void
 }
 
 // ============= STORE =============
 
 const genId = () => `${Date.now()}_${Math.random().toString(36).slice(2)}`
+
+const createListingView = (): ViewFrame => {
+  const listingCells: Cell[] = Object.entries(scenarioMap).map(([key, scenario]) => ({
+    id: genId(),
+    type: 'insight-card' as CellType,
+    status: 'ready' as CellStatus,
+    title: scenario.brand,
+    subtitle: scenario.category,
+    data: {
+      scenarioId: key,
+      title: scenario.title,
+      description: scenario.description,
+      velocityScore: scenario.velocityScore,
+      sentimentScore: scenario.sentimentScore,
+      sparklineData: scenario.sparklineData
+    }
+  }))
+
+  return {
+    id: 'listing',
+    label: 'Insights',
+    cells: listingCells
+  }
+}
 
 const demoRows: Row[] = [
   {
@@ -94,33 +136,6 @@ const demoRows: Row[] = [
   }
 ]
 
-const simulateReasoning = async (
-  set: any,
-  rowId: string,
-  logs: string[],
-  delaySeed: number = 1
-) => {
-  const logDelay = 400 * delaySeed
-  for (const log of logs) {
-    await new Promise(res => setTimeout(res, logDelay))
-    set((state: PrestoStore) => ({
-      logs: [...state.logs, {
-        id: genId(),
-        text: log,
-        type: 'system' as const,
-        timestamp: Date.now()
-      }]
-    }))
-  }
-
-  await new Promise(res => setTimeout(res, 800))
-
-  set((state: PrestoStore) => ({
-    rows: state.rows.map(r => r.id === rowId ? { ...r, cells: r.cells.map(c => ({ ...c, status: 'ready' as CellStatus })) } : r),
-    agentStatus: 'idle' as const
-  }))
-}
-
 export const usePrestoStore = create<PrestoStore>((set, get) => ({
   rows: demoRows,
   activeScenario: null,
@@ -136,6 +151,103 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
   agentStatus: 'idle',
   cellTypeFilter: null,
   cellTitleFilter: '',
+  viewStack: [],
+  currentView: createListingView(),
+
+  pushView: (view: ViewFrame) => {
+    set(state => ({
+      viewStack: [...state.viewStack, state.currentView].filter(Boolean) as ViewFrame[],
+      currentView: view
+    }))
+  },
+
+  popView: () => {
+    set(state => {
+      if (state.viewStack.length === 0) return state
+      const newStack = [...state.viewStack]
+      const previousView = newStack.pop()
+      return {
+        viewStack: newStack,
+        currentView: previousView || null
+      }
+    })
+  },
+
+  loadScenarioDetail: async (scenarioId: string) => {
+    const scenario = getScenario(scenarioId)
+    if (!scenario) return
+
+    const { pushView } = get()
+
+    // Create rows from scenario layout
+    const cellsToReveal: Array<{ rowId: string; cellId: string }> = []
+    const allRows: Row[] = []
+    let allCells: Cell[] = []
+
+    for (const rowTemplate of scenario.initialLayout) {
+      const rowId = genId()
+
+      const cellsWithData = rowTemplate.cells.map(cellTemplate => {
+        let cellData = cellTemplate.data
+        if (scenario.chartData[cellTemplate.title]) {
+          cellData = scenario.chartData[cellTemplate.title]
+        } else if (scenario.narratives[cellTemplate.title]) {
+          cellData = scenario.narratives[cellTemplate.title]
+        }
+        const cellId = cellTemplate.id || genId()
+        cellsToReveal.push({ rowId, cellId })
+        return { ...cellTemplate, id: cellId, data: cellData, status: 'thinking' as CellStatus }
+      })
+
+      const newRow: Row = {
+        ...rowTemplate,
+        id: rowId,
+        cells: cellsWithData
+      }
+      allRows.push(newRow)
+      allCells = [...allCells, ...cellsWithData]
+    }
+
+    const detailView: ViewFrame = {
+      id: `detail-${scenarioId}`,
+      label: scenario.brand,
+      cells: allCells,
+      rows: allRows,
+      title: scenario.title,
+      description: scenario.description,
+      scenarioId: scenarioId
+    }
+
+    set({
+      activeScenario: scenarioId,
+      activeInsight: scenario
+    })
+
+    pushView(detailView)
+
+    // Randomize and reveal cells
+    const shuffled = [...cellsToReveal].sort(() => Math.random() - 0.5)
+
+    for (const { rowId, cellId } of shuffled) {
+      await new Promise(res => setTimeout(res, 100 + Math.random() * 200))
+      set(state => ({
+        currentView: state.currentView ? {
+          ...state.currentView,
+          rows: state.currentView.rows?.map(r =>
+            r.id === rowId
+              ? {
+                  ...r,
+                  cells: r.cells.map(c => (c.id === cellId ? { ...c, status: 'ready' as CellStatus } : c))
+                }
+              : r
+          ),
+          cells: state.currentView.cells.map(c =>
+            c.id === cellId ? { ...c, status: 'ready' as CellStatus } : c
+          )
+        } : null
+      }))
+    }
+  },
 
   loadScenario: async (id: string) => {
     const scenario = getScenario(id)
@@ -237,8 +349,8 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
   },
 
   runReasoning: async (prompt: string) => {
-    const { activeInsight } = get()
-    if (!activeInsight) return
+    const { currentView } = get()
+    if (!currentView) return
 
     set({
       agentStatus: 'thinking' as const,
@@ -252,22 +364,21 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
       ]
     })
 
-    const thinkingRowId = genId()
-    const thinkingRow: Row = {
-      id: thinkingRowId,
-      columns: 1,
-      cells: [
-        {
-          id: genId(),
-          type: 'narrative',
-          status: 'thinking',
-          title: 'Reasoning...',
-          data: null
-        }
-      ]
+    const thinkingCellId = genId()
+    const thinkingCell: Cell = {
+      id: thinkingCellId,
+      type: 'narrative',
+      status: 'thinking',
+      title: 'Reasoning...',
+      data: null
     }
 
-    set(state => ({ rows: [...state.rows, thinkingRow] }))
+    set(state => ({
+      currentView: state.currentView ? {
+        ...state.currentView,
+        cells: [...state.currentView.cells, thinkingCell]
+      } : null
+    }))
 
     const reasoningLogs = [
       'Fetching active signals from Databricks Delta Lake...',
@@ -277,7 +388,31 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
       'Rendering insights ready'
     ]
 
-    await simulateReasoning(set, thinkingRowId, reasoningLogs, 0.8)
+    // Simulate reasoning and update thinking cell status
+    const logDelay = 400 * 0.8
+    for (const log of reasoningLogs) {
+      await new Promise(res => setTimeout(res, logDelay))
+      set((state: PrestoStore) => ({
+        logs: [...state.logs, {
+          id: genId(),
+          text: log,
+          type: 'system' as const,
+          timestamp: Date.now()
+        }]
+      }))
+    }
+
+    await new Promise(res => setTimeout(res, 800))
+
+    set(state => ({
+      currentView: state.currentView ? {
+        ...state.currentView,
+        cells: state.currentView.cells.map(c =>
+          c.id === thinkingCellId ? { ...c, status: 'ready' as CellStatus } : c
+        )
+      } : null,
+      agentStatus: 'idle' as const
+    }))
   },
 
   appendRow: (row: Omit<Row, 'id'>) => {
@@ -338,7 +473,9 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
     set({
       rows: [],
       logs: [],
-      agentStatus: 'idle'
+      agentStatus: 'idle',
+      viewStack: [],
+      currentView: createListingView()
     })
   },
 

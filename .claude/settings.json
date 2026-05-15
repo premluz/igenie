@@ -17,10 +17,19 @@
       "Read(//private/tmp/**)",
       "Bash(node -e ' *)",
       "Bash(pkill -9 -f \"vite\" || true *)",
-      "Bash(pkill -9 -f \"vite\\\\|node\")"
+      "Bash(pkill -9 -f \"vite\\\\|node\")",
+      "Bash(curl -s http://localhost:5174/)",
+      "Bash(curl -s http://localhost:5174/index.html)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(git checkout *)",
+      "Bash(sed -i \"s/'https:\\\\/\\\\/vega.github.io\\\\/schema\\\\/vega-lite\\\\/v5.json'/'https:\\\\/\\\\/vega.github.io\\\\/schema\\\\/vega-lite\\\\/v6.json'/\" src/components/cells/*.tsx)",
+      "Bash(curl -s http://localhost:5173/neutrogena-natural)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(pkill -f \"npm run dev\")"
     ],
     "additionalDirectories": [
-      "/private/tmp"
+      "/private/tmp",
+      "/Users/przemek/iGenie/i-genie-prototype/src/components/cells"
     ]
   }
 }

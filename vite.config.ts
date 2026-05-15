@@ -14,4 +14,6 @@ export default defineConfig({
   define: {
     'process.env': {}
   }
+  // Note: Vite dev server already serves index.html for all routes (SPA fallback by default)
+  // For production, add _redirects (Netlify) or vercel.json (Vercel)
 })

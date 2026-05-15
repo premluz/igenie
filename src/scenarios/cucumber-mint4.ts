@@ -1,0 +1,17 @@
+import { type Row } from '@/store/usePrestoStore'
+
+export interface ScenarioData {
+  id: string; brand: string; category: string; title: string; description: string; date: string; velocityScore: number; sentimentScore: number; sparklineData?: number[]; signals: Array<{ id: string; name: string; icon: 'radio' | 'flame' | 'trending' | 'activity' | 'search'; velocity: number; sentiment: number; trend: 'rising' | 'stable' | 'falling'; description?: string }>; initialLayout: Array<Omit<Row, 'id'>>; chartData: Record<string, unknown>; narratives: Record<string, string>
+}
+
+export const cucumberMint4: ScenarioData = {
+  id: 'cucumber-mint-4', brand: 'Cucumber Mint', category: 'Personal Care', title: 'Consumer Feedback Analysis', description: 'Aggregated sentiment from reviews and surveys', date: '2026-05-11', velocityScore: 6.9, sentimentScore: 81, sparklineData: [6, 6, 6, 7, 7, 7, 8],
+  signals: [{ id: 'sig-1', name: 'Consumer Sentiment', icon: 'activity', velocity: 6.9, sentiment: 81, trend: 'stable' }],
+  initialLayout: [
+    { columns: 3, cells: [{ id: '', type: 'progress-bar', status: 'ready', title: 'Trend', subtitle: "Where it's going", data: { type: 'trend', sparklineData: [6, 6, 6, 7, 7, 7, 8], color: '#10b981' } }, { id: '', type: 'progress-bar', status: 'ready', title: 'Strength', subtitle: 'Signal power', data: { type: 'strength', value: 6.9, max: 10, color: '#3b82f6' } }, { id: '', type: 'progress-bar', status: 'ready', title: 'Trust', subtitle: 'Source validity', data: { type: 'trust', value: 81, max: 100, color: '#10b981' } }] },
+    { columns: 1, cells: [{ id: '', type: 'signal-sources', status: 'ready', title: 'Signal sources', subtitle: '', data: { total: '6,547 data points across 42 verified channels', pillars: [{ id: 'reviews', icon: 'Radio', label: 'Customer Reviews', value: '48%', sparklineData: [3, 4, 5, 6, 7, 8, 9], subtext: 'Direct feedback & ratings improving', color: 'emerald' }, { id: 'nps', icon: 'Flame', label: 'NPS Score', value: '36%', sparklineData: [4, 5, 6, 7, 8, 9, 10], subtext: 'Net promoter scores trending up', color: 'purple' }, { id: 'survey', icon: 'Activity', label: 'Survey Sentiment', value: '16%', sparklineData: [2, 3, 4, 5, 6, 7, 8], subtext: 'Customer satisfaction strong', color: 'blue' }] } }] },
+    { columns: 3, cells: [{ id: '', type: 'narrative', status: 'ready', title: 'Executive Summary', subtitle: '', data: 'Consumer feedback reveals consistent positive sentiment with emphasis on quality and scent. High review volume and positive NPS validate product-market fit.' }, { id: '', type: 'narrative', status: 'ready', title: 'Business Implications', subtitle: '', data: '• Strong customer satisfaction supports retention\n\n• Quality positioning differentiates from mass-market\n\n• Scent profile is emotional differentiator worth highlighting' }, { id: '', type: 'narrative', status: 'ready', title: 'Action Recommendations', subtitle: '', data: '• Highlight top customer testimonials in marketing\n\n• Develop loyalty program targeting high-NPS segments\n\n• Use feedback for product formulation improvements\n\n• Create user-generated content campaigns\n\n___BUTTON___Generate Ideas___POWERED_BY_Innov8___' }] }
+  ],
+  chartData: { 'Monthly Revenue': [{ date: '2024-01-01', volume: 510, sentiment: 78 }, { date: '2024-02-01', volume: 580, sentiment: 80 }, { date: '2024-03-01', volume: 620, sentiment: 85 }] },
+  narratives: { 'Consumer Feedback Analysis': 'Customer testimonials consistently praise the natural ingredient formulation.' }
+}

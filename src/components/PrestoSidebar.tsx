@@ -34,7 +34,7 @@ export function PrestoSidebar() {
       <div className="flex-1 overflow-auto p-4 bg-black/20 font-mono text-xs border-b border-border relative">
         {/* Genie Background Image */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src={genieImage} alt="Presto" className="h-60 w-60 opacity-20" />
+          <img src={genieImage} alt="Presto" className="h-60 w-60 opacity-30" />
         </div>
 
         {/* Logs Content */}

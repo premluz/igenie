@@ -1,4 +1,4 @@
-import { type Row, type PrestoStore } from '@/store/usePrestoStore'
+import { type Row } from '@/store/usePrestoStore'
 
 /**
  * Neutrogena Natural Beauty Trend Scenario
@@ -10,6 +10,12 @@ export interface ScenarioData {
   id: string
   brand: string
   category: string
+  title: string
+  description: string
+  date: string
+  velocityScore: number
+  sentimentScore: number
+  sparklineData?: number[]
   signals: Array<{
     id: string
     name: string
@@ -31,6 +37,10 @@ export const neutroGenaNatural: ScenarioData = {
   category: 'Skincare',
   title: 'Clean Beauty Acceleration — Neutrogena Natural Product Line',
   description: 'Rising consumer interest in clean, natural skincare across all channels',
+  date: '2026-05-14',
+  velocityScore: 8.6,
+  sentimentScore: 82,
+  sparklineData: [3, 4, 5, 6, 7, 8, 9],
 
   // Signals that Presto identified
   signals: [
@@ -83,22 +93,129 @@ export const neutroGenaNatural: ScenarioData = {
 
   // Canvas layout - rows with cells
   initialLayout: [
-    // Row 1: Narrative intro (full width)
+    // Row 1: Signal metrics (3 columns) - Trend, Strength, Trust
+    {
+      columns: 3,
+      cells: [
+        {
+          id: '',
+          type: 'progress-bar',
+          status: 'ready',
+          title: 'Trend',
+          subtitle: 'Where it\'s going',
+          data: {
+            type: 'trend',
+            sparklineData: [3, 4, 5, 6, 7, 8, 9],
+            color: '#10b981'
+          }
+        },
+        {
+          id: '',
+          type: 'progress-bar',
+          status: 'ready',
+          title: 'Strength',
+          subtitle: 'Signal power',
+          data: {
+            type: 'strength',
+            value: 8.6,
+            max: 10,
+            color: '#3b82f6'
+          }
+        },
+        {
+          id: '',
+          type: 'progress-bar',
+          status: 'ready',
+          title: 'Trust',
+          subtitle: 'Source validity',
+          data: {
+            type: 'trust',
+            value: 82,
+            max: 100,
+            color: '#10b981'
+          }
+        }
+      ]
+    },
+
+    // Row 2: Signal sources (full width)
     {
       columns: 1,
       cells: [
         {
           id: '',
-          type: 'narrative',
+          type: 'signal-sources',
           status: 'ready',
-          title: 'Clean Beauty Acceleration',
-          subtitle: 'Neutrogena Natural Product Line',
-          data: 'Consumer demand for clean, natural skincare is accelerating across all channels. Search volume for natural ingredients is up 156% YoY. Retail sell-through of the Ultra Gentle line grew 34% last quarter. Social buzz and influencer activity show strong positive sentiment (84-88%) around clean beauty positioning.'
+          title: 'Signal sources',
+          subtitle: '',
+          data: {
+            total: '5,847 data points across 42 verified channels',
+            pillars: [
+              {
+                id: 'social',
+                icon: 'Radio',
+                label: 'Clean Beauty Buzz',
+                value: '34%',
+                sparklineData: [2, 3, 4, 5, 6, 8, 9],
+                subtext: 'Social mentions trending up',
+                color: 'emerald'
+              },
+              {
+                id: 'retail',
+                icon: 'TrendingUp',
+                label: 'Retail Velocity',
+                value: '28%',
+                sparklineData: [3, 4, 4, 5, 5, 6, 7],
+                subtext: 'Sell-through acceleration',
+                color: 'blue'
+              },
+              {
+                id: 'search',
+                icon: 'Search',
+                label: 'Search Demand',
+                value: '38%',
+                sparklineData: [4, 5, 6, 7, 8, 9, 10],
+                subtext: 'Query growth 156% YoY',
+                color: 'purple'
+              }
+            ]
+          }
         }
       ]
     },
 
-    // Row 2: KPI cards (2 columns)
+    // Row 3: Executive Summary (3 columns)
+    {
+      columns: 3,
+      cells: [
+        {
+          id: '',
+          type: 'narrative',
+          status: 'ready',
+          title: 'Executive Summary',
+          subtitle: '',
+          data: 'Consumer demand for clean, natural skincare is accelerating across all channels with 156% YoY search growth and 34% retail velocity growth. Signal strength (8.6/10) indicates powerful momentum.\n\nThe trend shows:\n• Strong social acceleration\n• Increasing retail sell-through\n• Rising search demand\n• Low incumbent competition'
+        },
+        {
+          id: '',
+          type: 'narrative',
+          status: 'ready',
+          title: 'Business Implications',
+          subtitle: '',
+          data: '• Premium positioning opportunity — consumers willing to pay for "natural" credentials\n\n• First-mover advantage in Ultra Gentle line — before category commoditizes\n\n• Brand trust building — clean beauty messaging resonates authentically with target demographics\n\n• Category growth tailwind — natural skincare expanding faster than overall beauty market'
+        },
+        {
+          id: '',
+          type: 'narrative',
+          status: 'ready',
+          title: 'Action Recommendations',
+          subtitle: '',
+          data: '• Amplify "natural ingredients" messaging across digital channels — highest leverage opportunity\n\n• Increase allocation to Ultra Gentle line — strongest velocity and sentiment signals\n\n• Partner with 10-15 mid-tier clean beauty influencers for authentic reach\n\n• Launch limited-edition natural variant SKU Q2 2026 — capture momentum window\n\n• Test premium pricing on clean line — sentiment data supports willingness to pay\n\n___BUTTON___Generate Ideas___POWERED_BY_INNOV8___'
+        }
+      ]
+    },
+
+    // Row 3: KPI cards (2 columns)
     {
       columns: 2,
       cells: [
@@ -191,20 +308,6 @@ export const neutroGenaNatural: ScenarioData = {
       ]
     },
 
-    // Row 5: Action narrative (full width)
-    {
-      columns: 1,
-      cells: [
-        {
-          id: '',
-          type: 'narrative',
-          status: 'ready',
-          title: 'Recommended Actions',
-          subtitle: 'Capitalize on clean beauty trend',
-          data: '1. Amplify "natural ingredients" messaging across digital channels — search demand is highest leverage opportunity\n\n2. Increase allocation to Ultra Gentle line — retail velocity and consumer sentiment are both strong signals\n\n3. Partner with 10-15 mid-tier clean beauty influencers — high engagement in this cohort, authenticity > reach\n\n4. Launch limited-edition natural variant SKU Q2 2026 — window of opportunity before category commoditizes\n\n5. Test premium pricing on clean line — sentiment data shows consumers willing to pay for "natural" positioning'
-        }
-      ]
-    }
   ],
 
   // Chart data keyed by cell title

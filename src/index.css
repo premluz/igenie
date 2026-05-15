@@ -42,7 +42,7 @@
   }
 
   .border-border {
-    @apply border-[#FFFFFF07];
+    @apply border-[#FFFFFF10];
   }
 
   .text-foreground {

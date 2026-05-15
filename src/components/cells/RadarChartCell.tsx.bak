@@ -2,10 +2,9 @@ import { VegaEmbed } from 'react-vega'
 
 interface RadarChartCellProps {
   data: Array<{ dimension: string; value: number; max: number }>
-  descriptionBottom?: string
 }
 
-export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps) {
+export function RadarChartCell({ data }: RadarChartCellProps) {
   if (!data || data.length === 0) {
     return <div className="text-xs text-muted-foreground text-center py-8">No data available</div>
   }
@@ -24,7 +23,7 @@ export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps)
   }
 
   const spec = {
-    $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
+    $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
     background: 'transparent',
     width: 320,
     height: 320,
@@ -71,15 +70,8 @@ export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps)
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="flex-1 flex items-center justify-center p-2">
-        <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />
-      </div>
-      {descriptionBottom && (
-        <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-xs text-muted-foreground">{descriptionBottom}</p>
-        </div>
-      )}
+    <div className="w-full h-full flex items-center justify-center p-2">
+      <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />
     </div>
   )
 }
