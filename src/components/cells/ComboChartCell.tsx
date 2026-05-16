@@ -23,7 +23,7 @@ export function ComboChartCell({ data, descriptionBottom }: ComboChartCellProps)
   )
 
   if (cleanData.length === 0) {
-    return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
+    return <div className="text-sm text-muted-foreground text-center py-8">No valid data</div>
   }
 
   const spec = {
@@ -105,7 +105,7 @@ export function ComboChartCell({ data, descriptionBottom }: ComboChartCellProps)
       </div>
       {descriptionBottom && (
         <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-xs text-muted-foreground">{descriptionBottom}</p>
+          <p className="text-sm text-muted-foreground">{descriptionBottom}</p>
         </div>
       )}
     </div>

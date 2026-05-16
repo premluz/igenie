@@ -118,7 +118,7 @@ export function CanvasGrid() {
           {/* Page Header - Title & Description (scrolls with content) */}
           {currentView.title && (
             <div className="mb-4 pb-6 border-b border-border">
-              <h1 className="text-2xl font-bold text-foreground mb-2">{currentView.title}</h1>
+              <h1 className="text-4xl font-bold text-foreground mb-2">{currentView.title}</h1>
               {currentView.description && (
                 <p className="text-sm text-muted-foreground">{currentView.description}</p>
               )}

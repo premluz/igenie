@@ -22,7 +22,7 @@ export function ProgressBarCell({ metric, descriptionTop, descriptionBottom }: P
   return (
     <div className="flex flex-col h-full">
       {descriptionTop && (
-        <p className="text-xs text-muted-foreground mb-2">{descriptionTop}</p>
+        <p className="text-sm text-muted-foreground mb-2">{descriptionTop}</p>
       )}
       <div className="flex-1">
         {metric.type === 'trend' ? (
@@ -32,7 +32,7 @@ export function ProgressBarCell({ metric, descriptionTop, descriptionBottom }: P
         )}
       </div>
       {descriptionBottom && (
-        <p className="text-xs text-muted-foreground mt-2">{descriptionBottom}</p>
+        <p className="text-sm text-muted-foreground mt-2">{descriptionBottom}</p>
       )}
     </div>
   )

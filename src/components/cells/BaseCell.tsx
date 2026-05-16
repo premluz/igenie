@@ -66,56 +66,20 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           );
           animation: skeleton-shimmer 1.2s infinite;
         }
-
-        @keyframes glow-border-rotate {
-          100% {
-            transform: translate(-50%, -50%) rotate(1turn);
-          }
-        }
-
-        .glow-border-container::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 99999px;
-          height: 99999px;
-          background-repeat: no-repeat;
-          background-position: 0 0;
-          background-image: conic-gradient(rgba(0, 212, 255, 0.6), rgba(0, 212, 255, 0), rgba(0, 212, 255, 0));
-          transform: translate(-50%, -50%) rotate(0deg);
-          animation: glow-border-rotate 4s linear infinite;
-          z-index: -1;
-        }
-
-        .glow-border-inner::after {
-          content: '';
-          position: absolute;
-          inset: 1px;
-          background: rgb(22, 23, 28);
-          border-radius: 4px;
-          z-index: -1;
-        }
       `}</style>
-
-      {/* Glow border - AI operating indicator */}
-      {cell.status === 'thinking' && (
-        <>
-          <div className="glow-border-container absolute inset-0 rounded-[4px] overflow-hidden" />
-          <div className="glow-border-inner absolute inset-0 rounded-[4px]" />
-        </>
-      )}
 
       {/* Skeleton overlay - covers entire card including header when thinking */}
       {cell.status === 'thinking' && (
-        <div className="absolute inset-0 z-10 skeleton-shimmer rounded-[4px]" />
+        <div className="absolute inset-0 z-10 rounded-[4px] overflow-hidden pointer-events-none">
+          <div className="skeleton-shimmer absolute inset-0" />
+        </div>
       )}
 
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20 bg-card">
+      <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-sm font-semibold text-foreground truncate">{cell.title}</h3>
+            <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
             {cell.status === 'thinking' && (
               <div className="w-2 h-2 rounded-full bg-accent animate-pulse flex-shrink-0" />
             )}
@@ -128,7 +92,7 @@ export function BaseCell({ cell, children }: BaseCellProps) {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 p-4 overflow-auto relative flex flex-col bg-card">
+      <div className="flex-1 p-4 overflow-auto relative flex flex-col">
         {/* Error state */}
         {cell.status === 'error' && (
           <div className="flex flex-col items-center justify-center gap-3 flex-1">
@@ -147,14 +111,7 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           </div>
         )}
 
-        {/* Content - always rendered, opacity changes */}
-        <div
-          className={`flex-1 transition-opacity duration-300 ${
-            cell.status === 'ready' ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
-        >
-          {children}
-        </div>
+        {children}
       </div>
     </motion.div>
   )

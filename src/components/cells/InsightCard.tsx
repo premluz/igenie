@@ -57,10 +57,10 @@ function InsightCardContent({ data, title, loadScenarioDetail }: any) {
       {/* Right Column - Content & Metrics */}
       <div className="flex-1 px-4 py-3 min-w-0 flex flex-col justify-between">
         <div className="mb-4">
-          <h3 className="text-sm font-semibold text-foreground line-clamp-2 mb-1">
+          <h3 className="text-lg font-semibold text-foreground line-clamp-2 mb-1">
             {title}
           </h3>
-          <p className="text-sm font-normal text-muted-foreground line-clamp-1 group-hover:text-foreground/70 transition-colors mb-2">
+          <p className="text-md font-normal text-muted-foreground line-clamp-1 group-hover:text-foreground/70 transition-colors mb-2">
             {data.description}
           </p>
         </div>

@@ -107,8 +107,21 @@ function PulseListCell() {
   )
 }
 
+function HeadingCell({ title }: { title: string }) {
+  return (
+    <h2 className="text-3xl mt-4 mb-2 font-semibold text-foreground">
+      {title}
+    </h2>
+  )
+}
+
 // Main renderer — pure switch on cell.type
 export function WidgetRenderer({ cell }: { cell: Cell }) {
+  // Headers render without card wrapper
+  if (cell.type === 'header') {
+    return <HeadingCell title={cell.title} />
+  }
+
   let content: React.ReactNode = null
 
   switch (cell.type) {

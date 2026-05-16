@@ -25,7 +25,8 @@
       "Bash(sed -i \"s/'https:\\\\/\\\\/vega.github.io\\\\/schema\\\\/vega-lite\\\\/v5.json'/'https:\\\\/\\\\/vega.github.io\\\\/schema\\\\/vega-lite\\\\/v6.json'/\" src/components/cells/*.tsx)",
       "Bash(curl -s http://localhost:5173/neutrogena-natural)",
       "Bash(curl -s http://localhost:5173/)",
-      "Bash(pkill -f \"npm run dev\")"
+      "Bash(pkill -f \"npm run dev\")",
+      "Bash(node -)"
     ],
     "additionalDirectories": [
       "/private/tmp",

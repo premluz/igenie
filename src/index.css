@@ -7,7 +7,7 @@
   --font-mono: "JetBrains Mono", monospace;
 
   --color-background: #29252C;
-  --color-card: #121214;
+  --color-card: #29252C;
   --color-card-skeleton: #1a1a1d;
   --color-border: #1d1d20;
   --color-accent: #3b82f6;
@@ -34,15 +34,15 @@
 
 @layer utilities {
   .bg-background {
-    @apply bg-[#242127];
+    @apply bg-[#29252C];
   }
 
   .bg-card {
-    @apply bg-[#2D2832];
+    @apply bg-[#29252C];
   }
 
   .border-border {
-    @apply border-[#FFFFFF10];
+    @apply border-[#FFFFFF16];
   }
 
   .text-foreground {

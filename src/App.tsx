@@ -1,12 +1,16 @@
 import { Search, Home, Activity, Compass, Database, Box, BarChart3 } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CanvasGrid } from '@/components/CanvasGrid'
 import { PrestoSidebar } from '@/components/PrestoSidebar'
 import { Breadcrumb } from '@/components/Breadcrumb'
+import { LandingScreen } from '@/components/LandingScreen'
+import { ScenarioListing } from '@/components/ScenarioListing'
 import { useViewSync } from '@/hooks/useViewSync'
 
 export default function App() {
   useViewSync()
+  const [currentView, setCurrentView] = useState<'home' | 'listing' | 'detail'>('home')
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground overflow-hidden">
@@ -19,13 +23,23 @@ export default function App() {
           <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
             <Search size={16} />
           </Button>
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
+          <Button
+            onClick={() => setCurrentView('home')}
+            variant="ghost"
+            size="icon"
+            className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
+              currentView === 'home' ? 'text-foreground bg-accent/10 border border-accent/20' : 'hover:bg-white/10'
+            }`}
+          >
             <Home size={16} />
           </Button>
           <Button
+            onClick={() => setCurrentView('listing')}
             variant="ghost"
             size="icon"
-            className="w-8 h-8 rounded-lg text-foreground bg-accent/10 border border-accent/20 hover:bg-accent/20 transition-colors duration-150"
+            className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
+              currentView === 'listing' || currentView === 'detail' ? 'text-foreground bg-accent/10 border border-accent/20 hover:bg-accent/20' : 'hover:bg-white/10'
+            }`}
           >
             <Activity size={16} />
           </Button>
@@ -46,14 +60,18 @@ export default function App() {
 
       {/* CENTER CANVAS */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="h-15 border-b border-border flex items-center bg-card/20">
-             <Breadcrumb />
-        </div>
-        <CanvasGrid />
+        {currentView === 'detail' && (
+          <div className="h-15 border-b border-border flex items-center bg-card/0">
+            <Breadcrumb />
+          </div>
+        )}
+        {currentView === 'home' && <LandingScreen />}
+        {currentView === 'listing' && <ScenarioListing onSelectScenario={() => setCurrentView('detail')} />}
+        {currentView === 'detail' && <CanvasGrid />}
       </div>
 
       {/* RIGHT SIDEBAR PRESTO */}
-      <PrestoSidebar />
+      {currentView === 'detail' && <PrestoSidebar />}
     </div>
   )
 }

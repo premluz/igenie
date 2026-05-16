@@ -3,7 +3,7 @@ import { getScenario, scenarioMap } from '@/scenarios'
 
 // ============= TYPES =============
 
-export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'diverging-bar' | 'line-chart' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources'
+export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'diverging-bar' | 'line-chart' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources' | 'header'
 
 export type CellStatus = 'thinking' | 'ready' | 'error'
 

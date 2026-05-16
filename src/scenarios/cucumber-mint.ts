@@ -35,6 +35,7 @@ export const cucumberMint: ScenarioData = {
   sentimentScore: 87,
   sparklineData: [2, 3, 2, 4, 3, 5, 9],
 
+  
   signals: [
     {
       id: 'sig-1',
@@ -64,6 +65,19 @@ export const cucumberMint: ScenarioData = {
 
   initialLayout: [
     // Row 1: Signal metrics (3 columns) - Trend, Strength, Trust
+    // Row 2: Heading
+    {
+      columns: 1,
+      cells: [
+        {
+          id: '',
+          type: 'header',
+          status: 'ready',
+          title: 'Insight validation',
+          data: null
+        }
+      ]
+    },
     {
       columns: 3,
       cells: [
@@ -162,7 +176,19 @@ export const cucumberMint: ScenarioData = {
         }
       ]
     },
-
+    // Row 2: Heading
+    {
+      columns: 1,
+      cells: [
+        {
+          id: '',
+          type: 'header',
+          status: 'ready',
+          title: 'Insight interpretation',
+          data: null
+        }
+      ]
+    },
     // Row 3: Narrative cards (3 columns)
     {
       columns: 3,
@@ -199,7 +225,18 @@ export const cucumberMint: ScenarioData = {
         }
       ]
     },
-
+    {
+      columns: 1,
+      cells: [
+        {
+          id: '',
+          type: 'header',
+          status: 'ready',
+          title: 'Insight details',
+          data: null
+        }
+      ]
+    },
     // Row 4: Additional narrative depth (3 columns)
     {
       columns: 3,
@@ -243,12 +280,9 @@ export const cucumberMint: ScenarioData = {
       cells: [
         {
           id: '',
-          type: 'narrative',
+          type: 'header',
           status: 'ready',
-          title: 'Market Performance & Financial Outlook',
-          subtitle: '',
-          descriptionTop: '',
-          descriptionBottom: '',
+          title: 'Insight artifacts',
           data: null
         }
       ]

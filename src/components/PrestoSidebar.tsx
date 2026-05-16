@@ -26,15 +26,15 @@ export function PrestoSidebar() {
   return (
     <aside className="w-80 border-l border-border flex flex-col bg-background">
       {/* Header */}
-      <div className="h-14 border-b border-border flex items-center px-6 bg-card/20">
+      {/*<div className="h-14 border-b border-border flex items-center px-6 bg-card/20">
         <span className="text-xs font-semibold text-foreground">Ask Presto</span>
-      </div>
+      </div>*/}
 
       {/* Log Terminal */}
       <div className="flex-1 overflow-auto p-4 bg-black/20 font-mono text-xs border-b border-border relative">
         {/* Genie Background Image */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src={genieImage} alt="Presto" className="h-60 w-60 opacity-30" />
+          <img src={genieImage} alt="Presto" className="h-60 w-60 opacity-3D0" />
         </div>
 
         {/* Logs Content */}

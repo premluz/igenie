@@ -77,7 +77,7 @@ export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps)
       </div>
       {descriptionBottom && (
         <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-xs text-muted-foreground">{descriptionBottom}</p>
+          <p className="text-sm text-muted-foreground">{descriptionBottom}</p>
         </div>
       )}
     </div>
