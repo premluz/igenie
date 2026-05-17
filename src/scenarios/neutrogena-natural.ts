@@ -6,6 +6,22 @@ import { type Row } from '@/store/usePrestoStore'
  * Signal convergence across social buzz, retail movement, and search acceleration
  */
 
+export interface ScenarioTrigger {
+  keywords: string[]
+  nextScenarioId: string
+}
+
+export interface LoadingMessageCategory {
+  header: string
+  header_done: string
+  texts?: string[]
+}
+
+export interface LoadingMessages {
+  [key: string]: LoadingMessageCategory | string
+  summary: string
+}
+
 export interface ScenarioData {
   id: string
   brand: string
@@ -29,6 +45,13 @@ export interface ScenarioData {
   chartData: Record<string, unknown>
   narratives: Record<string, string>
   logs: Record<string, string[]>
+  scenarioTriggers?: ScenarioTrigger[]
+  animationSpeed?: {
+    title?: number
+    description?: number
+  }
+  loadingDelay?: number
+  loadingMessages?: LoadingMessages
 }
 
 export const neutroGenaNatural: ScenarioData = {
@@ -134,6 +157,29 @@ export const neutroGenaNatural: ScenarioData = {
             max: 100,
             color: '#10b981'
           }
+        }
+      ]
+    },
+
+    // Row 4: More charts (2 columns)
+    {
+      columns: 2,
+      cells: [
+        {
+          id: '',
+          type: 'diverging-bar',
+          status: 'ready',
+          title: 'Positive vs Negative Drivers',
+          subtitle: 'From customer reviews',
+          data: null
+        },
+        {
+          id: '',
+          type: 'table',
+          status: 'ready',
+          title: 'Retail Channel Performance',
+          subtitle: 'Sell-through by channel and segment',
+          data: null
         }
       ]
     },
@@ -285,29 +331,6 @@ export const neutroGenaNatural: ScenarioData = {
       ]
     },
 
-    // Row 4: More charts (2 columns)
-    {
-      columns: 2,
-      cells: [
-        {
-          id: '',
-          type: 'diverging-bar',
-          status: 'ready',
-          title: 'Positive vs Negative Drivers',
-          subtitle: 'From customer reviews',
-          data: null
-        },
-        {
-          id: '',
-          type: 'table',
-          status: 'ready',
-          title: 'Retail Channel Performance',
-          subtitle: 'Sell-through by channel and segment',
-          data: null
-        }
-      ]
-    },
-
   ],
 
   // Chart data keyed by cell title
@@ -436,6 +459,39 @@ export const neutroGenaNatural: ScenarioData = {
       'Priority ranking: Economic impact + confidence level',
       'Action plan synthesized'
     ]
+  },
+
+  scenarioTriggers: [
+    {
+      keywords: ['millennial', 'millennial-analysis'],
+      nextScenarioId: 'cucumber-mint'
+    }
+  ],
+
+  animationSpeed: {
+    title: 15,
+    description: 15
+  },
+
+  loadingDelay: 6000,
+
+  loadingMessages: {
+    signal_detect: {
+      header: 'Detecting signals...',
+      header_done: 'Signals detected',
+      texts: ['Scanning clean beauty trends', 'Identifying natural ingredient mentions']
+    },
+    convergence: {
+      header: 'Analyzing convergence...',
+      header_done: 'Convergence mapped',
+      texts: ['Cross-referencing retail velocity', 'Evaluating social momentum']
+    },
+    market_fit: {
+      header: 'Assessing market fit...',
+      header_done: 'Market analysis complete',
+      texts: ['Comparing sentiment scores', 'Evaluating positioning opportunity']
+    },
+    summary: 'Clean Beauty Market Opportunity identified'
   }
 }
 

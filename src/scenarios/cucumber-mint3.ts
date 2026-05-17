@@ -22,6 +22,7 @@ export interface ScenarioData {
   initialLayout: Array<Omit<Row, 'id'>>
   chartData: Record<string, unknown>
   narratives: Record<string, string>
+  loadingDelay?: number
 }
 
 export const cucumberMint3: ScenarioData = {

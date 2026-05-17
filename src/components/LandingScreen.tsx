@@ -4,6 +4,14 @@ import { Badge } from '@/components/ui/badge'
 import { AmbientGridBackground } from './AmbientGridBackground'
 import { NeuralGridBackground } from './NeuralGridBackground'
 import { CyclingGeminiText } from './CyclingGeminiText'
+import { useNavigate } from 'react-router-dom'
+import { usePrestoStore } from '@/store/usePrestoStore'
+import { getScenario } from '@/scenarios'
+
+const LANDING_TRIGGERS = [
+  { keywords: ['genz', 'gen-z', 'gen z'], scenarioId: 'cucumber-mint' },
+  { keywords: ['millennial', 'millennials'], scenarioId: 'neutrogena-natural' }
+]
 
 const REPORTS = [
   { id: 1, title: 'Brand Pulse Report Card', count: 11 },
@@ -45,13 +53,93 @@ const QUICK_ACTIONS = [
 export function LandingScreen() {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const navigate = useNavigate()
+  const { pushLog, setTransitioning, revealCellsGradually } = usePrestoStore()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (query.trim()) {
-      // TODO: Handle query submission
-      console.log('Query:', query)
+    if (!query.trim()) return
+
+    const lowerQuery = query.toLowerCase().trim()
+
+    // Check for scenario triggers
+    for (const trigger of LANDING_TRIGGERS) {
+      for (const keyword of trigger.keywords) {
+        if (lowerQuery.includes(keyword)) {
+          // Add user message to logs
+          pushLog({ text: query, type: 'query' })
+
+          // Get the scenario
+          const scenario = getScenario(trigger.scenarioId)
+
+          if (scenario) {
+            setQuery('')
+
+            // Show loading state
+            setTransitioning(true)
+
+            // Trigger loading sequence
+            const loadingMessages = (scenario as any)?.loadingMessages
+            const loadingDelay = (scenario as any)?.loadingDelay
+            if (loadingMessages && loadingDelay) {
+              const messages = loadingMessages
+              const categories = Object.keys(messages).filter(k => k !== 'summary')
+              const timePerCategory = loadingDelay / categories.length
+
+              let currentTime = 0
+              categories.forEach((categoryKey) => {
+                const category = messages[categoryKey]
+
+                // Show header
+                setTimeout(() => {
+                  pushLog({ text: category.header, type: 'header' })
+                }, currentTime)
+
+                // Show texts if available
+                if (category.texts && Array.isArray(category.texts)) {
+                  const textDelay = timePerCategory / (category.texts.length + 1)
+                  category.texts.forEach((text: string, textIndex: number) => {
+                    setTimeout(() => {
+                      pushLog({ text, type: 'system' })
+                    }, currentTime + textDelay * (textIndex + 1))
+                  })
+                }
+
+                // Show header_done
+                setTimeout(() => {
+                  pushLog({ text: category.header_done, type: 'header-done' })
+                }, currentTime + timePerCategory - 100)
+
+                currentTime += timePerCategory
+              })
+
+              // Show summary at the end
+              setTimeout(() => {
+                pushLog({ text: messages.summary, type: 'header-done' })
+              }, loadingDelay - 100)
+
+              // Start revealing cells at 50% of loading delay
+              setTimeout(() => {
+                revealCellsGradually(loadingDelay / 2)
+              }, loadingDelay / 2)
+
+              // Hide loading state after delay
+              setTimeout(() => {
+                setTransitioning(false)
+              }, loadingDelay)
+            }
+
+            // Navigate to scenario (this triggers CanvasGrid to load data)
+            navigate(`/insights/${trigger.scenarioId}`)
+          }
+          return
+        }
+      }
     }
+
+    // If no trigger matched, just log it
+    console.log('Query:', query)
+    setQuery('')
   }
 
   const handleBoxClick = () => {

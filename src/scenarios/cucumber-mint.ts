@@ -1,5 +1,21 @@
 import { type Row } from '@/store/usePrestoStore'
 
+export interface ScenarioTrigger {
+  keywords: string[]
+  nextScenarioId: string
+}
+
+export interface LoadingMessageCategory {
+  header: string
+  header_done: string
+  texts?: string[]
+}
+
+export interface LoadingMessages {
+  [key: string]: LoadingMessageCategory | string
+  summary: string
+}
+
 export interface ScenarioData {
   id: string
   brand: string
@@ -22,6 +38,13 @@ export interface ScenarioData {
   initialLayout: Array<Omit<Row, 'id'>>
   chartData: Record<string, unknown>
   narratives: Record<string, string>
+  scenarioTriggers?: ScenarioTrigger[]
+  animationSpeed?: {
+    title?: number
+    description?: number
+  }
+  loadingDelay?: number
+  loadingMessages?: LoadingMessages
 }
 
 export const cucumberMint: ScenarioData = {
@@ -388,6 +411,39 @@ export const cucumberMint: ScenarioData = {
   narratives: {
     'Clean Beauty Acceleration — Cucumber Mint Product Line':
       'Consumer demand for clean beauty is accelerating across all channels with strong multi-signal convergence.'
+  },
+
+  scenarioTriggers: [
+    {
+      keywords: ['genz', 'gen z', 'gen-z'],
+      nextScenarioId: 'neutrogena-natural'
+    }
+  ],
+
+  animationSpeed: {
+    title: 15,
+    description: 15
+  },
+
+  loadingDelay: 7000,
+
+  loadingMessages: {
+    intent: {
+      header: 'Understanding intent...',
+      header_done: 'Intent understood',
+      texts: ['Analyzing "Gen Z" query', 'Cross-referencing with trends']
+    },
+    analysis: {
+      header: 'Analyzing data...',
+      header_done: 'Analysis complete',
+      texts: ['Processing demographic signals', 'Evaluating sentiment patterns']
+    },
+    synthesis: {
+      header: 'Synthesizing insights...',
+      header_done: 'Synthesis complete',
+      texts: ['Correlating signals', 'Building narrative']
+    },
+    summary: 'Gen Z Beauty Insights ready'
   }
 }
 

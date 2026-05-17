@@ -5,11 +5,17 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import genieImage from '@/assets/genie.png'
 import { CyclingGeminiText } from './CyclingGeminiText'
+import { useScenarioDetection } from '@/hooks/useScenarioDetection'
+import { LoadingTimeline } from './LoadingTimeline'
+import { GeminiStreamText } from './GeminiStreamText'
 
 export function PrestoSidebar() {
-  const { logs, agentStatus, runReasoning } = usePrestoStore()
+  const { logs, agentStatus, runReasoning, pushLog, isTransitioning } = usePrestoStore()
   const [input, setInput] = useState('')
+  const [loadingStages, setLoadingStages] = useState<string[]>([])
+  const [loadingDuration, setLoadingDuration] = useState(0)
   const logsEndRef = useRef<HTMLDivElement>(null)
+  const { detectScenarioTransition, transitionToScenario } = useScenarioDetection()
 
   // Auto-scroll logs to bottom
   useEffect(() => {
@@ -19,6 +25,62 @@ export function PrestoSidebar() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || agentStatus === 'thinking') return
+
+    // Check if input triggers a scenario transition
+    const transition = detectScenarioTransition(input)
+
+    if (transition.matched && transition.nextScenarioId && transition.delay && transition.loadingMessages) {
+      setInput('')
+
+      // Add user message
+      pushLog({ text: input, type: 'query' })
+
+      // Start scenario transition with progressive loading messages
+      transitionToScenario(transition.nextScenarioId, transition.delay)
+
+      // Show progressive loading messages
+      const messages = transition.loadingMessages
+      const categories = Object.keys(messages).filter(k => k !== 'summary')
+      const timePerCategory = transition.delay / categories.length
+
+      // Set timeline stages
+      setLoadingStages(categories)
+      setLoadingDuration(transition.delay)
+
+      let currentTime = 0
+      categories.forEach((categoryKey) => {
+        const category = messages[categoryKey]
+
+        // Show header
+        setTimeout(() => {
+          pushLog({ text: category.header, type: 'header' })
+        }, currentTime)
+
+        // Show texts if available
+        if (category.texts && Array.isArray(category.texts)) {
+          const textDelay = timePerCategory / (category.texts.length + 1)
+          category.texts.forEach((text: string, textIndex: number) => {
+            setTimeout(() => {
+              pushLog({ text, type: 'system' })
+            }, currentTime + textDelay * (textIndex + 1))
+          })
+        }
+
+        // Show header_done
+        setTimeout(() => {
+          pushLog({ text: category.header_done, type: 'header-done' })
+        }, currentTime + timePerCategory - 100)
+
+        currentTime += timePerCategory
+      })
+
+      // Show summary at the end
+      setTimeout(() => {
+        pushLog({ text: messages.summary, type: 'success' })
+      }, transition.delay - 100)
+
+      return
+    }
 
     await runReasoning(input)
     setInput('')
@@ -38,8 +100,17 @@ export function PrestoSidebar() {
           <img src={genieImage} alt="Presto" className="h-60 w-40 opacity-70" />
         </div>
 
+        {/* Loading Timeline */}
+        {isTransitioning && loadingStages.length > 0 && (
+          <LoadingTimeline
+            stages={loadingStages}
+            totalDuration={loadingDuration}
+            isActive={true}
+          />
+        )}
+
         {/* Logs Content */}
-        <div className="relative z-10 space-y-2">
+        <div className="relative z-10">
           {logs.length === 0 ? (
             <div className="text-muted-foreground text-center py-4">
               <CyclingGeminiText
@@ -50,26 +121,81 @@ export function PrestoSidebar() {
               />
             </div>
           ) : (
-            logs.map(log => (
-              <div
-                key={log.id}
-                className={`${
-                  log.type === 'success'
-                    ? 'text-emerald'
-                    : log.type === 'error'
-                    ? 'text-danger'
-                    : log.type === 'query'
-                    ? 'text-accent'
-                    : 'text-terminal'
-                }`}
-              >
-                <span className="text-muted-foreground">{log.type} </span>
-                <span>{log.text}</span>
-              </div>
-            ))
+            <div className="space-y-0.5">
+              {logs.map((log, idx) => {
+                const isUserMessage = log.type === 'query'
+                const isHeader = log.type === 'header' || log.type === 'header-done'
+                const isHeaderDone = log.type === 'header-done'
+                const isTextContent = log.type === 'system'
+
+                return (
+                  <div key={log.id}>
+                    {isUserMessage ? (
+                      // User chat bubble - prominent with left margin
+                      <div className="ml-20 flex justify-end">
+                        <div className="bg-accent/20 rounded-lg px-3 py-2 max-w-xs">
+                          <div className="text-xs text-accent font-medium">
+                            <GeminiStreamText
+                              text={log.text}
+                              speed={8}
+                              showCursor={false}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : isHeader ? (
+                      // Headers with timeline dots
+                      <div className="flex gap-2">
+                        {/* Timeline column */}
+                        <div className="flex flex-col items-center">
+                          {/* Timeline dot */}
+                          <div className="w-2 h-2 rounded-full bg-accent/60 flex-shrink-0" />
+                          {/* Connecting line to next item */}
+                          {logs[idx + 1] && (
+                            <div className="w-0.5 h-1 bg-accent/30" />
+                          )}
+                        </div>
+
+                        {/* Message content */}
+                        <div className="flex-1 min-w-0">
+                          {isHeaderDone ? (
+                            <div className="text-xs text-emerald font-medium">
+                              <GeminiStreamText
+                                text={log.text}
+                                speed={8}
+                                showCursor={false}
+                              />
+                            </div>
+                          ) : (
+                            <div className="text-xs text-muted-foreground">
+                              <GeminiStreamText
+                                text={log.text}
+                                speed={6}
+                                showCursor={false}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : isTextContent ? (
+                      // Text content under headers - no dots
+                      <div className="flex gap-2 ml-4">
+                        <div className="text-xs text-muted-foreground/70">
+                          <GeminiStreamText
+                            text={log.text}
+                            speed={5}
+                            showCursor={false}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                )
+              })}
+            </div>
           )}
           {agentStatus === 'thinking' && (
-            <div className="text-purple animate-shimmer">
+            <div className="text-purple animate-shimmer text-xs mt-4">
               ⚡ thinking...
             </div>
           )}

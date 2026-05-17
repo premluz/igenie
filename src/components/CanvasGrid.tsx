@@ -7,27 +7,28 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { InsightGridCard } from './cells/InsightGridCard'
 import { useParams } from 'react-router-dom'
 import { GeminiStreamText } from './GeminiStreamText'
+import { BorderGlowOverlay } from './BorderGlowOverlay'
 
 export function CanvasGrid() {
   const { scenarioId } = useParams<{ scenarioId: string }>()
-  const { currentView, moveRow, cellTypeFilter, cellTitleFilter } = usePrestoStore()
+  const { currentView, moveRow, cellTypeFilter, cellTitleFilter, isTransitioning, revealCells } = usePrestoStore()
   const [activeTab, setActiveTab] = useState('pulse')
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
-  const [isLoading, setIsLoading] = useState(false)
+  const [cellsRevealed, setCellsRevealed] = useState(false)
 
   // Load scenario from URL on mount or when scenarioId changes
   useEffect(() => {
     const store = usePrestoStore.getState()
+
+    // Reset cellsRevealed when navigating to a new scenario
+    setCellsRevealed(false)
 
     if (scenarioId) {
       // Check if we need to load the scenario
       const expectedViewId = `detail-${scenarioId}`
 
       if (store.currentView?.id !== expectedViewId) {
-        setIsLoading(true)
         store.loadScenarioDetail(scenarioId)
-        // Loading state will be cleared when rows are populated by store update
-        setTimeout(() => setIsLoading(false), 500)
       }
     } else {
       // No scenarioId means we should show the listing view
@@ -43,19 +44,38 @@ export function CanvasGrid() {
     }
   }, [scenarioId])
 
-  // Show loading state while waiting for scenario to load
-  if (isLoading || (scenarioId && !currentView?.rows)) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-background">
-        <p className="text-sm text-muted-foreground">Loading scenario...</p>
-      </div>
-    )
-  }
 
+  // Reveal cells when ready: after transition completes OR with delay for normal nav
+  useEffect(() => {
+    if (currentView?.rows && currentView.rows.length > 0 && !cellsRevealed) {
+      if (!isTransitioning) {
+        // For normal navigation (not from landing), add a delay before revealing
+        // This allows skeleton loaders to animate and show
+        const timer = setTimeout(() => {
+          revealCells()
+          setCellsRevealed(true)
+        }, 800)
+
+        return () => clearTimeout(timer)
+      }
+    }
+  }, [isTransitioning, currentView?.rows, cellsRevealed, revealCells])
+
+  // Show loading message only if no current view
   if (!currentView) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-background">
         <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
+    )
+  }
+
+  // For detail views, show loading message while rows are being loaded
+  const isDetailView = currentView.id?.startsWith('detail-')
+  if (isDetailView && !currentView.rows) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-background">
+        <p className="text-sm text-muted-foreground">Loading scenario...</p>
       </div>
     )
   }
@@ -190,19 +210,38 @@ export function CanvasGrid() {
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden bg-background">
+      <BorderGlowOverlay isActive={isTransitioning} />
 
       {/* Vertical scrollable content */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-6 max-w-8xl mx-auto space-y-4">
           {/* Page Header - Title & Description (scrolls with content) */}
-          {currentView.title && (
+          {(currentView.title || isTransitioning) && (
             <div className="mb-4 pb-6 border-b border-border">
               <h1 className="text-4xl font-bold text-foreground mb-2">
-                <GeminiStreamText text={currentView.title} speed={0.5} showCursor={false} />
+                {isTransitioning ? (
+                  // During loading: show placeholder with cursor
+                  <GeminiStreamText
+                    text="Assembling insight dashboard"
+                    speed={12}
+                    showCursor={true}
+                  />
+                ) : (
+                  // After loading: show real title with reveal animation
+                  <GeminiStreamText
+                    text={currentView.title || ''}
+                    speed={((currentView as any)?.animationSpeed?.title as number) ?? 12}
+                    showCursor={false}
+                  />
+                )}
               </h1>
               {currentView.description && (
-                <p className="text-lg text-muted-foreground">
-                  <GeminiStreamText text={currentView.description} speed={2} showCursor={false} />
+                <p className={`text-lg text-muted-foreground transition-opacity duration-700 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+                  <GeminiStreamText
+                    text={currentView.description}
+                    speed={((currentView as any)?.animationSpeed?.description as number) ?? 12}
+                    showCursor={false}
+                  />
                 </p>
               )}
             </div>
@@ -213,9 +252,9 @@ export function CanvasGrid() {
             </div>
           ) : (
             filteredRows.map((row) => (
-              <div key={row.id} className="group relative">
+              <div key={row.id} className={`group relative transition-opacity duration-700 ${isTransitioning ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
                 {/* Move controls (on hover, left side) */}
-                <div className="absolute -left-12 top-2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1">
+                <div className={`absolute -left-12 top-2 ${isTransitioning ? 'hidden' : 'opacity-0 group-hover:opacity-100'} transition-opacity flex flex-col gap-1`}>
                   <Button
                     size="sm"
                     variant="ghost"

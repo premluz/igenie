@@ -133,7 +133,8 @@ function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }
             animation: skeleton-shimmer 2s infinite;
           }
         `}</style>
-        <div className="heading-skeleton h-10 rounded-lg w-2/3"></div>
+        {/* Skeleton with same dimensions as h2 (text-3xl = 1.875rem, font-semibold) */}
+        <div className="heading-skeleton h-9 rounded-md w-64"></div>
       </div>
     )
   }

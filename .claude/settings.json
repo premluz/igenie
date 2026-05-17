@@ -30,7 +30,16 @@
       "Bash(curl -s http://localhost:5175/)",
       "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")",
       "Bash(grep -r \"initial\\\\|animate\\\\|transition\\\\|layoutId\" /Users/prehistoric/iGenie/i-genie-prototype/src --include=\"*.tsx\" --include=\"*.ts\" -B 2 -A 2 2>/dev/null | head -60)",
-      "Read(//Users/prehistoric/iGenie/i-genie-prototype/**)"
+      "Read(//Users/prehistoric/iGenie/i-genie-prototype/**)",
+      "Bash(curl -s http://localhost:5175)",
+      "Bash(curl -s http://localhost:5175/api/check)",
+      "Read(//Users/premek/iGenie/i-genie-prototype/src/components/**)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Remove unused Skeleton import from BaseCell component *)",
+      "Bash(curl -s -w \"\\\\nHTTP Status: %{http_code}\\\\n\" http://localhost:5174)",
+      "Bash(curl -s http://localhost:5174)",
+      "Bash(git commit -m 'Improve loading UX: softer shimmer blur, maintain card height, add header skeleton loader *)",
+      "Bash(git commit -m 'Fix shimmer containment and improve header skeleton loader visibility *)"
     ],
     "additionalDirectories": [
       "/private/tmp",

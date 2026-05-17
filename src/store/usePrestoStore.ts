@@ -28,7 +28,7 @@ export interface Row {
 export interface LogEntry {
   id: string
   text: string
-  type: 'system' | 'query' | 'success' | 'error'
+  type: 'system' | 'query' | 'success' | 'error' | 'header' | 'header-done'
   timestamp: number
 }
 
@@ -44,6 +44,9 @@ export interface ViewFrame {
   scrollY?: number
   scenarioId?: string
   detailId?: string
+  scenarioTriggers?: Array<{ keywords: string[]; nextScenarioId: string }>
+  animationSpeed?: { title?: number; description?: number }
+  loadingDelay?: number
 }
 
 export interface PrestoStore {
@@ -52,6 +55,7 @@ export interface PrestoStore {
   activeInsight: any
   logs: LogEntry[]
   agentStatus: 'idle' | 'thinking' | 'updating'
+  isTransitioning: boolean
   cellTypeFilter: CellType | null
   cellTitleFilter: string
   viewStack: ViewFrame[]
@@ -69,6 +73,9 @@ export interface PrestoStore {
   clearCanvas: () => void
   setCellTypeFilter: (type: CellType | null) => void
   setCellTitleFilter: (title: string) => void
+  setTransitioning: (transitioning: boolean) => void
+  revealCells: () => void
+  revealCellsGradually: (duration: number) => void
 }
 
 // ============= STORE =============
@@ -149,6 +156,7 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
     }
   ],
   agentStatus: 'idle',
+  isTransitioning: false,
   cellTypeFilter: null,
   cellTitleFilter: '',
   viewStack: [],
@@ -215,7 +223,10 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
       rows: allRows,
       title: scenario.title,
       description: scenario.description,
-      scenarioId: scenarioId
+      scenarioId: scenarioId,
+      scenarioTriggers: scenario.scenarioTriggers,
+      animationSpeed: scenario.animationSpeed,
+      loadingDelay: scenario.loadingDelay
     }
 
     set({
@@ -225,28 +236,9 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
 
     pushView(detailView)
 
-    // Randomize and reveal cells
-    const shuffled = [...cellsToReveal].sort(() => Math.random() - 0.5)
-
-    for (const { rowId, cellId } of shuffled) {
-      await new Promise(res => setTimeout(res, 100 + Math.random() * 200))
-      set(state => ({
-        currentView: state.currentView ? {
-          ...state.currentView,
-          rows: state.currentView.rows?.map(r =>
-            r.id === rowId
-              ? {
-                  ...r,
-                  cells: r.cells.map(c => (c.id === cellId ? { ...c, status: 'ready' as CellStatus } : c))
-                }
-              : r
-          ),
-          cells: state.currentView.cells.map(c =>
-            c.id === cellId ? { ...c, status: 'ready' as CellStatus } : c
-          )
-        } : null
-      }))
-    }
+    // Don't reveal cells yet - keep them in 'thinking' state while loading
+    // They will be revealed when loading delay completes
+    // This allows skeleton loaders to show throughout the loading animation
   },
 
   loadScenario: async (id: string) => {
@@ -485,5 +477,83 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
 
   setCellTitleFilter: (title: string) => {
     set({ cellTitleFilter: title })
+  },
+
+  setTransitioning: (transitioning: boolean) => {
+    set({ isTransitioning: transitioning })
+  },
+
+  revealCells: () => {
+    set(state => {
+      if (!state.currentView?.rows) return state
+
+      const updatedRows = state.currentView.rows.map(row => ({
+        ...row,
+        cells: row.cells.map(cell => ({
+          ...cell,
+          status: 'ready' as CellStatus
+        }))
+      }))
+
+      const updatedCells = state.currentView.cells.map(cell => ({
+        ...cell,
+        status: 'ready' as CellStatus
+      }))
+
+      return {
+        currentView: {
+          ...state.currentView,
+          rows: updatedRows,
+          cells: updatedCells
+        }
+      }
+    })
+  },
+
+  revealCellsGradually: (duration: number) => {
+    const state = get()
+    if (!state.currentView?.rows) return
+
+    // Collect all cells from all rows
+    const cellsToReveal: Array<{ rowId: string; cellId: string }> = []
+    for (const row of state.currentView.rows) {
+      for (const cell of row.cells) {
+        if (cell.status === 'thinking') {
+          cellsToReveal.push({ rowId: row.id, cellId: cell.id })
+        }
+      }
+    }
+
+    // Shuffle the cells
+    const shuffled = [...cellsToReveal].sort(() => Math.random() - 0.5)
+
+    // Gradually reveal cells over the duration
+    const revealInterval = duration / (shuffled.length + 1)
+    shuffled.forEach((cellRef, index) => {
+      setTimeout(() => {
+        set(state => {
+          if (!state.currentView?.rows) return state
+
+          return {
+            currentView: {
+              ...state.currentView,
+              rows: state.currentView.rows.map(row =>
+                row.id === cellRef.rowId
+                  ? {
+                      ...row,
+                      cells: row.cells.map(c =>
+                        c.id === cellRef.cellId ? { ...c, status: 'ready' as CellStatus } : c
+                      )
+                    }
+                  : row
+              ),
+              cells: state.currentView.cells.map(c =>
+                c.id === cellRef.cellId ? { ...c, status: 'ready' as CellStatus } : c
+              )
+            }
+          }
+        })
+      }, revealInterval * (index + 1))
+    })
   }
 }))
