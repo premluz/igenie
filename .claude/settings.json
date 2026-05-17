@@ -39,7 +39,18 @@
       "Bash(curl -s -w \"\\\\nHTTP Status: %{http_code}\\\\n\" http://localhost:5174)",
       "Bash(curl -s http://localhost:5174)",
       "Bash(git commit -m 'Improve loading UX: softer shimmer blur, maintain card height, add header skeleton loader *)",
-      "Bash(git commit -m 'Fix shimmer containment and improve header skeleton loader visibility *)"
+      "Bash(git commit -m 'Fix shimmer containment and improve header skeleton loader visibility *)",
+      "Bash(git commit -m 'Adjust header skeleton loader dimensions to match h2 element shape *)",
+      "Bash(curl -s -w \"HTTP %{http_code}\\\\n\" http://localhost:5174)",
+      "Bash(git commit -m 'Restore skeleton shimmer timing/styling and add h3 skeleton loaders *)",
+      "Bash(git commit -m 'Make h2 skeleton loader static \\(pulsing\\) instead of animated *)",
+      "Bash(git commit -m 'Keep card content visible during loading with shimmer overlay *)",
+      "Bash(git commit -m 'Increase shimmer visibility and ensure complete cell reveal on load complete *)",
+      "Bash(xargs ls -la)",
+      "Bash(git commit -m 'Fix shimmer visibility: keep cards at full opacity during loading *)",
+      "Bash(git commit -m 'Differentiate loading states by scenario type *)",
+      "Bash(git commit -m 'Scenario 3: Keep old scenario visible during transition, switch after delay *)",
+      "Bash(git commit -m 'Fix scenarios and add dynamic loading titles *)"
     ],
     "additionalDirectories": [
       "/private/tmp",

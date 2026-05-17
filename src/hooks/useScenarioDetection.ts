@@ -57,14 +57,20 @@ export function useScenarioDetection() {
 
   // Load scenario data without navigating
   const transitionToScenario = useCallback((scenarioId: string, delay: number) => {
-    const { setTransitioning } = usePrestoStore.getState()
+    const { setTransitioning, revealCellsGradually, revealCells } = usePrestoStore.getState()
 
-    // Show loading state
+    // Show loading state immediately and load the new view so cells start in 'thinking'
     setTransitioning(true)
+    loadScenarioDetail(scenarioId)
 
-    // AFTER delay, load the new data and hide loading state
+    // Start revealing cells gradually at the halfway point
     setTimeout(() => {
-      loadScenarioDetail(scenarioId)
+      revealCellsGradually(delay / 2)
+    }, delay / 2)
+
+    // After delay, ensure all cells are revealed and stop transitioning
+    setTimeout(() => {
+      revealCells()
       setTransitioning(false)
     }, delay)
   }, [loadScenarioDetail])

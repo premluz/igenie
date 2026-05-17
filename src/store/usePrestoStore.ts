@@ -47,6 +47,7 @@ export interface ViewFrame {
   scenarioTriggers?: Array<{ keywords: string[]; nextScenarioId: string }>
   animationSpeed?: { title?: number; description?: number }
   loadingDelay?: number
+  loadingTitle?: string
 }
 
 export interface PrestoStore {
@@ -74,6 +75,7 @@ export interface PrestoStore {
   setCellTypeFilter: (type: CellType | null) => void
   setCellTitleFilter: (title: string) => void
   setTransitioning: (transitioning: boolean) => void
+  setLoadingTitle: (title: string) => void
   revealCells: () => void
   revealCellsGradually: (duration: number) => void
 }
@@ -481,6 +483,12 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
 
   setTransitioning: (transitioning: boolean) => {
     set({ isTransitioning: transitioning })
+  },
+
+  setLoadingTitle: (title: string) => {
+    set(state => ({
+      currentView: state.currentView ? { ...state.currentView, loadingTitle: title } : null
+    }))
   },
 
   revealCells: () => {

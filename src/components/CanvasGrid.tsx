@@ -234,9 +234,9 @@ export function CanvasGrid() {
             <div className="mb-4 pb-6 border-b border-border">
               <h1 className="text-4xl font-bold text-foreground mb-2">
                 {isTransitioning ? (
-                  // During loading: show placeholder with cursor
+                  // During loading: show dynamic loading text with cursor
                   <GeminiStreamText
-                    text="Assembling insight dashboard"
+                    text={(currentView as any)?.loadingTitle || 'Assembling insight dashboard'}
                     speed={12}
                     showCursor={true}
                   />

@@ -81,14 +81,28 @@ export function LandingScreen() {
             // Trigger loading sequence
             const loadingMessages = (scenario as any)?.loadingMessages
             const loadingDelay = (scenario as any)?.loadingDelay
+            const h1LoadingTitles = [
+              (scenario as any)?.h1loading1 || 'Compiling data',
+              (scenario as any)?.h1loading2 || 'Analyzing data points',
+              (scenario as any)?.h1loading3 || 'Assembling dashboard'
+            ]
+
             if (loadingMessages && loadingDelay) {
               const messages = loadingMessages
               const categories = Object.keys(messages).filter(k => k !== 'summary')
               const timePerCategory = loadingDelay / categories.length
 
               let currentTime = 0
-              categories.forEach((categoryKey) => {
+              categories.forEach((categoryKey, categoryIndex) => {
                 const category = messages[categoryKey]
+
+                // Update h1 loading title based on category index
+                if (categoryIndex < h1LoadingTitles.length) {
+                  setTimeout(() => {
+                    const { setLoadingTitle } = usePrestoStore.getState()
+                    setLoadingTitle(h1LoadingTitles[categoryIndex])
+                  }, currentTime)
+                }
 
                 // Show header
                 setTimeout(() => {
@@ -126,13 +140,14 @@ export function LandingScreen() {
                 reveal(loadingDelay / 2)
               }, loadingDelay / 2)
 
-              // Hide loading state and ensure all cells are revealed
+              // Navigate immediately to load scenario
+              navigate(`/insights/${trigger.scenarioId}`)
+
+              // Hide loading state and ensure all cells are revealed after delay
               setTimeout(() => {
                 const { revealCells } = usePrestoStore.getState()
                 revealCells() // Ensure any remaining 'thinking' cells transition to 'ready'
                 setTransitioning(false)
-                // Only navigate after transition ends to keep old scenario visible during shimmer
-                navigate(`/insights/${trigger.scenarioId}`)
               }, loadingDelay)
             } else {
               // No loading messages defined, navigate immediately

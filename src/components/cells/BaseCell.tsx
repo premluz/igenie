@@ -59,6 +59,11 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
           );
           animation: skeleton-shimmer 1.2s infinite;
         }
+
+        /* Delay child animations until content fade-in completes (500ms) */
+        .animation-delay-on-reveal [class*="animate"] {
+          animation-delay: 500ms !important;
+        }
       `}</style>
 
       {/* Skeleton overlay - covers entire card including header when thinking */}
@@ -123,7 +128,10 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
           {/* Actual content - hidden during thinking so shimmer is the only thing visible */}
           {cell.status !== 'error' && (
             <div className={`transition-opacity duration-500 ${cell.status === 'thinking' ? 'opacity-0' : 'opacity-100'}`}>
-              {children}
+              {/* Pass cell status to children so animations sync with fade-in */}
+              {typeof children === 'object' && children && 'props' in children
+                ? children
+                : children}
             </div>
           )}
         </div>
