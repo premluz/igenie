@@ -35,62 +35,66 @@ export function BaseCell({ cell, children }: BaseCellProps) {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={`
-        relative flex flex-col card-glass rounded-[4px] overflow-visible w-full h-full border-[#FFFFFF2E]
+        relative flex flex-col card-glass rounded-[4px] overflow-hidden w-full h-full border-[#FFFFFF2E]
         ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
       `}
       style={{ borderWidth: '1px', contain: 'layout' }}
     >
+      <style>{`
+        @keyframes diagonal-shimmer {
+          0% {
+            transform: translateX(-150%) translateY(-150%) rotate(45deg);
+          }
+          100% {
+            transform: translateX(150%) translateY(150%) rotate(45deg);
+          }
+        }
+        .diagonal-skeleton-loader {
+          animation: diagonal-shimmer 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 25%,
+            rgba(255, 255, 255, 0.5) 50%,
+            rgba(255, 255, 255, 0.3) 75%,
+            transparent 100%
+          );
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          z-index: 5;
+        }
+      `}</style>
+
+      {/* Diagonal skeleton shimmer overlay - shows while loading */}
+      {cell.status === 'thinking' && (
+        <div className="diagonal-skeleton-loader" />
+      )}
       {/* Hover action bar */}
       {isHovering && (
         <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
           <HoverActionBar />
         </div>
       )}
-      <style>{`
-        @keyframes skeleton-shimmer {
-          0% { transform: translateX(-100%) skewX(-15deg); }
-          100% { transform: translateX(100%) skewX(-15deg); }
-        }
-
-        .skeleton-shimmer {
-          background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.02) 20%,
-            rgba(255, 255, 255, 0.04) 50%,
-            rgba(255, 255, 255, 0.02) 80%,
-            rgba(255, 255, 255, 0) 100%
-          );
-          animation: skeleton-shimmer 1.2s infinite;
-        }
-      `}</style>
-
-      {/* Skeleton overlay - covers entire card including header when thinking */}
-      {cell.status === 'thinking' && (
-        <div className="absolute inset-0 z-10 rounded-[4px] overflow-hidden pointer-events-none">
-          <div className="skeleton-shimmer absolute inset-0" />
-        </div>
-      )}
 
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
-            {cell.status === 'thinking' && (
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse flex-shrink-0" />
+      <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative">
+        {cell.status === 'ready' && (
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
+            </div>
+            {cell.subtitle && (
+              <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
             )}
           </div>
-          {cell.subtitle && (
-            <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
-          )}
-        </div>
-
+        )}
       </div>
 
       {/* Content Area */}
       <div className="flex-1 p-4 overflow-auto relative flex flex-col">
+
         {/* Error state */}
         {cell.status === 'error' && (
           <div className="flex flex-col items-center justify-center gap-3 flex-1">
@@ -109,7 +113,12 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           </div>
         )}
 
-        {children}
+        {/* Actual content - only show when ready */}
+        {cell.status === 'ready' && (
+          <div className="transition-opacity duration-500">
+            {children}
+          </div>
+        )}
       </div>
     </motion.div>
   )
