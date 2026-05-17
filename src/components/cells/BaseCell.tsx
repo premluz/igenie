@@ -51,9 +51,9 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           background: linear-gradient(
             90deg,
             rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.02) 20%,
-            rgba(255, 255, 255, 0.04) 50%,
-            rgba(255, 255, 255, 0.02) 80%,
+            rgba(255, 255, 255, 0.1) 20%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.1) 80%,
             rgba(255, 255, 255, 0) 100%
           );
           animation: skeleton-shimmer 1.2s infinite;

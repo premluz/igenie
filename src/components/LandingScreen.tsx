@@ -123,8 +123,10 @@ export function LandingScreen() {
                 revealCellsGradually(loadingDelay / 2)
               }, loadingDelay / 2)
 
-              // Hide loading state after delay
+              // Hide loading state and ensure all cells are revealed
               setTimeout(() => {
+                const { revealCells } = usePrestoStore.getState()
+                revealCells() // Ensure all remaining cells transition to 'ready'
                 setTransitioning(false)
               }, loadingDelay)
             }
