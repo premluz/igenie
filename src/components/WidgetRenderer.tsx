@@ -107,7 +107,15 @@ function PulseListCell() {
   )
 }
 
-function HeadingCell({ title }: { title: string }) {
+function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }) {
+  if (isLoading) {
+    return (
+      <div className="mt-4 mb-2">
+        <div className="h-10 bg-gradient-to-r from-muted-foreground/20 via-muted-foreground/40 to-muted-foreground/20 rounded-lg w-2/3 animate-pulse"></div>
+      </div>
+    )
+  }
+
   return (
     <h2 className="text-3xl mt-4 mb-2 font-semibold text-foreground">
       {title}
@@ -119,7 +127,7 @@ function HeadingCell({ title }: { title: string }) {
 export function WidgetRenderer({ cell }: { cell: Cell }) {
   // Headers render without card wrapper
   if (cell.type === 'header') {
-    return <HeadingCell title={cell.title} />
+    return <HeadingCell title={cell.title} isLoading={cell.status === 'thinking'} />
   }
 
   let content: React.ReactNode = null

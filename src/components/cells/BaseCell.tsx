@@ -35,7 +35,7 @@ export function BaseCell({ cell, children }: BaseCellProps) {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={`
-        relative flex flex-col card-glass rounded-[4px] overflow-hidden w-full h-full border-[#FFFFFF2E]
+        relative flex flex-col card-glass rounded-[4px] w-full h-full min-h-64 border-[#FFFFFF2E]
         ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
       `}
@@ -55,15 +55,17 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           background: linear-gradient(
             90deg,
             transparent 0%,
-            rgba(255, 255, 255, 0.3) 25%,
-            rgba(255, 255, 255, 0.5) 50%,
-            rgba(255, 255, 255, 0.3) 75%,
+            rgba(255, 255, 255, 0.2) 20%,
+            rgba(255, 255, 255, 0.4) 50%,
+            rgba(255, 255, 255, 0.2) 80%,
             transparent 100%
           );
           position: absolute;
           inset: 0;
           pointer-events: none;
           z-index: 5;
+          filter: blur(8px);
+          border-radius: 4px;
         }
       `}</style>
 
@@ -71,54 +73,58 @@ export function BaseCell({ cell, children }: BaseCellProps) {
       {cell.status === 'thinking' && (
         <div className="diagonal-skeleton-loader" />
       )}
-      {/* Hover action bar */}
-      {isHovering && (
-        <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
-          <HoverActionBar />
+
+      {/* Inner content wrapper with overflow clipping */}
+      <div className="flex flex-col h-full w-full overflow-hidden rounded-[4px]">
+        {/* Hover action bar */}
+        {isHovering && (
+          <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)} className="absolute inset-0 pointer-events-none z-10">
+            <HoverActionBar />
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative">
+          {cell.status === 'ready' && (
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
+              </div>
+              {cell.subtitle && (
+                <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
+              )}
+            </div>
+          )}
         </div>
-      )}
 
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative">
-        {cell.status === 'ready' && (
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
+        {/* Content Area */}
+        <div className="flex-1 p-4 overflow-auto relative flex flex-col">
+
+          {/* Error state */}
+          {cell.status === 'error' && (
+            <div className="flex flex-col items-center justify-center gap-3 flex-1">
+              <AlertCircle size={20} className="text-danger" />
+              <div className="text-center">
+                <p className="text-sm text-foreground font-semibold mb-1">Error</p>
+                <p className="text-sm text-muted-foreground">{cell.error || 'Something went wrong'}</p>
+              </div>
+              <button
+                onClick={handleRetry}
+                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-foreground bg-accent hover:bg-accent/80 rounded-[4px] transition-colors"
+              >
+                <RotateCcw size={12} />
+                Retry
+              </button>
             </div>
-            {cell.subtitle && (
-              <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
-            )}
-          </div>
-        )}
-      </div>
+          )}
 
-      {/* Content Area */}
-      <div className="flex-1 p-4 overflow-auto relative flex flex-col">
-
-        {/* Error state */}
-        {cell.status === 'error' && (
-          <div className="flex flex-col items-center justify-center gap-3 flex-1">
-            <AlertCircle size={20} className="text-danger" />
-            <div className="text-center">
-              <p className="text-sm text-foreground font-semibold mb-1">Error</p>
-              <p className="text-sm text-muted-foreground">{cell.error || 'Something went wrong'}</p>
+          {/* Actual content - only show when ready */}
+          {cell.status === 'ready' && (
+            <div className="transition-opacity duration-500">
+              {children}
             </div>
-            <button
-              onClick={handleRetry}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-foreground bg-accent hover:bg-accent/80 rounded-[4px] transition-colors"
-            >
-              <RotateCcw size={12} />
-              Retry
-            </button>
-          </div>
-        )}
-
-        {/* Actual content - only show when ready */}
-        {cell.status === 'ready' && (
-          <div className="transition-opacity duration-500">
-            {children}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </motion.div>
   )
