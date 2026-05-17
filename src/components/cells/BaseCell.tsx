@@ -76,26 +76,19 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           </div>
         )}
 
-        {/* Header */}
+        {/* Header - always visible, shimmer overlay provides loading effect */}
         <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20">
-          {cell.status === 'thinking' ? (
-            <div className="flex-1 min-w-0 space-y-2">
-              <div className="h-5 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/20 to-muted-foreground/10 rounded w-48 animate-pulse"></div>
-              <div className="h-3 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/15 to-muted-foreground/10 rounded w-32 animate-pulse"></div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
             </div>
-          ) : (
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
-              </div>
-              {cell.subtitle && (
-                <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
-              )}
-            </div>
-          )}
+            {cell.subtitle && (
+              <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
+            )}
+          </div>
         </div>
 
-        {/* Content Area */}
+        {/* Content Area - always visible, shimmer overlay provides loading effect */}
         <div className="flex-1 p-4 overflow-auto relative flex flex-col">
 
           {/* Error state */}
@@ -116,8 +109,8 @@ export function BaseCell({ cell, children }: BaseCellProps) {
             </div>
           )}
 
-          {/* Actual content - only show when ready */}
-          {cell.status === 'ready' && (
+          {/* Actual content - always visible, shimmer provides loading feedback */}
+          {cell.status !== 'error' && (
             <div className="transition-opacity duration-500">
               {children}
             </div>
