@@ -54,7 +54,7 @@ export function LandingScreen() {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
-  const { pushLog, setTransitioning, revealCellsGradually } = usePrestoStore()
+  const { pushLog, setTransitioning } = usePrestoStore()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -118,21 +118,26 @@ export function LandingScreen() {
                 pushLog({ text: messages.summary, type: 'header-done' })
               }, loadingDelay - 100)
 
-              // Start revealing cells at 50% of loading delay
+              // Start revealing cells gradually at 50% of loading delay.
+              // By this point CanvasGrid will have already called loadScenarioDetail
+              // (triggered by the navigate below), so cells exist in 'thinking' state.
               setTimeout(() => {
-                revealCellsGradually(loadingDelay / 2)
+                const { revealCellsGradually: reveal } = usePrestoStore.getState()
+                reveal(loadingDelay / 2)
               }, loadingDelay / 2)
 
               // Hide loading state and ensure all cells are revealed
               setTimeout(() => {
                 const { revealCells } = usePrestoStore.getState()
-                revealCells() // Ensure all remaining cells transition to 'ready'
+                revealCells() // Ensure any remaining 'thinking' cells transition to 'ready'
                 setTransitioning(false)
+                // Only navigate after transition ends to keep old scenario visible during shimmer
+                navigate(`/insights/${trigger.scenarioId}`)
               }, loadingDelay)
+            } else {
+              // No loading messages defined, navigate immediately
+              navigate(`/insights/${trigger.scenarioId}`)
             }
-
-            // Navigate to scenario (this triggers CanvasGrid to load data)
-            navigate(`/insights/${trigger.scenarioId}`)
           }
           return
         }
