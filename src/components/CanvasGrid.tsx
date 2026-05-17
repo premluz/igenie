@@ -11,7 +11,7 @@ import { BorderGlowOverlay } from './BorderGlowOverlay'
 
 export function CanvasGrid() {
   const { scenarioId } = useParams<{ scenarioId: string }>()
-  const { currentView, moveRow, cellTypeFilter, cellTitleFilter, isTransitioning, revealCells } = usePrestoStore()
+  const { currentView, moveRow, cellTypeFilter, cellTitleFilter, isTransitioning, revealCells, revealCellsGradually } = usePrestoStore()
   const [activeTab, setActiveTab] = useState('pulse')
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
   const [cellsRevealed, setCellsRevealed] = useState(false)
@@ -44,22 +44,36 @@ export function CanvasGrid() {
     }
   }, [scenarioId])
 
-
-  // Reveal cells when ready: after transition completes OR with delay for normal nav
+  // Also reset cellsRevealed when the view id changes (covers detail→detail transitions
+  // where scenarioId URL param doesn't change because no navigate() is called)
   useEffect(() => {
-    if (currentView?.rows && currentView.rows.length > 0 && !cellsRevealed) {
-      if (!isTransitioning) {
-        // For normal navigation (not from landing), add a delay before revealing
-        // This allows skeleton loaders to animate and show
+    if (currentView?.id) {
+      setCellsRevealed(false)
+    }
+  }, [currentView?.id])
+
+  // Reveal cells when ready: only for direct URL navigation (not managed transitions).
+  // When isTransitioning is true, the transition manager (LandingScreen or
+  // useScenarioDetection) is responsible for calling revealCellsGradually/revealCells.
+  useEffect(() => {
+    if (currentView?.rows && currentView.rows.length > 0 && !cellsRevealed && !isTransitioning) {
+      // Check if any cells are still in 'thinking' state — if so, we need to reveal them.
+      // This covers normal URL navigation where no managed transition is running.
+      const hasThinkingCells = currentView.rows.some(row =>
+        row.cells.some(cell => cell.status === 'thinking')
+      )
+
+      if (hasThinkingCells) {
+        // Show shimmer for a short period, then gradually reveal cells
         const timer = setTimeout(() => {
-          revealCells()
+          revealCellsGradually(600)
           setCellsRevealed(true)
         }, 800)
 
         return () => clearTimeout(timer)
       }
     }
-  }, [isTransitioning, currentView?.rows, cellsRevealed, revealCells])
+  }, [isTransitioning, currentView?.rows, currentView?.id, cellsRevealed, revealCells, revealCellsGradually])
 
   // Show loading message only if no current view
   if (!currentView) {
@@ -252,7 +266,7 @@ export function CanvasGrid() {
             </div>
           ) : (
             filteredRows.map((row) => (
-              <div key={row.id} className={`group relative transition-opacity duration-700 ${isTransitioning ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+              <div key={row.id} className={`group relative transition-opacity duration-700 ${isTransitioning ? 'pointer-events-none' : 'opacity-100'} opacity-100`}>
                 {/* Move controls (on hover, left side) */}
                 <div className={`absolute -left-12 top-2 ${isTransitioning ? 'hidden' : 'opacity-0 group-hover:opacity-100'} transition-opacity flex flex-col gap-1`}>
                   <Button
