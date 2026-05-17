@@ -111,7 +111,29 @@ function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }
   if (isLoading) {
     return (
       <div className="mt-4 mb-2">
-        <div className="h-10 bg-gradient-to-r from-muted-foreground/20 via-muted-foreground/40 to-muted-foreground/20 rounded-lg w-2/3 animate-pulse"></div>
+        <style>{`
+          @keyframes skeleton-shimmer {
+            0% {
+              background-position: -1000px 0;
+            }
+            100% {
+              background-position: 1000px 0;
+            }
+          }
+          .heading-skeleton {
+            background: linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.1) 0%,
+              rgba(255, 255, 255, 0.2) 25%,
+              rgba(255, 255, 255, 0.3) 50%,
+              rgba(255, 255, 255, 0.2) 75%,
+              rgba(255, 255, 255, 0.1) 100%
+            );
+            background-size: 1000px 100%;
+            animation: skeleton-shimmer 2s infinite;
+          }
+        `}</style>
+        <div className="heading-skeleton h-10 rounded-lg w-2/3"></div>
       </div>
     )
   }

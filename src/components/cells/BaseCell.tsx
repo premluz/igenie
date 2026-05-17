@@ -35,7 +35,7 @@ export function BaseCell({ cell, children }: BaseCellProps) {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={`
-        relative flex flex-col card-glass rounded-[4px] w-full h-full min-h-64 border-[#FFFFFF2E]
+        relative flex flex-col card-glass rounded-[4px] w-full h-full min-h-64 border-[#FFFFFF2E] overflow-visible
         ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
       `}
@@ -65,20 +65,21 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           pointer-events: none;
           z-index: 5;
           filter: blur(8px);
-          border-radius: 4px;
         }
       `}</style>
 
-      {/* Diagonal skeleton shimmer overlay - shows while loading */}
+      {/* Shimmer layer - constrained with overflow hidden */}
       {cell.status === 'thinking' && (
-        <div className="diagonal-skeleton-loader" />
+        <div className="absolute inset-0 rounded-[4px] overflow-hidden pointer-events-none">
+          <div className="diagonal-skeleton-loader" />
+        </div>
       )}
 
-      {/* Inner content wrapper with overflow clipping */}
+      {/* Inner content wrapper with overflow hidden for proper clipping */}
       <div className="flex flex-col h-full w-full overflow-hidden rounded-[4px]">
         {/* Hover action bar */}
         {isHovering && (
-          <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)} className="absolute inset-0 pointer-events-none z-10">
+          <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
             <HoverActionBar />
           </div>
         )}
