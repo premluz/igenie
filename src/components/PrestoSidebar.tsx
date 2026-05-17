@@ -4,6 +4,7 @@ import { usePrestoStore } from '@/store/usePrestoStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import genieImage from '@/assets/genie.png'
+import { CyclingGeminiText } from './CyclingGeminiText'
 
 export function PrestoSidebar() {
   const { logs, agentStatus, runReasoning } = usePrestoStore()
@@ -34,13 +35,20 @@ export function PrestoSidebar() {
       <div className="flex-1 overflow-auto p-4 bg-black/20 font-mono text-xs border-b border-border relative">
         {/* Genie Background Image */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <img src={genieImage} alt="Presto" className="h-60 w-60 opacity-3D0" />
+          <img src={genieImage} alt="Presto" className="h-60 w-40 opacity-70" />
         </div>
 
         {/* Logs Content */}
         <div className="relative z-10 space-y-2">
           {logs.length === 0 ? (
-            <div className="text-muted-foreground text-center py-4">Ready</div>
+            <div className="text-muted-foreground text-center py-4">
+              <CyclingGeminiText
+                texts={['Presto ready to assist', 'What can I help you with?']}
+                speed={15}
+                delayBetweenTexts={3000}
+                showCursor={true}
+              />
+            </div>
           ) : (
             logs.map(log => (
               <div

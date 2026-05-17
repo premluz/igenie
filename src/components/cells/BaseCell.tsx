@@ -32,14 +32,12 @@ export function BaseCell({ cell, children }: BaseCellProps) {
 
   return (
     <motion.div
-      layout
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={`
-        relative flex flex-col bg-card border border-border rounded-[4px] overflow-visible w-full h-full
+        relative flex flex-col card-glass rounded-[4px] overflow-visible w-full h-full border-[#FFFFFF2E]
         ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
-        transition-all duration-300
       `}
       style={{ borderWidth: '1px', contain: 'layout' }}
     >

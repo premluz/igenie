@@ -6,11 +6,11 @@
   --font-sans: "Barlow", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-background: #29252C;
+  --color-background: #24242E;
   --color-card: #29252C;
   --color-card-skeleton: #1a1a1d;
   --color-border: #1d1d20;
-  --color-accent: #3b82f6;
+  --color-accent: #7C80EF;
   --color-emerald: #10b981;
   --color-purple: #8b5cf6;
   --color-danger: #ef4444;
@@ -20,6 +20,7 @@
   --color-terminal: #52525b;
 
   --radius: 0px;
+  --radius-card: 4px;
 }
 
 @layer base {
@@ -34,11 +35,11 @@
 
 @layer utilities {
   .bg-background {
-    @apply bg-[#29252C];
+    @apply bg-[#24242E];
   }
 
   .bg-card {
-    @apply bg-[#29252C];
+    @apply bg-[#2C2C34];
   }
 
   .border-border {
@@ -54,11 +55,11 @@
   }
 
   .text-accent {
-    @apply text-[#3b82f6];
+    @apply text-[#7C80EF];
   }
 
   .bg-accent {
-    @apply bg-[#3b82f6];
+    @apply bg-[#7C80EF];
   }
 
   .text-emerald {
@@ -128,5 +129,155 @@
 
   .animate-fade-in {
     animation: fade-in 0.5s ease-out forwards;
+  }
+
+  @keyframes geminiStreamFade {
+    from {
+      opacity: 0;
+      filter: blur(2px);
+      transform: translateY(1px);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0px);
+    }
+  }
+
+  .animate-gemini-fade {
+    animation: geminiStreamFade 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  }
+}
+
+@layer utilities {
+  /* Border color tokens */
+  .border-subtle {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .border-default {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .border-hover {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .border-accent {
+    border-color: rgb(124, 128, 239);
+  }
+
+  /* Card Design System */
+  .card-base {
+    border-radius: var(--radius-card);
+    transition: all 0.2s ease;
+  }
+
+  /* Card Type 1: Glass Effect */
+  .card-glass {
+    border-radius: var(--radius-card);
+    backdrop-filter: blur(12px);
+    background-color: rgba(36, 36, 46, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.2s ease;
+  }
+
+  .card-glass:hover {
+    background-color: rgba(36, 36, 46, 0.02);
+    border-color: rgba(255, 255, 255, 0.24);
+  }
+
+  .card-glass:active,
+  .card-glass.active {
+    background-color: rgba(36, 36, 46, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .card-glass:focus-within {
+    border-color: rgb(124, 128, 239);
+  }
+
+  /* Text list item style (reports, text-heavy lists) - hover bg only, no border */
+  .list-text-item {
+    transition: all 0.2s ease;
+    padding: 0;
+  }
+
+  .list-text-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: rgb(124, 128, 239);
+  }
+
+  .list-text-item:hover h3,
+  .list-text-item:hover .group-hover\:text-accent {
+    color: rgb(124, 128, 239);
+  }
+
+  /* Row list item style (insights, row-based lists with border-bottom) */
+  .list-row-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    transition: all 0.1s ease;
+    padding: 0;
+  }
+
+  .list-row-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    color: rgb(124, 128, 239);
+  }
+
+  .list-row-item:hover h3,
+  .list-row-item:hover .group-hover\:text-accent {
+    color: rgb(124, 128, 239);
+  }
+
+  .list-row-item:active,
+  .list-row-item.active {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgb(124, 128, 239);
+  }
+
+  /* Backward compatibility aliases */
+  .list-item-card {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.1s ease;
+    padding: 0;
+  }
+
+  .list-item-card:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgb(124, 128, 239);
+    color: rgb(124, 128, 239);
+  }
+
+  .list-item-card:hover h3,
+  .list-item-card:hover .group-hover\:text-accent {
+    color: rgb(124, 128, 239);
+  }
+
+  .list-item-card:active,
+  .list-item-card.active {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: rgb(124, 128, 239);
+  }
+
+  /* Padding standards for cards */
+  .card-padding-sm {
+    padding: 12px;
+  }
+
+  .card-padding-md {
+    padding: 16px;
+  }
+
+  .card-padding-lg {
+    padding: 24px;
+  }
+
+  /* Cursor utility */
+  button,
+  a,
+  [role="button"],
+  .cursor-pointer {
+    cursor: pointer;
   }
 }

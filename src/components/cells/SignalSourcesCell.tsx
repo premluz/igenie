@@ -37,6 +37,13 @@ const colorMap: Record<string, string> = {
   orange: '#f97316',
 }
 
+const colorClassMap: Record<string, string> = {
+  emerald: 'text-emerald-500',
+  blue: 'text-blue-500',
+  purple: 'text-purple-500',
+  orange: 'text-orange-500',
+}
+
 export function SignalSourcesCell({ data, descriptionTop, descriptionBottom }: SignalSourcesCellProps) {
   const { total, subtitle, pillars } = data
 
@@ -71,6 +78,7 @@ export function SignalSourcesCell({ data, descriptionTop, descriptionBottom }: S
         {pillars.map((pillar) => {
           const Icon = pillar.icon ? iconMap[pillar.icon] : null
           const color = pillar.color ? colorMap[pillar.color] : '#94a3b8'
+          const colorClass = pillar.color ? colorClassMap[pillar.color] : 'text-foreground'
           const sparklineData = pillar.sparklineData || [2, 3, 2, 4, 3, 5, 9]
 
           return (
@@ -85,7 +93,7 @@ export function SignalSourcesCell({ data, descriptionTop, descriptionBottom }: S
                   {Icon && (
                     <Icon size={24} style={{ color }} className="flex-shrink-0" />
                   )}
-                  <p className="text-3xl font-bold text-foreground">
+                  <p className={`text-3xl font-bold ${colorClass}`}>
                     <AnimatedCounter value={parseInt(pillar.value) || 0} precision={0} />
                   </p>
                 </div>

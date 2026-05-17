@@ -1,24 +1,31 @@
 import { ChevronRight } from 'lucide-react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { usePrestoStore } from '@/store/usePrestoStore'
 
 export function Breadcrumb() {
-  const { viewStack, currentView, clearCanvas } = usePrestoStore()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { currentView } = usePrestoStore()
 
   interface BreadcrumbItem {
     label: string
     onClick?: () => void
   }
 
-  const breadcrumbs: BreadcrumbItem[] = viewStack.length === 0
-    ? [{ label: 'Insights' }]
-    : [
-        {
-          label: 'Insights',
-          onClick: () => clearCanvas()
-        },
-        ...(currentView ? [{ label: currentView.label }] : [])
-      ]
+  const isDetailPage = location.pathname.includes('/insights/') && location.pathname !== '/insights'
+
+  const breadcrumbs: BreadcrumbItem[] = [
+    {
+      label: 'Home',
+      onClick: () => navigate('/')
+    },
+    {
+      label: 'Insights',
+      onClick: () => navigate('/insights')
+    },
+    ...(isDetailPage && currentView?.title ? [{ label: currentView.title }] : [])
+  ]
 
   return (
     <div className="px-6 flex items-center gap-2 text-xs text-muted-foreground h-full">

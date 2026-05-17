@@ -1,17 +1,60 @@
-import { ChevronUp, ChevronDown } from 'lucide-react'
+import { ChevronUp, ChevronDown, Grid3x3, List } from 'lucide-react'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { WidgetRenderer } from './WidgetRenderer'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { InsightGridCard } from './cells/InsightGridCard'
+import { useParams } from 'react-router-dom'
+import { GeminiStreamText } from './GeminiStreamText'
 
 export function CanvasGrid() {
+  const { scenarioId } = useParams<{ scenarioId: string }>()
   const { currentView, moveRow, cellTypeFilter, cellTitleFilter } = usePrestoStore()
   const [activeTab, setActiveTab] = useState('pulse')
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Load scenario from URL on mount or when scenarioId changes
+  useEffect(() => {
+    const store = usePrestoStore.getState()
+
+    if (scenarioId) {
+      // Check if we need to load the scenario
+      const expectedViewId = `detail-${scenarioId}`
+
+      if (store.currentView?.id !== expectedViewId) {
+        setIsLoading(true)
+        store.loadScenarioDetail(scenarioId)
+        // Loading state will be cleared when rows are populated by store update
+        setTimeout(() => setIsLoading(false), 500)
+      }
+    } else {
+      // No scenarioId means we should show the listing view
+      // If we're showing a detail view, pop back to listing
+      if (store.currentView?.id.startsWith('detail-')) {
+        if (store.viewStack.length > 0) {
+          store.popView()
+        } else {
+          // Fallback: clear canvas to reset to initial listing view
+          store.clearCanvas()
+        }
+      }
+    }
+  }, [scenarioId])
+
+  // Show loading state while waiting for scenario to load
+  if (isLoading || (scenarioId && !currentView?.rows)) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-background">
+        <p className="text-sm text-muted-foreground">Loading scenario...</p>
+      </div>
+    )
+  }
 
   if (!currentView) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center bg-background">
         <p className="text-sm text-muted-foreground">Loading...</p>
       </div>
     )
@@ -50,7 +93,7 @@ export function CanvasGrid() {
       <div className="w-full h-full flex flex-col overflow-hidden bg-background">
 
         {/* Tabs Bar */}
-        <div className="border-b -ml-4 border-border bg-background px-6 py-0 sticky top-0 z-10">
+        <div className="border-b -ml-4 border-border bg-background px-6 py-0 sticky top-0 z-10 flex items-center justify-between">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="h-10 bg-transparent border-0 p-0 gap-0">
               <TabsTrigger
@@ -67,43 +110,79 @@ export function CanvasGrid() {
               </TabsTrigger>
             </TabsList>
           </Tabs>
+
+          {/* View Mode Toggle */}
+          <div className="flex gap-1">
+            <Button
+              size="sm"
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              className="h-8 px-2"
+              onClick={() => setViewMode('list')}
+              title="List view"
+            >
+              <List size={14} />
+            </Button>
+            <Button
+              size="sm"
+              variant={viewMode === 'grid' ? 'default' : 'ghost'}
+              className="h-8 px-2"
+              onClick={() => setViewMode('grid')}
+              title="Grid view"
+            >
+              <Grid3x3 size={14} />
+            </Button>
+          </div>
         </div>
 
-        {/* Insights List */}
+        {/* Insights List/Grid */}
         <div className="flex-1 overflow-y-auto">
-          <div className="w-full">
-            {/* Today Section */}
-            {todayInsights.length > 0 && (
-              <div>
-                <div className="bg-background px-6 py-2 border-b border-border/20">
-                  <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Today</h2>
+          {viewMode === 'list' ? (
+            <div className="w-full">
+              {/* Today Section */}
+              {todayInsights.length > 0 && (
+                <div>
+                  <div className="bg-background px-6 py-2 border-b border-border/20">
+                    <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Today</h2>
+                  </div>
+                  <div className="border-t border-border/30 divide-y divide-border/30">
+                    {todayInsights.map(cell => (
+                      <div key={cell.id} className="flex">
+                        <WidgetRenderer cell={cell} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="border-t border-border/30 divide-y divide-border/30">
-                  {todayInsights.map(cell => (
-                    <div key={cell.id} className="flex">
-                      <WidgetRenderer cell={cell} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+              )}
 
-            {/* Yesterday Section */}
-            {yesterdayInsights.length > 0 && (
-              <div>
-                <div className="bg-background px-6 py-2 border-b border-border/20">
-                  <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Yesterday</h2>
+              {/* Yesterday Section */}
+              {yesterdayInsights.length > 0 && (
+                <div>
+                  <div className="bg-background px-6 py-2 border-b border-border/20">
+                    <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Yesterday</h2>
+                  </div>
+                  <div className="border-t border-border/30 divide-y divide-border/30">
+                    {yesterdayInsights.map(cell => (
+                      <div key={cell.id} className="flex">
+                        <WidgetRenderer cell={cell} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="border-t border-border/30 divide-y divide-border/30">
-                  {yesterdayInsights.map(cell => (
-                    <div key={cell.id} className="flex">
-                      <WidgetRenderer cell={cell} />
-                    </div>
-                  ))}
-                </div>
+              )}
+            </div>
+          ) : (
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl">
+                {[...todayInsights, ...yesterdayInsights].map(cell => (
+                  <InsightGridCard
+                    key={cell.id}
+                    data={cell.data as any}
+                    title={cell.title}
+                  />
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     )
@@ -118,9 +197,13 @@ export function CanvasGrid() {
           {/* Page Header - Title & Description (scrolls with content) */}
           {currentView.title && (
             <div className="mb-4 pb-6 border-b border-border">
-              <h1 className="text-4xl font-bold text-foreground mb-2">{currentView.title}</h1>
+              <h1 className="text-4xl font-bold text-foreground mb-2">
+                <GeminiStreamText text={currentView.title} speed={0.5} showCursor={false} />
+              </h1>
               {currentView.description && (
-                <p className="text-sm text-muted-foreground">{currentView.description}</p>
+                <p className="text-lg text-muted-foreground">
+                  <GeminiStreamText text={currentView.description} speed={2} showCursor={false} />
+                </p>
               )}
             </div>
           )}

@@ -26,7 +26,11 @@
       "Bash(curl -s http://localhost:5173/neutrogena-natural)",
       "Bash(curl -s http://localhost:5173/)",
       "Bash(pkill -f \"npm run dev\")",
-      "Bash(node -)"
+      "Bash(node -)",
+      "Bash(curl -s http://localhost:5175/)",
+      "Bash(grep -E \"\\\\.\\(tsx|ts|jsx|js\\)$\")",
+      "Bash(grep -r \"initial\\\\|animate\\\\|transition\\\\|layoutId\" /Users/prehistoric/iGenie/i-genie-prototype/src --include=\"*.tsx\" --include=\"*.ts\" -B 2 -A 2 2>/dev/null | head -60)",
+      "Read(//Users/prehistoric/iGenie/i-genie-prototype/**)"
     ],
     "additionalDirectories": [
       "/private/tmp",

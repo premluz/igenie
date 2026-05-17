@@ -45,14 +45,16 @@ function TrendCard({ metric }: { metric: any }) {
   const prevValue = sparklineData[sparklineData.length - 2] || sparklineData[0]
   const change = ((lastValue - prevValue) / prevValue) * 100
 
+  const trendColor = change > 0 ? 'text-emerald-500' : 'text-orange-500'
+
   return (
     <div className="grid grid-cols-2 gap-6 h-full">
       {/* Data point - left aligned */}
       <div className="flex flex-col justify-center">
         <div className="flex items-center gap-2">
-          <TrendingUp size={20} className={change > 0 ? 'text-emerald-500' : 'text-orange-500'} />
+          <TrendingUp size={20} className={trendColor} />
           <div>
-            <div className="text-3xl font-bold text-foreground">
+            <div className={`text-3xl font-bold ${trendColor}`}>
               {change > 0 ? '+' : ''}<AnimatedCounter value={Math.abs(change)} precision={1} suffix="%" />
             </div>
             <div className="text-xs text-muted-foreground mt-1">Weekly change</div>
@@ -78,7 +80,7 @@ function StrengthTrustCard({ metric }: { metric: any }) {
       {/* Data point with icon and animated counter */}
       <div className="flex items-center gap-3">
         <Icon size={20} className={iconColor} />
-        <div className="text-3xl font-bold text-foreground">
+        <div className={`text-3xl font-bold ${iconColor}`}>
           <AnimatedCounter value={metric.value} precision={1} suffix={metric.type === 'trust' ? '%' : ''} />
         </div>
       </div>

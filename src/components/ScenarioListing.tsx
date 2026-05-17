@@ -1,17 +1,15 @@
 import { ArrowRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { scenarioMap } from '@/scenarios'
 
-interface ScenarioListingProps {
-  onSelectScenario: (scenarioId: string) => void
-}
-
-export function ScenarioListing({ onSelectScenario }: ScenarioListingProps) {
+export function ScenarioListing() {
+  const navigate = useNavigate()
   const { loadScenario } = usePrestoStore()
 
   const handleSelectScenario = (scenarioId: string) => {
     loadScenario(scenarioId)
-    onSelectScenario(scenarioId)
+    navigate(`/insights/${scenarioId}`)
   }
 
   return (

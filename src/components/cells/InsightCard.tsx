@@ -1,4 +1,5 @@
 import { Radio, Flame } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { SparklineChart } from './SparklineChart'
 import { MetricDataPoint } from './MetricDataPoint'
@@ -18,18 +19,20 @@ interface InsightCardProps {
 }
 
 export function InsightCard({ data, title }: InsightCardProps) {
+  const navigate = useNavigate()
   const { loadScenarioDetail } = usePrestoStore()
-
-  return (
-    <InsightCardContent data={data} title={title} loadScenarioDetail={loadScenarioDetail} />
-  )
-}
-
-function InsightCardContent({ data, title, loadScenarioDetail }: any) {
 
   const handleClick = () => {
     loadScenarioDetail(data.scenarioId)
+    navigate(`/insights/${data.scenarioId}`)
   }
+
+  return (
+    <InsightCardContent data={data} title={title} handleClick={handleClick} />
+  )
+}
+
+function InsightCardContent({ data, title, handleClick }: any) {
 
   const velocityScore = data.velocityScore || 0
   const sentimentScore = data.sentimentScore || 0
@@ -41,13 +44,8 @@ function InsightCardContent({ data, title, loadScenarioDetail }: any) {
   return (
     <button
       onClick={handleClick}
-      className=" w-full border-b border-border hover:bg-card/20 transition-colors text-left group flex items-stretch gap-3"
+      className="list-row-item w-full text-left group flex items-stretch gap-3"
     >
-      {/* Status Bar */}
-      <div
-        className="w-1 flex-shrink-0 rounded-full"
-        style={{ backgroundColor: statusColor }}
-      />
 
       {/* Left Column - Sparkline */}
       <div className="flex flex-col items-center justify-center py-1 px-2 w-28 flex-shrink-0 sparkline-animate" style={{ aspectRatio: '2.4' }}>
@@ -66,13 +64,14 @@ function InsightCardContent({ data, title, loadScenarioDetail }: any) {
         </div>
 
         {/* Metrics - Velocity and Sentiment */}
-        <div className="flex gap-4 items-center">
+        <div className="flex max-w-xs gap-6 items-center">
           {/* Signal Strength (Velocity) */}
-          <div className="flex items-center gap-1 max-w-32 flex-1">
+          <div className="flex items-center gap-2 flex-1">
             <MetricDataPoint
               icon={Radio}
-              iconSize={10}
+              iconSize={16}
               iconColor="text-blue-500"
+              textColor="text-blue-500"
               value={velocityScore}
               precision={1}
             />
@@ -87,11 +86,12 @@ function InsightCardContent({ data, title, loadScenarioDetail }: any) {
           </div>
 
           {/* Signal Trust (Sentiment) */}
-          <div className="flex items-center gap-2 max-w-32 flex-1">
+          <div className="flex items-center gap-2 flex-1">
             <MetricDataPoint
               icon={Flame}
-              iconSize={10}
+              iconSize={16}
               iconColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
+              textColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
               value={sentimentScore}
               suffix="%"
               precision={0}
