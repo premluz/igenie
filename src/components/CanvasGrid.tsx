@@ -181,7 +181,7 @@ export function CanvasGrid() {
                   <div className="border-t border-border/30 divide-y divide-border/30">
                     {todayInsights.map(cell => (
                       <div key={cell.id} className="flex">
-                        <WidgetRenderer cell={cell} />
+                        <WidgetRenderer cell={cell} isTransitioning={isTransitioning} />
                       </div>
                     ))}
                   </div>
@@ -197,7 +197,7 @@ export function CanvasGrid() {
                   <div className="border-t border-border/30 divide-y divide-border/30">
                     {yesterdayInsights.map(cell => (
                       <div key={cell.id} className="flex">
-                        <WidgetRenderer cell={cell} />
+                        <WidgetRenderer cell={cell} isTransitioning={isTransitioning} />
                       </div>
                     ))}
                   </div>

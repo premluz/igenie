@@ -107,16 +107,9 @@ function PulseListCell() {
   )
 }
 
-function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }) {
-  if (isLoading) {
-    return (
-      <div className="mt-4 mb-2">
-        {/* Static pulsing skeleton for h2, same dimensions as h2 (text-3xl = 1.875rem) */}
-        <div className="h-9 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/20 to-muted-foreground/10 rounded w-64 animate-pulse"></div>
-      </div>
-    )
-  }
-
+function HeadingCell({ title }: { title: string }) {
+  // h2 headers are always visible (not skeleton) during loading
+  // They provide context for the cards below
   return (
     <h2 className="text-3xl mt-4 mb-2 font-semibold text-foreground">
       {title}
@@ -125,10 +118,10 @@ function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }
 }
 
 // Main renderer — pure switch on cell.type
-export function WidgetRenderer({ cell }: { cell: Cell }) {
-  // Headers render without card wrapper
+export function WidgetRenderer({ cell, isTransitioning }: { cell: Cell; isTransitioning?: boolean }) {
+  // Headers render without card wrapper (always visible, no skeleton)
   if (cell.type === 'header') {
-    return <HeadingCell title={cell.title} isLoading={cell.status === 'thinking'} />
+    return <HeadingCell title={cell.title} />
   }
 
   let content: React.ReactNode = null
@@ -175,7 +168,7 @@ export function WidgetRenderer({ cell }: { cell: Cell }) {
   }
 
   return (
-    <BaseCell cell={cell}>
+    <BaseCell cell={cell} isTransitioning={isTransitioning}>
       {content}
     </BaseCell>
   )

@@ -7,9 +7,10 @@ import { HoverActionBar } from './HoverActionBar'
 interface BaseCellProps {
   cell: Cell
   children: React.ReactNode
+  isTransitioning?: boolean
 }
 
-export function BaseCell({ cell, children }: BaseCellProps) {
+export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
   const { replaceCell } = usePrestoStore()
   const [isHovering, setIsHovering] = useState(false)
 
@@ -76,14 +77,24 @@ export function BaseCell({ cell, children }: BaseCellProps) {
           </div>
         )}
 
-        {/* Header - always visible, shimmer overlay provides loading effect */}
+        {/* Header - show skeleton during landing transitions, visible otherwise */}
         <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
-            </div>
-            {cell.subtitle && (
-              <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
+            {/* During landing transition with thinking status, show skeleton loaders for h3 */}
+            {isTransitioning && cell.status === 'thinking' ? (
+              <div className="space-y-2">
+                <div className="h-5 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/20 to-muted-foreground/10 rounded w-48 animate-pulse"></div>
+                <div className="h-3 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/15 to-muted-foreground/10 rounded w-32 animate-pulse"></div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
+                </div>
+                {cell.subtitle && (
+                  <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -109,9 +120,9 @@ export function BaseCell({ cell, children }: BaseCellProps) {
             </div>
           )}
 
-          {/* Actual content - always visible, shimmer provides loading feedback */}
+          {/* Actual content - hidden during thinking so shimmer is the only thing visible */}
           {cell.status !== 'error' && (
-            <div className="transition-opacity duration-500">
+            <div className={`transition-opacity duration-500 ${cell.status === 'thinking' ? 'opacity-0' : 'opacity-100'}`}>
               {children}
             </div>
           )}
