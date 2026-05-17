@@ -42,36 +42,28 @@ export function BaseCell({ cell, children }: BaseCellProps) {
       style={{ borderWidth: '1px', contain: 'layout' }}
     >
       <style>{`
-        @keyframes diagonal-shimmer {
-          0% {
-            transform: translateX(-150%) translateY(-150%) rotate(45deg);
-          }
-          100% {
-            transform: translateX(150%) translateY(150%) rotate(45deg);
-          }
+        @keyframes skeleton-shimmer {
+          0% { transform: translateX(-100%) skewX(-15deg); }
+          100% { transform: translateX(100%) skewX(-15deg); }
         }
-        .diagonal-skeleton-loader {
-          animation: diagonal-shimmer 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+        .skeleton-shimmer {
           background: linear-gradient(
             90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.2) 20%,
-            rgba(255, 255, 255, 0.4) 50%,
-            rgba(255, 255, 255, 0.2) 80%,
-            transparent 100%
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.02) 20%,
+            rgba(255, 255, 255, 0.04) 50%,
+            rgba(255, 255, 255, 0.02) 80%,
+            rgba(255, 255, 255, 0) 100%
           );
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          z-index: 5;
-          filter: blur(8px);
+          animation: skeleton-shimmer 1.2s infinite;
         }
       `}</style>
 
-      {/* Shimmer layer - constrained with overflow hidden */}
+      {/* Skeleton overlay - covers entire card including header when thinking */}
       {cell.status === 'thinking' && (
-        <div className="absolute inset-0 rounded-[4px] overflow-hidden pointer-events-none">
-          <div className="diagonal-skeleton-loader" />
+        <div className="absolute inset-0 z-10 rounded-[4px] overflow-hidden pointer-events-none">
+          <div className="skeleton-shimmer absolute inset-0" />
         </div>
       )}
 
@@ -85,8 +77,13 @@ export function BaseCell({ cell, children }: BaseCellProps) {
         )}
 
         {/* Header */}
-        <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative">
-          {cell.status === 'ready' && (
+        <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20">
+          {cell.status === 'thinking' ? (
+            <div className="flex-1 min-w-0 space-y-2">
+              <div className="h-5 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/20 to-muted-foreground/10 rounded w-48 animate-pulse"></div>
+              <div className="h-3 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/15 to-muted-foreground/10 rounded w-32 animate-pulse"></div>
+            </div>
+          ) : (
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
