@@ -142,8 +142,8 @@ export function ForecastChartCell({ data, descriptionBottom }: ForecastChartCell
         <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />
       </div>
       {descriptionBottom && (
-        <div className="px-4 py-2 border-t border-border/20 flex-shrink-0">
-          <p className="text-xs text-muted-foreground leading-relaxed">{descriptionBottom}</p>
+        <div className="px-4 py-2 bg-insight border-t border-border/20 flex-shrink-0">
+          <p className="text-md text-muted-foreground leading-relaxed">{descriptionBottom}</p>
         </div>
       )}
     </div>

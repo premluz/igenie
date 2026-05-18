@@ -9,6 +9,7 @@ export function ScenarioListing() {
 
   const handleSelectScenario = (scenarioId: string) => {
     loadScenario(scenarioId)
+    window.scrollTo(0, 0)
     navigate(`/insights/${scenarioId}`)
   }
 

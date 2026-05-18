@@ -105,7 +105,7 @@ export function ComboChartCell({ data, descriptionBottom }: ComboChartCellProps)
       </div>
       {descriptionBottom && (
         <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-sm text-muted-foreground">{descriptionBottom}</p>
+          <p className="text-md mt-8 bg-insight text-muted-foreground">{descriptionBottom}</p>
         </div>
       )}
     </div>

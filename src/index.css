@@ -40,6 +40,14 @@
     @apply bg-[#181924];
   }
 
+.bg-insight {
+    @apply bg-[#ffffff05];
+    padding: 6px 10px;
+    border-radius:3px;
+    border: 1px #ffffff16 solid;
+    
+  }
+
   .bg-card {
     @apply bg-[#2C2C34];
   }

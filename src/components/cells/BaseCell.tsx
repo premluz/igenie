@@ -114,7 +114,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
                 </div>
                 {cell.subtitle && (
                   <div key={`subtitle-${cell.status}`}>
-                    <p className="text-sm text-muted-foreground truncate">
+                    <p className="text-md mt-4 mb-8 text-muted-foreground truncate">
                       <GeminiStreamText text={cell.subtitle} speed={8} showCursor={false} />
                     </p>
                   </div>

@@ -15,7 +15,7 @@ interface RadarProperCellProps {
 
 export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProps) {
   if (!data || data.length === 0) {
-    return <div className="text-xs text-muted-foreground text-center py-8">No data available</div>
+    return <div className="text-md text-muted-foreground text-center py-8">No data available</div>
   }
 
   console.log('[RadarProperCell] Received data:', data)
@@ -132,7 +132,7 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
       </div>
       {descriptionBottom && (
         <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-sm text-muted-foreground">{descriptionBottom}</p>
+          <p className="text-md mt-8 bg-insight text-muted-foreground">{descriptionBottom}</p>
         </div>
       )}
     </div>

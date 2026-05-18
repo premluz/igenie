@@ -115,7 +115,7 @@ export function SignalSourcesCell({ data, descriptionTop, descriptionBottom }: S
         
       </div>
       {(descriptionBottom || total) && (
-        <div className="mt-8 mb-2 pb-0 pt-4border-b border-border/20">
+        <div className="mt-8 mb-2 bg-insight pb-0 pt-4border-b border-border/20">
           <p className="text-md text-subtle-foreground">{descriptionBottom || total}</p>
           {subtitle && <p className="text-md text-muted-foreground/60 mt-1">{subtitle}</p>}
         </div>

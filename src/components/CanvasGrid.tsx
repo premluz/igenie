@@ -21,6 +21,9 @@ export function CanvasGrid() {
   useEffect(() => {
     const store = usePrestoStore.getState()
 
+    // Scroll to top when loading a new scenario
+    window.scrollTo(0, 0)
+
     // Reset cellsRevealed when navigating to a new scenario
     setCellsRevealed(false)
 

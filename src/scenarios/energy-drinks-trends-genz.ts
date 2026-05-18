@@ -436,7 +436,7 @@ export const energyDrinks: ScenarioData = {
 
   scenarioTriggers: [
     {
-      keywords: ['energy', 'clean energy'],
+      keywords: ['usa', 'clean energy'],
       nextScenarioId: 'botanical-energy-deepdive'
     }
   ],

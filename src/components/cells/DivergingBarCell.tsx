@@ -7,7 +7,7 @@ interface DivergingBarCellProps {
 
 export function DivergingBarCell({ data, descriptionBottom }: DivergingBarCellProps) {
   if (!data || data.length === 0) {
-    return <div className="text-xs text-muted-foreground text-center py-8">No data available</div>
+    return <div className="text-md text-muted-foreground text-center py-8">No data available</div>
   }
 
   // Validate and transform data for diverging bar
@@ -91,7 +91,7 @@ export function DivergingBarCell({ data, descriptionBottom }: DivergingBarCellPr
       </div>
       {descriptionBottom && (
         <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-xs text-muted-foreground">{descriptionBottom}</p>
+          <p className="text-md mt-8 bg-insight text-muted-foreground">{descriptionBottom}</p>
         </div>
       )}
     </div>

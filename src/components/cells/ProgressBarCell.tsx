@@ -32,7 +32,7 @@ export function ProgressBarCell({ metric, descriptionTop, descriptionBottom }: P
         )}
       </div>
       {descriptionBottom && (
-        <p className="text-md text-subtle-foreground mt-8">{descriptionBottom}</p>
+        <p className="text-md bg-insight text-subtle-foreground mt-8">{descriptionBottom}</p>
       )}
     </div>
   )

@@ -148,6 +148,7 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
               }, loadingDelay / 2)
 
               // Navigate to update URL (scenario already loaded in store)
+              window.scrollTo(0, 0)
               navigate(`/insights/${trigger.scenarioId}`)
 
               // Hide loading state and ensure all cells are revealed after delay
@@ -158,6 +159,7 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
               }, loadingDelay)
             } else {
               // No loading messages defined, navigate immediately
+              window.scrollTo(0, 0)
               navigate(`/insights/${trigger.scenarioId}`)
             }
           }
