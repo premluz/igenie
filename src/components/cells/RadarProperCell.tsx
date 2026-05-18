@@ -1,4 +1,6 @@
 import { VegaEmbed } from 'react-vega'
+import { SimpleRadarChart } from './SimpleRadarChart'
+import { useState, useEffect } from 'react'
 
 interface RadarProperCellProps {
   data: Array<{
@@ -116,10 +118,17 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
     }
   }
 
+  // Use simple SVG radar chart as it's more reliable than Vega-Lite polar projection
+  const simpleData = cleanData.map(d => ({
+    dimension: d.dimension,
+    value: d.value,
+    benchmark: d.benchmark
+  }))
+
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex-1 flex items-center justify-center p-2">
-        <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />
+      <div className="flex-1 flex items-center justify-center p-2 overflow-hidden">
+        <SimpleRadarChart data={simpleData} />
       </div>
       {descriptionBottom && (
         <div className="px-4 pb-3 border-t border-border/20">
