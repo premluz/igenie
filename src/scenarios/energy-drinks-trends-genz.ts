@@ -176,7 +176,7 @@ export const energyDrinks: ScenarioData = {
           subtitle: '',
           descriptionTop: 'AI Synthesis of the Signal',
           descriptionBottom: '',
-          data: 'Gen Z demand for clean, botanical energy drinks is accelerating rapidly with 9.2/10 signal strength and verified cross-channel backing (89% trust).\n\nLegacy brands remain anchored to synthetic formulas, leaving a high-velocity first-mover window completely open.\n\nStrong convergence across search volume and TikTok velocity confirms this represents a permanent market realignment.'
+          data: 'Gen Z demand for clean, botanical energy drinks is accelerating rapidly with 9.2/10 signal strength in early-adopter channels (DTC, specialty retail, Whole Foods)—verified cross-channel backing (89% trust).\n\nThis is a micro-niche/high-intent segment dynamic, NOT a total-market projection. 10x growth reflects velocity in adoption-ready channels; mass retail scaling requires separate supply-chain validation.\n\nLegacy brands locked into synthetic formulas. 6–9 month competitive response lag = first-mover window through Q3 2026.'
         },
         {
           id: '',
@@ -186,8 +186,8 @@ export const energyDrinks: ScenarioData = {
           subtitle: '',
           descriptionTop: 'Strategic Insights',
           descriptionBottom: '',
-          data: '• "Clean botanical" positioning achieves 3.5x higher conversion in Gen Z cohorts than traditional formulations\n\n• First-mover window is tight; competitor response lag from major conglomerates is estimated at 6–9 months\n\n• Convenience and DTC velocity is outperforming category baseline by 2.2x; signals strong immediate demand\n\n• Premium pricing tiers show high acceptance when paired with transparent functional benefits'
-        },
+          data: '• "Clean botanical" positioning achieves 3.5x higher conversion in Gen Z cohorts than traditional formulations\n\n• First-mover window is tight; competitor response lag from major conglomerates is estimated at 6–9 months\n\n• Convenience and DTC velocity is outperforming category baseline by 2.2x; signals strong demand in early-adopter channels\n\n• SUPPLY CHAIN FRICTION: Physical product 10x growth requires co-packer capacity expansion + regional logistics scaling. Budget 3–4 months for production ramping before mass retail.\n\n• Premium pricing tiers show high acceptance when paired with transparent functional benefits'
+        }
         {
           id: '',
           type: 'narrative',
@@ -196,7 +196,7 @@ export const energyDrinks: ScenarioData = {
           subtitle: '',
           descriptionTop: 'Next Steps (Priority Order)',
           descriptionBottom: '',
-          data: '• Fast-track formula approval for botanical SKU line; capitalize on the open window before Q3 closes\n\n• Direct 65% of regional media spend to TikTok and community-driven creator partnerships\n\n• Deploy initial batch to top 15 urban metros; test premium indexing at a $3.99 per unit price point\n\n• Secure critical retail and convenience shelf space before wider market awareness tops 45%\n\n• Audit social sentiment weekly; trigger full national distribution scaling if awareness surpasses 60% by late Q2\n\n___BUTTON___Generate Ideas___POWERED_BY_Innov8___'
+          data: '• Fast-track formula approval for botanical SKU line; capitalize on the open window before Q3 closes\n\n• Direct 65% of regional media spend to TikTok and community-driven creator partnerships\n\n• Deploy initial batch to top 15 urban metros (DTC + specialty); test premium indexing at a $3.99 per unit price point\n\n• Lock shelf agreements in early-adopter channels (Whole Foods, specialty health) before digital proxy awareness crosses 45% threshold\n\n• Scale to mass retail once brand health survey validates $50k+ quarterly awareness benchmarks confirm 60%+ consumer trial intent\n\n• Audit social sentiment weekly; trigger national distribution phase if awareness surpasses 60% by late Q2\n\n___BUTTON___Generate Ideas___POWERED_BY_Innov8___'
         }
       ]
     },
@@ -250,6 +250,36 @@ export const energyDrinks: ScenarioData = {
     },
 
     // Row 7: Financial Performance Header
+    // Methodology & Defense Section
+    {
+      columns: 1,
+      cells: [
+        {
+          id: '',
+          type: 'header',
+          status: 'ready',
+          title: 'Methodology & Signal Validation',
+          data: null
+        }
+      ]
+    },
+
+    {
+      columns: 1,
+      cells: [
+        {
+          id: '',
+          type: 'narrative',
+          status: 'ready',
+          title: 'Market Awareness Proxy Calculation',
+          subtitle: '',
+          descriptionTop: 'How We Define the 45% Threshold',
+          descriptionBottom: 'Presto synthesizes a real-time digital proxy for category awareness—not a brand health survey replacement.',
+          data: 'Market Awareness Proxy = (Current Category Search Volume / 12-month Baseline Category Search Volume) × (Social Mention Velocity / Historical Mention Baseline)\n\n• Baseline = average organic "clean energy drink" / "botanical energy" monthly search volume (2024–2025)\n\n• Current Volume = April–May 2026 search trends + social velocity convergence\n\n• 45% Threshold = inflection point where competitor awareness begins climbing; signals window is closing\n\n• 60%+ Threshold = validated by quarterly brand health survey ($50k budget); triggers full national distribution approval\n\nThis is NOT a replacement for formal research—it's an early-warning algorithmic signal.'
+        }
+      ]
+    },
+
     {
       columns: 1,
       cells: [
@@ -326,9 +356,9 @@ export const energyDrinks: ScenarioData = {
           type: 'forecast-chart',
           status: 'ready',
           title: 'Forecast Trajectory',
-          subtitle: 'Historical performance + demand projection with confidence bounds',
-          descriptionTop: 'Where is the market heading?',
-          descriptionBottom: 'Historical data (blue) through May 18 shows 10x growth acceleration. Forecast (orange dashed) projects 7.1B units by Sept 2026 within 12% confidence band. Linear trend extrapolation suggests peak market saturation Q4 2026.',
+          subtitle: 'Early-adopter channel projection (DTC + specialty premium retail)',
+          descriptionTop: 'Where is the micro-niche market heading?',
+          descriptionBottom: '10x growth reflects early-adopter velocity in high-intent channels (DTC, Whole Foods, specialty wellness retail)—NOT total national projection. Forecast assumes supply chain scaling & co-packer availability through Sept 2026. Mass retail expansion would follow separate S-curve phase.',
           data: null
         }
       ]

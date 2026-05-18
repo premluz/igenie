@@ -68,7 +68,8 @@
       "Bash(git commit -m 'fix: Correct Vega-Lite polar projection and update energy-drinks scenario data *)",
       "Bash(git commit -m 'debug: Simplify radar chart spec and add console logging *)",
       "Bash(git commit -m 'fix: Revise radar chart with separate line/area layers for polar projection *)",
-      "Bash(git commit -m 'feat: Add SVG-based SimpleRadarChart as reliable fallback *)"
+      "Bash(git commit -m 'feat: Add SVG-based SimpleRadarChart as reliable fallback *)",
+      "Bash(git commit -m 'docs: Update memory with SVG radar chart fix details *)"
     ],
     "additionalDirectories": [
       "/private/tmp",
