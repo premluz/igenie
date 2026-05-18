@@ -45,50 +45,64 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
     ...cleanData.map(d => ({ ...d, value: d.benchmark, type: 'Benchmark' }))
   ]
 
+  // Use simpler approach: separate specs for each type and combine
+  const actualData = chartData.filter(d => d.type === 'Actual')
+  const benchmarkData = chartData.filter(d => d.type === 'Benchmark')
+
   const spec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
     width: 340,
     height: 340,
     padding: 20,
-    data: { values: chartData },
-    mark: { type: 'area', filled: true, line: true, point: true },
-    projection: { type: 'polar' },
-    encoding: {
-      theta: {
-        field: 'dimension',
-        type: 'nominal',
-        scale: { type: 'point' }
+    title: null,
+    layer: [
+      // Benchmark layer
+      {
+        data: { values: benchmarkData },
+        mark: { type: 'line', point: false, opacity: 0.15, color: '#6b7280', size: 2 },
+        projection: { type: 'polar' },
+        encoding: {
+          theta: { field: 'dimension', type: 'nominal' },
+          radius: { field: 'value', type: 'quantitative', scale: { zero: true, domainMax: 100 } },
+          tooltip: { field: 'value', type: 'quantitative', format: '.0f' }
+        }
       },
-      radius: {
-        field: 'value',
-        type: 'quantitative',
-        scale: { type: 'linear', zero: true, domain: [0, 100] }
+      // Benchmark area
+      {
+        data: { values: benchmarkData },
+        mark: { type: 'area', opacity: 0.05, color: '#6b7280' },
+        projection: { type: 'polar' },
+        encoding: {
+          theta: { field: 'dimension', type: 'nominal' },
+          radius: { field: 'value', type: 'quantitative', scale: { zero: true, domainMax: 100 } }
+        }
       },
-      color: {
-        field: 'type',
-        type: 'nominal',
-        scale: {
-          domain: ['Actual', 'Benchmark'],
-          range: ['#3b82f6', '#6b7280']
-        },
-        legend: { title: null }
+      // Actual layer
+      {
+        data: { values: actualData },
+        mark: { type: 'line', point: true, opacity: 0.8, color: '#3b82f6', size: 3 },
+        projection: { type: 'polar' },
+        encoding: {
+          theta: { field: 'dimension', type: 'nominal' },
+          radius: { field: 'value', type: 'quantitative', scale: { zero: true, domainMax: 100 } },
+          tooltip: [
+            { field: 'dimension', type: 'nominal', title: 'Dimension' },
+            { field: 'value', type: 'quantitative', title: 'Score', format: '.0f' }
+          ]
+        }
       },
-      opacity: {
-        field: 'type',
-        type: 'nominal',
-        scale: {
-          domain: ['Actual', 'Benchmark'],
-          range: [0.4, 0.1]
-        },
-        legend: null
-      },
-      tooltip: [
-        { field: 'dimension', type: 'nominal', title: 'Dimension' },
-        { field: 'type', type: 'nominal', title: 'Type' },
-        { field: 'value', type: 'quantitative', title: 'Score', format: '.0f' }
-      ]
-    },
+      // Actual area
+      {
+        data: { values: actualData },
+        mark: { type: 'area', opacity: 0.25, color: '#3b82f6' },
+        projection: { type: 'polar' },
+        encoding: {
+          theta: { field: 'dimension', type: 'nominal' },
+          radius: { field: 'value', type: 'quantitative', scale: { zero: true, domainMax: 100 } }
+        }
+      }
+    ],
     config: {
       view: { stroke: 'transparent' },
       axis: {
@@ -98,8 +112,7 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
         labelFontSize: 10,
         labelColor: '#f4f4f5',
         titleColor: '#f4f4f5'
-      },
-      legend: { disable: true }
+      }
     }
   }
 
