@@ -16,6 +16,8 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
     return <div className="text-xs text-muted-foreground text-center py-8">No data available</div>
   }
 
+  console.log('[RadarProperCell] Received data:', data)
+
   const cleanData = data
     .filter(d =>
       d &&
@@ -31,6 +33,8 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
       max: d.max || 100
     }))
 
+  console.log('[RadarProperCell] Clean data after filtering:', cleanData)
+
   if (cleanData.length === 0) {
     return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
   }
@@ -44,53 +48,58 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
   const spec = {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
-    width: 320,
-    height: 320,
-    padding: 16,
-    projection: { type: 'polar' },
+    width: 340,
+    height: 340,
+    padding: 20,
     data: { values: chartData },
-    layer: [
-      // Benchmark polygon (gray, low opacity)
-      {
-        transform: [{ filter: "datum.type === 'Benchmark'" }],
-        mark: { type: 'area', filled: true, opacity: 0.1, line: true, point: false, color: '#6b7280' },
-        encoding: {
-          theta: { field: 'dimension', type: 'nominal', stack: null },
-          radius: {
-            field: 'value',
-            type: 'quantitative',
-            scale: { type: 'linear', zero: true, domain: [0, 100] }
-          }
-        }
+    mark: { type: 'area', filled: true, line: true, point: true },
+    projection: { type: 'polar' },
+    encoding: {
+      theta: {
+        field: 'dimension',
+        type: 'nominal',
+        scale: { type: 'point' }
       },
-      // Actual signal polygon (blue, higher opacity)
-      {
-        transform: [{ filter: "datum.type === 'Actual'" }],
-        mark: { type: 'area', filled: true, opacity: 0.4, line: true, point: true, color: '#3b82f6' },
-        encoding: {
-          theta: { field: 'dimension', type: 'nominal', stack: null },
-          radius: {
-            field: 'value',
-            type: 'quantitative',
-            scale: { type: 'linear', zero: true, domain: [0, 100] }
-          },
-          tooltip: [
-            { field: 'dimension', type: 'nominal', title: 'Dimension' },
-            { field: 'value', type: 'quantitative', title: 'Score', format: '.0f' }
-          ]
-        }
-      }
-    ],
+      radius: {
+        field: 'value',
+        type: 'quantitative',
+        scale: { type: 'linear', zero: true, domain: [0, 100] }
+      },
+      color: {
+        field: 'type',
+        type: 'nominal',
+        scale: {
+          domain: ['Actual', 'Benchmark'],
+          range: ['#3b82f6', '#6b7280']
+        },
+        legend: { title: null }
+      },
+      opacity: {
+        field: 'type',
+        type: 'nominal',
+        scale: {
+          domain: ['Actual', 'Benchmark'],
+          range: [0.4, 0.1]
+        },
+        legend: null
+      },
+      tooltip: [
+        { field: 'dimension', type: 'nominal', title: 'Dimension' },
+        { field: 'type', type: 'nominal', title: 'Type' },
+        { field: 'value', type: 'quantitative', title: 'Score', format: '.0f' }
+      ]
+    },
     config: {
       view: { stroke: 'transparent' },
       axis: {
         grid: true,
         gridColor: '#1d1d20',
         gridOpacity: 0.15,
-        labelFontSize: 9,
+        labelFontSize: 10,
         labelColor: '#f4f4f5',
         titleColor: '#f4f4f5'
-      }
+      },
+      legend: { disable: true }
     }
   }
 
