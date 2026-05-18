@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { AmbientGridBackground } from './AmbientGridBackground'
 import { NeuralGridBackground } from './NeuralGridBackground'
 import { CyclingGeminiText } from './CyclingGeminiText'
+import { AnimatedGlow } from './AnimatedGlow'
 import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { getScenario } from '@/scenarios'
@@ -77,6 +78,11 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           if (scenario) {
             setQuery('')
 
+            // Pre-load scenario detail into store BEFORE navigating
+            // This prevents the listing view from flashing
+            const store = usePrestoStore.getState()
+            store.loadScenarioDetail(trigger.scenarioId)
+
             // Show loading state
             setTransitioning(true)
 
@@ -135,14 +141,13 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
               }, loadingDelay - 100)
 
               // Start revealing cells gradually at 50% of loading delay.
-              // By this point CanvasGrid will have already called loadScenarioDetail
-              // (triggered by the navigate below), so cells exist in 'thinking' state.
+              // Cells already exist in store from pre-loading above.
               setTimeout(() => {
                 const { revealCellsGradually: reveal } = usePrestoStore.getState()
                 reveal(loadingDelay / 2)
               }, loadingDelay / 2)
 
-              // Navigate immediately to load scenario
+              // Navigate to update URL (scenario already loaded in store)
               navigate(`/insights/${trigger.scenarioId}`)
 
               // Hide loading state and ensure all cells are revealed after delay
@@ -216,8 +221,8 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
         <AmbientGridBackground
           showNodeLines={false}
           enableMagneticCursor={false}
-          nodeLineColor="rgba(255, 255, 255, 1)"
-          nodeLineOpacity={0.9}
+          nodeLineColor="rgba(255, 255, 255, 0.5)"
+          nodeLineOpacity={0.8}
           nodeLineDistance={50}
           nodeConnectionCount={1}
           activeNodeCount={920}
@@ -301,50 +306,71 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           initial={{ opacity: shouldAnimate ? 0 : 1 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: shouldAnimate ? 0.9 : 0 }}
-          className="px-8 w-full py-4 relative z-10"
+          className="px-8 w-full py-4 relative z-10 flex flex-col"
         >
-          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
+          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto w-full">
             <div
               onClick={handleBoxClick}
               className="input-container card-glass card-padding-lg cursor-pointer flex flex-col"
             >
-              {/* Input field with native placeholder */}
-              <input
-                ref={inputRef}
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Ask about a brand, trend, or category..."
-                className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-lg flex-1"
-              />
+            {/* Input field with native placeholder */}
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ask about a brand, trend, or category..."
+              className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-lg flex-1"
+            />
 
-              {/* Icons row */}
-              <div className="flex items-center justify-between mt-4">
+            {/* Icons row */}
+            <div className="flex items-center justify-between mt-4">
+              <button
+                type="button"
+                onClick={() => {}}
+                className="text-muted-foreground hover:text-foreground transition-colors p-2"
+              >
+                <Plus size={18} />
+              </button>
+              <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => {}}
                   className="text-muted-foreground hover:text-foreground transition-colors p-2"
                 >
-                  <Plus size={18} />
+                  <Mic size={18} />
                 </button>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => {}}
-                    className="text-muted-foreground hover:text-foreground transition-colors p-2"
-                  >
-                    <Mic size={18} />
-                  </button>
-                  <button
-                    type="submit"
-                    className="text-muted-foreground hover:text-accent transition-colors p-2"
-                  >
-                    <Send size={18} />
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="text-muted-foreground hover:text-accent transition-colors p-2"
+                >
+                  <Send size={18} />
+                </button>
               </div>
             </div>
+          </div>
           </form>
+
+          {/* Mock glow section beneath input - exact size match */}
+          <div className="max-w-4xl mx-auto w-full -mt-1">
+            <AnimatedGlow
+              glowType="outer"
+              glowSize={6}
+              hoverGlowSize={12}
+              blurAmount={16}
+              hoverBlurAmount={24}
+              baseOpacity={0.4}
+              hoverOpacity={0.7}
+              animationDuration={4}
+              borderRadius={12}
+              borderSize={2}
+              showBorder={false}
+              disableHoverEffect={false}
+              className="w-full"
+            >
+              <div className="h-2" />
+            </AnimatedGlow>
+          </div>
         </motion.div>
         </div>
       </div>

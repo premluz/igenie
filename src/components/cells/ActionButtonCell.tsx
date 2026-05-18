@@ -16,7 +16,7 @@ export function ActionButtonCell({ title, subtitle, status = 'ready', inline = f
       <div className="flex items-center gap-2">
         <Button
           disabled={isLoading}
-          variant="outline"
+          variant="magic"
           size="2xl"
           className="gap-2"
         >

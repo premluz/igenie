@@ -187,7 +187,7 @@ export const energyDrinks: ScenarioData = {
           descriptionTop: 'Strategic Insights',
           descriptionBottom: '',
           data: '• "Clean botanical" positioning achieves 3.5x higher conversion in Gen Z cohorts than traditional formulations\n\n• First-mover window is tight; competitor response lag from major conglomerates is estimated at 6–9 months\n\n• Convenience and DTC velocity is outperforming category baseline by 2.2x; signals strong demand in early-adopter channels\n\n• SUPPLY CHAIN FRICTION: Physical product 10x growth requires co-packer capacity expansion + regional logistics scaling. Budget 3–4 months for production ramping before mass retail.\n\n• Premium pricing tiers show high acceptance when paired with transparent functional benefits'
-        }
+        },
         {
           id: '',
           type: 'narrative',
@@ -275,7 +275,7 @@ export const energyDrinks: ScenarioData = {
           subtitle: '',
           descriptionTop: 'How We Define the 45% Threshold',
           descriptionBottom: 'Presto synthesizes a real-time digital proxy for category awareness—not a brand health survey replacement.',
-          data: 'Market Awareness Proxy = (Current Category Search Volume / 12-month Baseline Category Search Volume) × (Social Mention Velocity / Historical Mention Baseline)\n\n• Baseline = average organic "clean energy drink" / "botanical energy" monthly search volume (2024–2025)\n\n• Current Volume = April–May 2026 search trends + social velocity convergence\n\n• 45% Threshold = inflection point where competitor awareness begins climbing; signals window is closing\n\n• 60%+ Threshold = validated by quarterly brand health survey ($50k budget); triggers full national distribution approval\n\nThis is NOT a replacement for formal research—it's an early-warning algorithmic signal.'
+          data: 'Market Awareness Proxy = (Current Category Search Volume / 12-month Baseline Category Search Volume) x (Social Mention Velocity / Historical Mention Baseline)\n\n• Baseline = average organic "clean energy drink" / "botanical energy" monthly search volume (2024-2025)\n\n• Current Volume = April-May 2026 search trends + social velocity convergence\n\n• 45% Threshold = inflection point where competitor awareness begins climbing; signals window is closing\n\n• 60%+ Threshold = validated by quarterly brand health survey ($50k budget); triggers full national distribution approval\n\nThis is NOT a replacement for formal research - it\'s an early-warning algorithmic signal.'
         }
       ]
     },
@@ -452,18 +452,18 @@ export const energyDrinks: ScenarioData = {
     intent: {
       header: 'Understanding intent...',
       header_done: 'Intent understood',
-      texts: ['Analyzing "Gen Z energy drink trends" request', 'Isolating ingredient parameters']
+      texts: ['Analyzing "Gen Z clean energy surge" request', 'Isolating botanical blend parameters', 'Mapping early-adopter channel dynamics']
     },
     analysis: {
       header: 'Analyzing data...',
       header_done: 'Analysis complete',
-      texts: ['Parsing social pipeline signals', 'Calculating semantic sentiment scores']
+      texts: ['Parsing social conversation signals (TikTok, Instagram, Reddit)', 'Evaluating retail velocity patterns across DTC + specialty channels', 'Calculating semantic sentiment from product reviews & creator content']
     },
     synthesis: {
       header: 'Synthesizing insights...',
       header_done: 'Synthesis complete',
-      texts: ['Mapping cross-channel signals to dashboard components', 'Finalizing layout parameters']
+      texts: ['Correlating signals to micro-niche segment strength', 'Mapping 45% awareness threshold progression', 'Finalizing executive narrative & recommendations']
     },
-    summary: 'Gen Z Energy Insights ready'
+    summary: 'Gen Z Clean Energy Insights ready'
   }
 }

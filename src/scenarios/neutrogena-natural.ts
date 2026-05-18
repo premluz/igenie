@@ -428,22 +428,22 @@ export const neutroGenaNatural: ScenarioData = {
   loadingDelay: 6000,
 
   loadingMessages: {
-    signal_detect: {
-      header: 'Detecting signals...',
-      header_done: 'Signals detected',
-      texts: ['Scanning clean beauty trends', 'Identifying natural ingredient mentions']
+    intent: {
+      header: 'Understanding intent...',
+      header_done: 'Intent understood',
+      texts: ['Analyzing natural skincare & clean beauty segment', 'Isolating dermatologist-approved positioning', 'Mapping consumer health consciousness patterns']
     },
-    convergence: {
-      header: 'Analyzing convergence...',
-      header_done: 'Convergence mapped',
-      texts: ['Cross-referencing retail velocity', 'Evaluating social momentum']
+    analysis: {
+      header: 'Analyzing data...',
+      header_done: 'Analysis complete',
+      texts: ['Parsing beauty community signals across skincare forums & expert recommendations', 'Evaluating retail velocity for natural/clean products', 'Extracting sentiment from dermatology & wellness content']
     },
-    market_fit: {
-      header: 'Assessing market fit...',
-      header_done: 'Market analysis complete',
-      texts: ['Comparing sentiment scores', 'Evaluating positioning opportunity']
+    synthesis: {
+      header: 'Synthesizing insights...',
+      header_done: 'Synthesis complete',
+      texts: ['Correlating clean ingredient adoption to mass market expansion', 'Mapping clinical validation signals to consumer trust', 'Finalizing channel acceleration roadmap']
     },
-    summary: 'Clean Beauty Market Opportunity identified'
+    summary: 'Natural Skincare Market Insights ready'
   }
 }
 

@@ -19,6 +19,8 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        magic:
+          "group relative overflow-hidden bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 text-foreground hover:from-white/15 hover:to-white/10 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/20 aria-expanded:from-white/20 aria-expanded:to-white/15 transition-all duration-300",
       },
       size: {
         default:
@@ -56,6 +58,27 @@ function Button({
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot.Root : "button"
+  const isMagic = variant === "magic"
+
+  // For magic variant, wrap with 3-layer stencil container
+  if (isMagic) {
+    return (
+      <div className="magic-button-stencil">
+        {/* Layer 1: Ambient glow */}
+        <div className="magic-button-glow" />
+        {/* Layer 2: Border outline */}
+        <div className="magic-button-border" />
+        {/* Layer 3: Button core */}
+        <Comp
+          data-slot="button"
+          data-variant={variant}
+          data-size={size}
+          className={cn(buttonVariants({ variant, size, className }))}
+          {...props}
+        />
+      </div>
+    )
+  }
 
   return (
     <Comp

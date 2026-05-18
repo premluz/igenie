@@ -55,7 +55,7 @@ export function AmbientGridBackground({
   baseDotRadius = 0.9,
   baseOpacity = 0.15,
   cursorOpacityMultiplier = 0.2,
-  autonomousOpacityMultiplier = 0.5,
+  autonomousOpacityMultiplier = 0.4,
   cursorMaxScale = 1.2,
   autonomousMaxScale = 1.2,
   autonomousVelocity = 7,
@@ -72,7 +72,6 @@ export function AmbientGridBackground({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const cursorSvgRef = useRef<SVGSVGElement>(null)
-  const bgColorRef = useRef<string>(showBackground ? 'transparent' : 'transparent')
   const gridDotsRef = useRef<GridDot[]>([])
   const activeNodesRef = useRef<Set<number>>(new Set())
   const nodeLinesRef = useRef<NodeLine[]>([])

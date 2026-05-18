@@ -230,8 +230,6 @@ function alphaFilter(triangles: Triangle[], maxEdge: number): Triangle[] {
 // Interaction constants
 // ---------------------------------------------------------------------------
 
-const INTERACTION_RADIUS = 100   // px — cursor attraction field
-const ATTRACT_STRENGTH = 0.18    // fraction per frame toward cursor
 const RESTORE_STRENGTH = 0.08    // fraction per frame back to base
 
 // ---------------------------------------------------------------------------

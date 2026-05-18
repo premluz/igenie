@@ -384,19 +384,19 @@ export const cucumberMint: ScenarioData = {
     intent: {
       header: 'Understanding intent...',
       header_done: 'Intent understood',
-      texts: ['Analyzing "Gen Z" query', 'Cross-referencing with trends']
+      texts: ['Analyzing premium wellness beauty segment', 'Isolating natural ingredient preferences', 'Mapping lifestyle integration patterns']
     },
     analysis: {
       header: 'Analyzing data...',
       header_done: 'Analysis complete',
-      texts: ['Processing demographic signals', 'Evaluating sentiment patterns']
+      texts: ['Parsing wellness community signals across beauty forums & influencer channels', 'Evaluating clean beauty retail velocity patterns', 'Extracting sentiment from skincare review ecosystems']
     },
     synthesis: {
       header: 'Synthesizing insights...',
       header_done: 'Synthesis complete',
-      texts: ['Correlating signals', 'Building narrative']
+      texts: ['Correlating natural ingredient adoption to market expansion', 'Mapping consumer trial intent signals', 'Finalizing distribution opportunity window']
     },
-    summary: 'Gen Z Beauty Insights ready'
+    summary: 'Premium Beauty Trends ready'
   }
 }
 

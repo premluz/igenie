@@ -94,7 +94,7 @@ export function PrestoSidebar() {
       </div>*/}
 
       {/* Log Terminal */}
-      <div className="flex-1 overflow-auto p-4 bg-black/20 font-mono text-xs border-b border-border relative">
+      <div className="flex-1 overflow-auto p-4 bg-black/20 text-sm border-b border-border relative">
         {/* Genie Background Image */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <img src={genieImage} alt="Presto" className="h-60 w-40 opacity-70" />
@@ -121,20 +121,40 @@ export function PrestoSidebar() {
               />
             </div>
           ) : (
-            <div className="space-y-0.5">
+            <div className="">
               {logs.map((log, idx) => {
                 const isUserMessage = log.type === 'query'
                 const isHeader = log.type === 'header' || log.type === 'header-done'
                 const isHeaderDone = log.type === 'header-done'
                 const isTextContent = log.type === 'system'
 
+                // Skip standalone text items - they're rendered as part of headers
+                if (isTextContent && idx > 0) {
+                  const prevLog = logs[idx - 1]
+                  if (prevLog.type === 'header' || prevLog.type === 'header-done' || prevLog.type === 'system') {
+                    return null
+                  }
+                }
+
+                // Collect content items that follow this header
+                let contentItems: typeof logs = []
+                if (isHeader) {
+                  for (let i = idx + 1; i < logs.length; i++) {
+                    if (logs[i].type === 'system') {
+                      contentItems.push(logs[i])
+                    } else {
+                      break
+                    }
+                  }
+                }
+
                 return (
                   <div key={log.id}>
                     {isUserMessage ? (
                       // User chat bubble - prominent with left margin
                       <div className="ml-20 flex justify-end">
-                        <div className="bg-accent/20 rounded-lg px-3 py-2 max-w-xs">
-                          <div className="text-xs text-accent font-medium">
+                        <div className="bg-slate-700/40 rounded-lg px-3 py-2 max-w-xs">
+                          <div className="text-sm text-slate-200 font-medium leading-normal">
                             <GeminiStreamText
                               text={log.text}
                               speed={8}
@@ -144,22 +164,23 @@ export function PrestoSidebar() {
                         </div>
                       </div>
                     ) : isHeader ? (
-                      // Headers with timeline dots
+                      // Headers with timeline dots + grouped content
                       <div className="flex gap-2">
                         {/* Timeline column */}
                         <div className="flex flex-col items-center">
                           {/* Timeline dot */}
-                          <div className="w-2 h-2 rounded-full bg-accent/60 flex-shrink-0" />
-                          {/* Connecting line to next item */}
-                          {logs[idx + 1] && (
-                            <div className="w-0.5 h-1 bg-accent/30" />
+                          <div className="w-2 h-2 rounded-full bg-slate-500/60 flex-shrink-0" />
+                          {/* Connecting line to next header */}
+                          {logs.slice(idx + 1).some(l => l.type === 'header' || l.type === 'header-done') && (
+                            <div className="w-0.5 h-full bg-slate-500/30" />
                           )}
                         </div>
 
-                        {/* Message content */}
-                        <div className="flex-1 min-w-0">
+                        {/* Message content wrapper - header + all following content together */}
+                        <div className="flex-1 min-w-0 pb-5 ">
+                          {/* Header */}
                           {isHeaderDone ? (
-                            <div className="text-xs text-emerald font-medium">
+                            <div className="text-md  text-emerald font-medium leading-normal">
                               <GeminiStreamText
                                 text={log.text}
                                 speed={8}
@@ -167,7 +188,7 @@ export function PrestoSidebar() {
                               />
                             </div>
                           ) : (
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-md text-subtle-foreground leading-normal">
                               <GeminiStreamText
                                 text={log.text}
                                 speed={6}
@@ -175,19 +196,21 @@ export function PrestoSidebar() {
                               />
                             </div>
                           )}
+                          {/* Content items */}
+                          {contentItems.map(contentLog => (
+                            <div key={contentLog.id} className="text-md text-muted-foreground/85 leading-normal">
+                              <GeminiStreamText
+                                text={contentLog.text}
+                                speed={5}
+                                showCursor={false}
+                              />
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ) : isTextContent ? (
-                      // Text content under headers - no dots
-                      <div className="flex gap-2 ml-4">
-                        <div className="text-xs text-muted-foreground/70">
-                          <GeminiStreamText
-                            text={log.text}
-                            speed={5}
-                            showCursor={false}
-                          />
-                        </div>
-                      </div>
+                      // Skip - handled as part of header above
+                      null
                     ) : null}
                   </div>
                 )
@@ -195,7 +218,7 @@ export function PrestoSidebar() {
             </div>
           )}
           {agentStatus === 'thinking' && (
-            <div className="text-purple animate-shimmer text-xs mt-4">
+            <div className="text-purple animate-shimmer text-md mt-4">
               ⚡ thinking...
             </div>
           )}

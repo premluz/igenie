@@ -361,19 +361,19 @@ export const botanicalEnergyDeepDive: ScenarioData = {
 
   loadingMessages: {
     intent: {
-      header: 'Understanding botanical focus...',
-      header_done: 'Intent focused',
-      texts: ['Analyzing botanical ingredient trends', 'Isolating premium market positioning']
+      header: 'Understanding intent...',
+      header_done: 'Intent understood',
+      texts: ['Analyzing botanical energy positioning within premium segment', 'Isolating functional ingredient strength signals', 'Mapping channel distribution opportunity']
     },
     analysis: {
-      header: 'Analyzing botanical data...',
-      header_done: 'Botanical analysis complete',
-      texts: ['Parsing wellness community signals', 'Mapping ingredient adoption patterns']
+      header: 'Analyzing data...',
+      header_done: 'Analysis complete',
+      texts: ['Parsing ingredient community signals & wellness platform conversations', 'Evaluating channel strength across DTC, specialty retail, natural grocers', 'Calculating brand health proxy metrics from social velocity']
     },
     synthesis: {
-      header: 'Synthesizing market insights...',
+      header: 'Synthesizing insights...',
       header_done: 'Synthesis complete',
-      texts: ['Correlating botanical signals to market dynamics', 'Finalizing deep-dive analysis']
+      texts: ['Correlating botanical signals to early-adopter channel dynamics', 'Mapping supply chain friction & production scaling windows', 'Finalizing market penetration recommendations']
     },
     summary: 'Botanical Energy Market Deep Dive ready'
   }

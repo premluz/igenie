@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+// @ts-ignore - three module types not available in this build environment
 import * as THREE from 'three'
 
 // Perlin-like noise using sin/cos for smooth variation

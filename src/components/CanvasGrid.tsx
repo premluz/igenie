@@ -25,9 +25,10 @@ export function CanvasGrid() {
     setCellsRevealed(false)
 
     if (scenarioId) {
-      // Always reload scenario when URL changes, even if same scenario
-      // This ensures fresh cells in 'thinking' state each time
-      store.loadScenarioDetail(scenarioId)
+      // Only load if not already loaded (prevents duplicate loading from LandingScreen pre-load)
+      if (!store.currentView || store.currentView.scenarioId !== scenarioId) {
+        store.loadScenarioDetail(scenarioId)
+      }
     } else {
       // No scenarioId means we should show the listing view
       store.clearCanvas()
