@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { getScenario } from '@/scenarios'
-import type { ScenarioTrigger } from '@/scenarios/cucumber-mint'
+import type { ScenarioTrigger } from '@/scenarios/types'
 
 export interface ScenarioTransition {
   matched: boolean

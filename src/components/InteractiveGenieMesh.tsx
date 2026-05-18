@@ -116,7 +116,7 @@ export function InteractiveGenieMesh({
   const pointsRef = useRef<Point[]>([])
   const trianglesRef = useRef<number[][]>([])
   const cursorRef = useRef({ x: 0, y: 0 })
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
 
   // Initialize geometry
   useEffect(() => {

@@ -7,9 +7,11 @@ import { CyclingGeminiText } from './CyclingGeminiText'
 import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { getScenario } from '@/scenarios'
+import { motion } from 'framer-motion'
 
 const LANDING_TRIGGERS = [
   { keywords: ['genz', 'gen-z', 'gen z'], scenarioId: 'cucumber-mint' },
+  { keywords: ['energy'], scenarioId: 'energy-drinks-trends-genz' },
   { keywords: ['millennial', 'millennials'], scenarioId: 'neutrogena-natural' }
 ]
 
@@ -50,7 +52,7 @@ const QUICK_ACTIONS = [
   }
 ]
 
-export function LandingScreen() {
+export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boolean }) {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -176,7 +178,12 @@ export function LandingScreen() {
   return (
     <div className="flex-1 flex overflow-hidden relative">
       {/* Left Container - Reports List */}
-      <div className="w-80 flex-shrink-0 border-r border-border overflow-y-auto backdrop-blur-md bg-background/20">
+      <motion.div
+        initial={{ x: shouldAnimate ? -320 : 0, opacity: shouldAnimate ? 0 : 1 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: shouldAnimate ? 0.1 : 0 }}
+        className="w-80 flex-shrink-0 border-r border-border overflow-y-auto backdrop-blur-md bg-background/20"
+      >
         <ul className="p-3 space-y-0 list-none">
           {REPORTS.map((report) => (
             <li
@@ -193,7 +200,7 @@ export function LandingScreen() {
             </li>
           ))}
         </ul>
-      </div>
+      </motion.div>
 
       {/* Right Container - Main Content with Genie Background */}
       <div
@@ -221,15 +228,35 @@ export function LandingScreen() {
         {/* Top section with greeting and subtitle */}
         <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 relative z-10">
 
-        <h1 className="text-4xl  h-16  font-normal text-foreground mb-3">
+        {/* Genie Image */}
+        <motion.img
+          src="/images/genie.png"
+          alt="Genie"
+          initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? -20 : 0 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: shouldAnimate ? 0.1 : 0 }}
+          className="h-48 w-48 mb-6 object-contain"
+        />
+
+        <motion.h1
+          initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: shouldAnimate ? 0.2 : 0 }}
+          className="text-4xl  h-16  font-normal text-foreground mb-3"
+        >
           <CyclingGeminiText
             texts={['Insight Intelligence. Infinite wishes.', 'Good morning Trevor!']}
             speed={12}
             delayBetweenTexts={3000}
             showCursor={false}
           />
-        </h1>
-        <p className="text-lg text-muted-foreground text-center mb-12 min-h-14">
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: shouldAnimate ? 0.3 : 0 }}
+          className="text-lg text-muted-foreground text-center mb-12 min-h-14"
+        >
           <CyclingGeminiText
             texts={[
               'Ask questions, explore trends, and uncover insights across your data.',
@@ -239,13 +266,21 @@ export function LandingScreen() {
             delayBetweenTexts={3600}
             showCursor={false}
           />
-        </p>
+        </motion.p>
 
         {/* Quick action cards */}
-        <div className="grid grid-cols-4 gap-3 mb-0 max-w-4xl w-full">
-          {QUICK_ACTIONS.map((action) => (
-            <button
+        <motion.div
+          initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: shouldAnimate ? 0.4 : 0 }}
+          className="grid grid-cols-4 gap-3 mb-0 max-w-4xl w-full"
+        >
+          {QUICK_ACTIONS.map((action, idx) => (
+            <motion.button
               key={action.id}
+              initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: shouldAnimate ? 0.5 + idx * 0.08 : 0 }}
               onClick={() => handleQuickAction(action.id)}
               className="card-glass card-padding-md text-left group cursor-pointer"
             >
@@ -258,11 +293,16 @@ export function LandingScreen() {
               <p className="text-sm text-muted-foreground">
                 {action.description}
               </p>
-            </button>
+            </motion.button>
           ))}
-        </div>
+        </motion.div>
         {/* Bottom input section */}
-        <div className="px-8 w-full py-4 relative z-10">
+        <motion.div
+          initial={{ opacity: shouldAnimate ? 0 : 1 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: shouldAnimate ? 0.9 : 0 }}
+          className="px-8 w-full py-4 relative z-10"
+        >
           <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
             <div
               onClick={handleBoxClick}
@@ -304,8 +344,8 @@ export function LandingScreen() {
                 </div>
               </div>
             </div>
-        </form>
-      </div>
+          </form>
+        </motion.div>
         </div>
       </div>
     </div>

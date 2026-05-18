@@ -3,12 +3,16 @@ import { type Cell } from '@/store/usePrestoStore'
 import { ComboChartCell } from './cells/ComboChartCell'
 import { RadarChartCell } from './cells/RadarChartCell'
 import { DivergingBarCell } from './cells/DivergingBarCell'
+import { ForecastChartCell } from './cells/ForecastChartCell'
+import { SegmentStrengthCell } from './cells/SegmentStrengthCell'
+import { RadarProperCell } from './cells/RadarProperCell'
 import { SparklineCard } from './cells/SparklineCard'
 import { TableCell } from './cells/TableCell'
 import { InsightCard } from './cells/InsightCard'
 import { ProgressBarCell } from './cells/ProgressBarCell'
 import { ActionButtonCell } from './cells/ActionButtonCell'
 import { SignalSourcesCell } from './cells/SignalSourcesCell'
+import { GeminiStreamText } from './GeminiStreamText'
 
 function KpiCell({ data }: { data: any }) {
   // If data has sparkline trend data, use SparklineCard
@@ -27,7 +31,7 @@ function KpiCell({ data }: { data: any }) {
       <div className="text-3xl font-bold text-accent mb-2">
         {typeof data === 'object' ? data.value : data}
       </div>
-      <div className="text-xs text-muted-foreground">
+      <div className="text-md text-muted-foreground">
         {typeof data === 'object' ? data.unit : ''}
       </div>
     </div>
@@ -37,7 +41,7 @@ function KpiCell({ data }: { data: any }) {
 function LineChartCell({ data }: { data: any }) {
   return (
     <div className="flex items-center justify-center h-full">
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-md text-subtle-foreground text-center">
         Line Chart<br />
         {data?.length || 0} data points
       </p>
@@ -73,16 +77,16 @@ function NarrativeCell({ data }: { data: any }) {
 
     if (hasBullets) {
       return (
-        <ul key={Math.random()} className="list-disc list-inside space-y-1 text-sm text-muted-foreground mb-3">
+        <ul key={Math.random()} className="list-disc list-outside pl-5 space-y-1 text-md text-subtle-foreground mb-3">
           {lines.map((line, idx) => {
             const cleaned = line.trim().replace(/^•\s*/, '')
-            return <li key={idx}>{cleaned}</li>
+            return <li key={idx} className="ml-2">{cleaned}</li>
           })}
         </ul>
       )
     }
 
-    return <p key={Math.random()} className="text-sm text-muted-foreground leading-relaxed mb-3">{paragraph}</p>
+    return <p key={Math.random()} className="text-md text-subtle-foreground leading-relaxed mb-3">{paragraph}</p>
   })
 
   return (
@@ -119,7 +123,7 @@ function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }
 
   return (
     <h2 className="text-3xl mt-4 mb-2 font-semibold text-foreground">
-      {title}
+      <GeminiStreamText text={title} speed={8} showCursor={false} />
     </h2>
   )
 }
@@ -143,8 +147,17 @@ export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; 
     case 'radar-chart':
       content = <RadarChartCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
       break
+    case 'radar':
+      content = <RadarProperCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
+      break
+    case 'segment-strength':
+      content = <SegmentStrengthCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
+      break
     case 'diverging-bar':
       content = <DivergingBarCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
+      break
+    case 'forecast-chart':
+      content = <ForecastChartCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
       break
     case 'line-chart':
       content = <LineChartCell data={cell.data} />

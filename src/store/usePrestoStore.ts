@@ -3,7 +3,7 @@ import { getScenario, scenarioMap } from '@/scenarios'
 
 // ============= TYPES =============
 
-export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'diverging-bar' | 'line-chart' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources' | 'header'
+export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'radar' | 'segment-strength' | 'diverging-bar' | 'forecast-chart' | 'line-chart' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources' | 'header'
 
 export type CellStatus = 'thinking' | 'ready' | 'error'
 
@@ -183,11 +183,9 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
     })
   },
 
-  loadScenarioDetail: async (scenarioId: string) => {
+  loadScenarioDetail: (scenarioId: string) => {
     const scenario = getScenario(scenarioId)
     if (!scenario) return
-
-    const { pushView } = get()
 
     // Create rows from scenario layout
     const cellsToReveal: Array<{ rowId: string; cellId: string }> = []
@@ -233,14 +231,9 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
 
     set({
       activeScenario: scenarioId,
-      activeInsight: scenario
+      activeInsight: scenario,
+      currentView: detailView
     })
-
-    pushView(detailView)
-
-    // Don't reveal cells yet - keep them in 'thinking' state while loading
-    // They will be revealed when loading delay completes
-    // This allows skeleton loaders to show throughout the loading animation
   },
 
   loadScenario: async (id: string) => {

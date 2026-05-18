@@ -18,6 +18,8 @@
   --color-foreground: #f4f4f5;
   --color-muted-foreground: #71717a;
   --color-terminal: #52525b;
+  --color-brand-primary: #343651;
+  --color-brand-secondary: #F9D028;
 
   --radius: 0px;
   --radius-card: 4px;
@@ -35,7 +37,7 @@
 
 @layer utilities {
   .bg-background {
-    @apply bg-[#24242E];
+    @apply bg-[#181924];
   }
 
   .bg-card {
@@ -48,6 +50,10 @@
 
   .text-foreground {
     @apply text-[#f4f4f5];
+  }
+
+  .text-subtle-foreground {
+    @apply text-[#B2B2BF];
   }
 
   .text-muted-foreground {
@@ -183,13 +189,11 @@
   }
 
   .card-glass:hover {
-    background-color: rgba(36, 36, 46, 0.02);
     border-color: rgba(255, 255, 255, 0.24);
   }
 
   .card-glass:active,
   .card-glass.active {
-    background-color: rgba(36, 36, 46, 0.9);
     border-color: rgba(255, 255, 255, 0.2);
   }
 

@@ -8,6 +8,7 @@ import { InsightGridCard } from './cells/InsightGridCard'
 import { useParams } from 'react-router-dom'
 import { GeminiStreamText } from './GeminiStreamText'
 import { BorderGlowOverlay } from './BorderGlowOverlay'
+import { AmbientGridBackground } from './AmbientGridBackground'
 
 export function CanvasGrid() {
   const { scenarioId } = useParams<{ scenarioId: string }>()
@@ -24,23 +25,12 @@ export function CanvasGrid() {
     setCellsRevealed(false)
 
     if (scenarioId) {
-      // Check if we need to load the scenario
-      const expectedViewId = `detail-${scenarioId}`
-
-      if (store.currentView?.id !== expectedViewId) {
-        store.loadScenarioDetail(scenarioId)
-      }
+      // Always reload scenario when URL changes, even if same scenario
+      // This ensures fresh cells in 'thinking' state each time
+      store.loadScenarioDetail(scenarioId)
     } else {
       // No scenarioId means we should show the listing view
-      // If we're showing a detail view, pop back to listing
-      if (store.currentView?.id.startsWith('detail-')) {
-        if (store.viewStack.length > 0) {
-          store.popView()
-        } else {
-          // Fallback: clear canvas to reset to initial listing view
-          store.clearCanvas()
-        }
-      }
+      store.clearCanvas()
     }
   }, [scenarioId])
 
@@ -223,11 +213,28 @@ export function CanvasGrid() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden bg-background">
+    <div className="w-full h-full flex flex-col overflow-hidden bg-background relative">
       <BorderGlowOverlay isActive={isTransitioning} />
 
+      {/* Ambient grid background - change false to true or isTransitioning to enable */}
+      {false && (
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <AmbientGridBackground
+            showNodeLines={false}
+            enableMagneticCursor={false}
+            nodeLineColor="rgba(255, 255, 255, 0.5)"
+            nodeLineOpacity={0.3}
+            nodeLineDistance={60}
+            nodeConnectionCount={1}
+            activeNodeCount={600}
+            magneticStrength={8}
+            magneticRadius={150}
+          />
+        </div>
+      )}
+
       {/* Vertical scrollable content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto relative z-10">
         <div className="p-6 max-w-8xl mx-auto space-y-4">
           {/* Page Header - Title & Description (scrolls with content) */}
           {(currentView.title || isTransitioning) && (
@@ -250,7 +257,7 @@ export function CanvasGrid() {
                 )}
               </h1>
               {currentView.description && (
-                <p className={`text-lg text-muted-foreground transition-opacity duration-700 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+                <p className={`text-lg text-subtle-foreground transition-opacity duration-700 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
                   <GeminiStreamText
                     text={currentView.description}
                     speed={((currentView as any)?.animationSpeed?.description as number) ?? 12}

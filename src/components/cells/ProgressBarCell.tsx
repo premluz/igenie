@@ -22,7 +22,7 @@ export function ProgressBarCell({ metric, descriptionTop, descriptionBottom }: P
   return (
     <div className="flex flex-col h-full">
       {descriptionTop && (
-        <p className="text-sm text-muted-foreground mb-2">{descriptionTop}</p>
+        <p className="text-md text-subtle-foreground mb-8">{descriptionTop}</p>
       )}
       <div className="flex-1">
         {metric.type === 'trend' ? (
@@ -32,7 +32,7 @@ export function ProgressBarCell({ metric, descriptionTop, descriptionBottom }: P
         )}
       </div>
       {descriptionBottom && (
-        <p className="text-sm text-muted-foreground mt-2">{descriptionBottom}</p>
+        <p className="text-md text-subtle-foreground mt-8">{descriptionBottom}</p>
       )}
     </div>
   )
@@ -57,7 +57,7 @@ function TrendCard({ metric }: { metric: any }) {
             <div className={`text-3xl font-bold ${trendColor}`}>
               {change > 0 ? '+' : ''}<AnimatedCounter value={Math.abs(change)} precision={1} suffix="%" />
             </div>
-            <div className="text-xs text-muted-foreground mt-1">Weekly change</div>
+            <div className="text-sm text-muted-foreground mt-1">Weekly change</div>
           </div>
         </div>
       </div>

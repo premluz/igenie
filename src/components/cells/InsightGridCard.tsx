@@ -1,6 +1,5 @@
 import { Radio, Flame } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { usePrestoStore } from '@/store/usePrestoStore'
 import { SparklineChart } from './SparklineChart'
 import { MetricDataPoint } from './MetricDataPoint'
 import { AnimatedProgressBar } from './AnimatedProgressBar'
@@ -19,10 +18,8 @@ interface InsightGridCardProps {
 
 export function InsightGridCard({ data, title }: InsightGridCardProps) {
   const navigate = useNavigate()
-  const { loadScenarioDetail } = usePrestoStore()
 
   const handleClick = () => {
-    loadScenarioDetail(data.scenarioId)
     navigate(`/insights/${data.scenarioId}`)
   }
 
@@ -55,17 +52,10 @@ export function InsightGridCard({ data, title }: InsightGridCardProps) {
       </div>
 
       {/* Metrics - Strength and Trust */}
-      <div className="space-x-3 flex- max-w-md pt-3 border-t border-border/30">
+      <div className="space-y-2 pt-3 border-t border-border/30">
         {/* Strength (Velocity) */}
         <div className="flex items-center gap-2">
-          <MetricDataPoint
-            icon={Radio}
-            iconSize={16}
-            iconColor="text-blue-500"
-            textColor="text-blue-500"
-            value={velocityScore}
-            precision={1}
-          />
+          <span className="text-lg">💪</span>
           <div className="flex-1">
             <AnimatedProgressBar
               value={Math.min((velocityScore / 10) * 100, 100)}
@@ -74,19 +64,19 @@ export function InsightGridCard({ data, title }: InsightGridCardProps) {
               size="xthin"
             />
           </div>
+          <MetricDataPoint
+            icon={Radio}
+            iconSize={14}
+            iconColor="text-blue-500"
+            textColor="text-blue-500"
+            value={velocityScore}
+            precision={1}
+          />
         </div>
 
         {/* Trust (Sentiment) */}
         <div className="flex items-center gap-2">
-          <MetricDataPoint
-            icon={Flame}
-            iconSize={16}
-            iconColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
-            textColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
-            value={sentimentScore}
-            suffix="%"
-            precision={0}
-          />
+          <span className="text-lg">💯</span>
           <div className="flex-1">
             <AnimatedProgressBar
               value={Math.min(sentimentScore, 100)}
@@ -95,6 +85,15 @@ export function InsightGridCard({ data, title }: InsightGridCardProps) {
               size="xthin"
             />
           </div>
+          <MetricDataPoint
+            icon={Flame}
+            iconSize={14}
+            iconColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
+            textColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
+            value={sentimentScore}
+            suffix="%"
+            precision={0}
+          />
         </div>
       </div>
     </button>

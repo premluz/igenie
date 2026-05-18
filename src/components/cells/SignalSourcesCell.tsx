@@ -72,7 +72,7 @@ export function SignalSourcesCell({ data, descriptionTop, descriptionBottom }: S
       `}</style>
 
       {descriptionTop && (
-        <p className="text-xs text-muted-foreground mb-3">{descriptionTop}</p>
+        <p className="text-md text-muted-foreground mb-8">{descriptionTop}</p>
       )}
       <div className="grid grid-cols-3 gap-8 flex-1">
         {pillars.map((pillar) => {
@@ -115,9 +115,9 @@ export function SignalSourcesCell({ data, descriptionTop, descriptionBottom }: S
         
       </div>
       {(descriptionBottom || total) && (
-        <div className="mt-4 mb-2 pb-0 border-b border-border/20">
-          <p className="text-sm text-muted-foreground">{descriptionBottom || total}</p>
-          {subtitle && <p className="text-xs text-muted-foreground/60 mt-1">{subtitle}</p>}
+        <div className="mt-8 mb-2 pb-0 pt-4border-b border-border/20">
+          <p className="text-md text-subtle-foreground">{descriptionBottom || total}</p>
+          {subtitle && <p className="text-md text-muted-foreground/60 mt-1">{subtitle}</p>}
         </div>
       )}
     </div>

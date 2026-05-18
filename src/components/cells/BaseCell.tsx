@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { usePrestoStore, type Cell } from '@/store/usePrestoStore'
 import { HoverActionBar } from './HoverActionBar'
+import { GeminiStreamText } from '../GeminiStreamText'
 
 interface BaseCellProps {
   cell: Cell
@@ -36,7 +37,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       className={`
-        relative flex flex-col card-glass rounded-[4px] w-full h-full min-h-64 border-[#FFFFFF2E] overflow-visible
+        relative flex flex-col card-glass rounded-[4px] w-full h-full border-[#FFFFFF2E] overflow-visible
         ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
       `}
@@ -52,12 +53,25 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
           background: linear-gradient(
             90deg,
             rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.1) 20%,
-            rgba(255, 255, 255, 0.2) 50%,
-            rgba(255, 255, 255, 0.1) 80%,
+            rgba(255, 255, 255, 0.02) 20%,
+            rgba(255, 255, 255, 0.06) 50%,
+            rgba(255, 255, 255, 0.02) 80%,
             rgba(255, 255, 255, 0) 100%
           );
           animation: skeleton-shimmer 1.2s infinite;
+        }
+
+        @keyframes border-pulse {
+          0%, 100% {
+            box-shadow: 0 0 0 1px #FFFFFF2E, 0 0 8px rgba(255, 255, 255, 0.1);
+          }
+          50% {
+            box-shadow: 0 0 0 1px #FFFFFF4E, 0 0 16px rgba(255, 255, 255, 0.3);
+          }
+        }
+
+        .border-pulse-glow {
+          animation: border-pulse 2s ease-in-out infinite;
         }
 
         /* Delay child animations until content fade-in completes (500ms) */
@@ -82,10 +96,10 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
           </div>
         )}
 
-        {/* Header - show skeleton during landing transitions, visible otherwise */}
-        <div className="px-4 py-3 border-b border-border/50 flex items-start justify-between gap-3 relative z-20">
+        {/* Header - show skeleton during loading transitions, animate content when ready */}
+        <div className="px-4 py-3 flex items-start justify-between gap-2 relative z-20">
           <div className="flex-1 min-w-0">
-            {/* During landing transition with thinking status, show skeleton loaders for h3 */}
+            {/* During loading with thinking status, show skeleton loaders for h3 */}
             {isTransitioning && cell.status === 'thinking' ? (
               <div className="space-y-2">
                 <div className="h-5 bg-gradient-to-r from-muted-foreground/10 via-muted-foreground/20 to-muted-foreground/10 rounded w-48 animate-pulse"></div>
@@ -93,11 +107,17 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-lg font-semibold text-foreground truncate">{cell.title}</h3>
+                <div className="flex items-center gap-2 mb-1" key={`title-${cell.status}`}>
+                  <h3 className="text-lg font-semibold text-foreground truncate">
+                    <GeminiStreamText text={cell.title} speed={8} showCursor={false} />
+                  </h3>
                 </div>
                 {cell.subtitle && (
-                  <p className="text-sm text-muted-foreground truncate">{cell.subtitle}</p>
+                  <div key={`subtitle-${cell.status}`}>
+                    <p className="text-sm text-muted-foreground truncate">
+                      <GeminiStreamText text={cell.subtitle} speed={8} showCursor={false} />
+                    </p>
+                  </div>
                 )}
               </>
             )}
@@ -117,7 +137,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
               </div>
               <button
                 onClick={handleRetry}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-foreground bg-accent hover:bg-accent/80 rounded-[4px] transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-foreground bg-accent hover:bg-accent/80 rounded-[4px] transition-colors"
               >
                 <RotateCcw size={12} />
                 Retry

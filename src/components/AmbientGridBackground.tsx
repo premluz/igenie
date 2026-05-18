@@ -412,7 +412,9 @@ export function AmbientGridBackground({
         let opacity = BASE_OPACITY
 
         if (closestAttractor && maxInfluence > 0) {
+          // @ts-ignore - TypeScript incorrectly infers closestAttractor as never due to useRef limitation
           radius = BASE_DOT_RADIUS + (closestAttractor.maxScale - BASE_DOT_RADIUS) * maxInfluence
+          // @ts-ignore
           opacity = BASE_OPACITY + (closestAttractor.opacityMultiplier - BASE_OPACITY) * maxInfluence
         }
 

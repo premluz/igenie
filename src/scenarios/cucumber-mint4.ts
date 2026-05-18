@@ -1,8 +1,4 @@
-import { type Row } from '@/store/usePrestoStore'
-
-export interface ScenarioData {
-  id: string; brand: string; category: string; title: string; description: string; date: string; velocityScore: number; sentimentScore: number; sparklineData?: number[]; signals: Array<{ id: string; name: string; icon: 'radio' | 'flame' | 'trending' | 'activity' | 'search'; velocity: number; sentiment: number; trend: 'rising' | 'stable' | 'falling'; description?: string }>; initialLayout: Array<Omit<Row, 'id'>>; chartData: Record<string, unknown>; narratives: Record<string, string>; loadingDelay?: number
-}
+import { type ScenarioData } from './types'
 
 export const cucumberMint4: ScenarioData = {
   id: 'cucumber-mint-4', brand: 'Cucumber Mint', category: 'Personal Care', title: 'Consumer Feedback Analysis', description: 'Aggregated sentiment from reviews and surveys', date: '2026-05-11', velocityScore: 6.9, sentimentScore: 81, sparklineData: [6, 6, 6, 7, 7, 7, 8],

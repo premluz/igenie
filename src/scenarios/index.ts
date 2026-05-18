@@ -1,4 +1,7 @@
-import { neutroGenaNatural, type ScenarioData } from './neutrogena-natural'
+import { type ScenarioData } from './types'
+import { neutroGenaNatural } from './neutrogena-natural'
+import { energyDrinks } from './energy-drinks-trends-genz'
+import { botanicalEnergyDeepDive } from './botanical-energy-deepdive'
 import { cucumberMint } from './cucumber-mint'
 import { cucumberMint1 } from './cucumber-mint1'
 import { cucumberMint2 } from './cucumber-mint2'
@@ -9,6 +12,8 @@ import { cucumberMint5 } from './cucumber-mint5'
 // import { newScenario } from './new-product' // Uncomment when you create a new scenario
 
 export const scenarioMap = {
+  'energy-drinks-trends-genz': energyDrinks,
+  'botanical-energy-deepdive': botanicalEnergyDeepDive,
   'neutrogena-natural': neutroGenaNatural,
   'cucumber-mint': cucumberMint,
   'cucumber-mint1': cucumberMint1,

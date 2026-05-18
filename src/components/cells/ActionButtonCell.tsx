@@ -17,14 +17,14 @@ export function ActionButtonCell({ title, subtitle, status = 'ready', inline = f
         <Button
           disabled={isLoading}
           variant="outline"
-          size="sm"
+          size="2xl"
           className="gap-2"
         >
           <Sparkles size={14} />
           {title}
         </Button>
         {subtitle && (
-          <p className="text-xs text-muted-foreground/50">{subtitle}</p>
+          <p className="text-sm text-muted-foreground/100">{subtitle}</p>
         )}
       </div>
     )

@@ -50,11 +50,26 @@
       "Bash(git commit -m 'Fix shimmer visibility: keep cards at full opacity during loading *)",
       "Bash(git commit -m 'Differentiate loading states by scenario type *)",
       "Bash(git commit -m 'Scenario 3: Keep old scenario visible during transition, switch after delay *)",
-      "Bash(git commit -m 'Fix scenarios and add dynamic loading titles *)"
+      "Bash(git commit -m 'Fix scenarios and add dynamic loading titles *)",
+      "Bash(git commit -m 'Fix Scenario 1: Pass isTransitioning to all WidgetRenderer instances *)",
+      "Bash(git commit -m 'Add h2 skeleton loaders in Scenario 1 *)",
+      "Bash(chmod +x /tmp/test_scenarios.sh)",
+      "Bash(/tmp/test_scenarios.sh)",
+      "Bash(curl -s http://localhost:5175/api/test)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(curl -s http://localhost:5176/)",
+      "Bash(rm src/scenarios/*.bak && echo \"✓ Cleaned up backup files\")",
+      "Bash(rm src/scenarios/*.bak 2>/dev/null; curl -s http://localhost:5176/ > /dev/null && echo \"✓ Server running - emojis removed\" || echo \"✗ Server not responding\")",
+      "Bash(grep -E \"\\\\.ts$\")",
+      "Bash(curl -s http://localhost:5177)",
+      "Bash(rm -f src/components/cells/*.bak \"src/scenarios/cucumber-mint copy.ts\" \"src/scenarios/cucumber-mint copy 2.ts\" \"src/scenarios/cucumber-mint copy 3.ts\" \"src/scenarios/cucumber-mint copy 4.ts\" \"src/scenarios/cucumber-mint copy 5.ts\" \"src/scenarios/cucumber-mint copy 6.ts\")",
+      "Bash(grep -E \"error TS[^0-9]|error TS[0-9]{1,4}[^0-9]\")",
+      "Bash(git commit -m ' *)"
     ],
     "additionalDirectories": [
       "/private/tmp",
-      "/Users/przemek/iGenie/i-genie-prototype/src/components/cells"
+      "/Users/przemek/iGenie/i-genie-prototype/src/components/cells",
+      "/Users/przemek/iGenie/i-genie-prototype/src/scenarios"
     ]
   }
 }

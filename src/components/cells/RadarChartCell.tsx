@@ -1,7 +1,13 @@
 import { VegaEmbed } from 'react-vega'
 
 interface RadarChartCellProps {
-  data: Array<{ dimension: string; value: number; max: number }>
+  data: Array<{
+    channel?: string
+    dimension?: string
+    value: number
+    benchmark?: number
+    max?: number
+  }>
   descriptionBottom?: string
 }
 
@@ -13,11 +19,16 @@ export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps)
   const cleanData = data.filter(d =>
     d &&
     typeof d === 'object' &&
-    typeof d.dimension === 'string' &&
-    d.dimension.length > 0 &&
+    (typeof d.channel === 'string' || typeof d.dimension === 'string') &&
+    ((d.channel && d.channel.length > 0) || (d.dimension && d.dimension.length > 0)) &&
     typeof d.value === 'number' &&
     isFinite(d.value)
-  )
+  ).map(d => ({
+    dimension: d.channel || d.dimension || '',
+    value: d.value,
+    benchmark: d.benchmark || d.value * 0.75,
+    max: d.max || 100
+  }))
 
   if (cleanData.length === 0) {
     return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
@@ -30,8 +41,8 @@ export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps)
     height: 320,
     padding: 16,
     data: { values: cleanData },
-    mark: { type: 'point', filled: true, size: 150, color: '#3b82f6' },
-    projection: { type: 'identity' },
+    mark: { type: 'area', filled: true, line: true, point: true },
+    projection: { type: 'polar' },
     encoding: {
       theta: { field: 'dimension', type: 'nominal', stack: null },
       radius: {
@@ -39,14 +50,12 @@ export function RadarChartCell({ data, descriptionBottom }: RadarChartCellProps)
         type: 'quantitative',
         scale: { type: 'linear', zero: true, domain: [0, 100] }
       },
-      color: {
-        field: 'value',
-        type: 'quantitative',
-        scale: { scheme: 'blues', domain: [0, 100] }
-      },
+      color: { value: '#3b82f6' },
+      opacity: { value: 0.4 },
       tooltip: [
         { field: 'dimension', type: 'nominal', title: 'Dimension' },
-        { field: 'value', type: 'quantitative', title: 'Score' }
+        { field: 'value', type: 'quantitative', title: 'Score', format: '.0f' },
+        { field: 'benchmark', type: 'quantitative', title: 'Benchmark', format: '.0f' }
       ]
     },
     config: {

@@ -1,6 +1,5 @@
 import { Radio, Flame } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { usePrestoStore } from '@/store/usePrestoStore'
 import { SparklineChart } from './SparklineChart'
 import { MetricDataPoint } from './MetricDataPoint'
 import { AnimatedProgressBar } from './AnimatedProgressBar'
@@ -20,10 +19,8 @@ interface InsightCardProps {
 
 export function InsightCard({ data, title }: InsightCardProps) {
   const navigate = useNavigate()
-  const { loadScenarioDetail } = usePrestoStore()
 
   const handleClick = () => {
-    loadScenarioDetail(data.scenarioId)
     navigate(`/insights/${data.scenarioId}`)
   }
 
@@ -53,7 +50,7 @@ function InsightCardContent({ data, title, handleClick }: any) {
       </div>
 
       {/* Right Column - Content & Metrics */}
-      <div className="flex-1 px-4 py-3 min-w-0 flex flex-col justify-between">
+      <div className="flex-1 px-4 pt-3 min-w-0 flex flex-col justify-between">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-foreground line-clamp-2 mb-1">
             {title}
@@ -65,16 +62,9 @@ function InsightCardContent({ data, title, handleClick }: any) {
 
         {/* Metrics - Velocity and Sentiment */}
         <div className="flex max-w-xs gap-6 items-center">
-          {/* Signal Strength (Velocity) */}
+          {/* Strength (Velocity) */}
           <div className="flex items-center gap-2 flex-1">
-            <MetricDataPoint
-              icon={Radio}
-              iconSize={16}
-              iconColor="text-blue-500"
-              textColor="text-blue-500"
-              value={velocityScore}
-              precision={1}
-            />
+            <span className="text-lg">💪</span>
             <div className="flex-1">
               <AnimatedProgressBar
                 value={Math.min((velocityScore / 10) * 100, 100)}
@@ -83,19 +73,19 @@ function InsightCardContent({ data, title, handleClick }: any) {
                 size="xthin"
               />
             </div>
+            <MetricDataPoint
+              icon={Radio}
+              iconSize={14}
+              iconColor="text-blue-500"
+              textColor="text-blue-500"
+              value={velocityScore}
+              precision={1}
+            />
           </div>
 
-          {/* Signal Trust (Sentiment) */}
+          {/* Trust (Sentiment) */}
           <div className="flex items-center gap-2 flex-1">
-            <MetricDataPoint
-              icon={Flame}
-              iconSize={16}
-              iconColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
-              textColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
-              value={sentimentScore}
-              suffix="%"
-              precision={0}
-            />
+            <span className="text-lg">💯</span>
             <div className="flex-1">
               <AnimatedProgressBar
                 value={Math.min(sentimentScore, 100)}
@@ -104,6 +94,15 @@ function InsightCardContent({ data, title, handleClick }: any) {
                 size="xthin"
               />
             </div>
+            <MetricDataPoint
+              icon={Flame}
+              iconSize={14}
+              iconColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
+              textColor={sentimentScore > 80 ? 'text-emerald-500' : 'text-orange-500'}
+              value={sentimentScore}
+              suffix="%"
+              precision={0}
+            />
           </div>
         </div>
       </div>
