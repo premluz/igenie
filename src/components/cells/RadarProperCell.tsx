@@ -47,13 +47,13 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
     width: 320,
     height: 320,
     padding: 16,
+    projection: { type: 'polar' },
     data: { values: chartData },
     layer: [
       // Benchmark polygon (gray, low opacity)
       {
         transform: [{ filter: "datum.type === 'Benchmark'" }],
         mark: { type: 'area', filled: true, opacity: 0.1, line: true, point: false, color: '#6b7280' },
-        projection: { type: 'polar' },
         encoding: {
           theta: { field: 'dimension', type: 'nominal', stack: null },
           radius: {
@@ -67,7 +67,6 @@ export function RadarProperCell({ data, descriptionBottom }: RadarProperCellProp
       {
         transform: [{ filter: "datum.type === 'Actual'" }],
         mark: { type: 'area', filled: true, opacity: 0.4, line: true, point: true, color: '#3b82f6' },
-        projection: { type: 'polar' },
         encoding: {
           theta: { field: 'dimension', type: 'nominal', stack: null },
           radius: {

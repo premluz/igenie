@@ -64,7 +64,8 @@
       "Bash(curl -s http://localhost:5177)",
       "Bash(rm -f src/components/cells/*.bak \"src/scenarios/cucumber-mint copy.ts\" \"src/scenarios/cucumber-mint copy 2.ts\" \"src/scenarios/cucumber-mint copy 3.ts\" \"src/scenarios/cucumber-mint copy 4.ts\" \"src/scenarios/cucumber-mint copy 5.ts\" \"src/scenarios/cucumber-mint copy 6.ts\")",
       "Bash(grep -E \"error TS[^0-9]|error TS[0-9]{1,4}[^0-9]\")",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git commit -m 'fix: Correct Vega-Lite polar projection and update energy-drinks scenario data *)"
     ],
     "additionalDirectories": [
       "/private/tmp",

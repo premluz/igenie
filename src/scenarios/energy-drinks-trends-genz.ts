@@ -348,7 +348,8 @@ export const energyDrinks: ScenarioData = {
       { date: '2026-01-01', volume: 1580, sentiment: 88 },
       { date: '2026-02-01', volume: 1920, sentiment: 89 },
       { date: '2026-03-01', volume: 2340, sentiment: 90 },
-      { date: '2026-04-01', volume: 2850, sentiment: 88 }
+      { date: '2026-04-01', volume: 2850, sentiment: 88 },
+      { date: '2026-05-18', volume: 3580, sentiment: 89 }
     ],
 
     'Signal Strength Radar': [
