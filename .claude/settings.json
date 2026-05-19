@@ -69,7 +69,11 @@
       "Bash(git commit -m 'debug: Simplify radar chart spec and add console logging *)",
       "Bash(git commit -m 'fix: Revise radar chart with separate line/area layers for polar projection *)",
       "Bash(git commit -m 'feat: Add SVG-based SimpleRadarChart as reliable fallback *)",
-      "Bash(git commit -m 'docs: Update memory with SVG radar chart fix details *)"
+      "Bash(git commit -m 'docs: Update memory with SVG radar chart fix details *)",
+      "Read(//Users/fremek/iGenie/i-genie-prototype/src/components/cells/**)",
+      "Bash(pkill -f \"npm run dev\" -o)",
+      "Bash(pkill -f vite)",
+      "Bash(pkill -f \"npm run dev|vite\")"
     ],
     "additionalDirectories": [
       "/private/tmp",

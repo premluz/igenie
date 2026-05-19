@@ -53,9 +53,9 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
           background: linear-gradient(
             90deg,
             rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.02) 20%,
-            rgba(255, 255, 255, 0.06) 50%,
-            rgba(255, 255, 255, 0.02) 80%,
+            rgba(255, 255, 255, 0.01) 20%,
+            rgba(255, 255, 255, 0.03) 50%,
+            rgba(255, 255, 255, 0.01) 80%,
             rgba(255, 255, 255, 0) 100%
           );
           animation: skeleton-shimmer 1.2s infinite;
@@ -147,7 +147,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
 
           {/* Actual content - hidden during thinking so shimmer is the only thing visible */}
           {cell.status !== 'error' && (
-            <div className={`transition-opacity duration-500 ${cell.status === 'thinking' ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`transition-opacity duration-500 w-full h-full ${cell.status === 'thinking' ? 'opacity-0' : 'opacity-100'}`}>
               {/* Pass cell status to children so animations sync with fade-in */}
               {typeof children === 'object' && children && 'props' in children
                 ? children

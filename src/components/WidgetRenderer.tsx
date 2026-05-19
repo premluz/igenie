@@ -12,7 +12,57 @@ import { InsightCard } from './cells/InsightCard'
 import { ProgressBarCell } from './cells/ProgressBarCell'
 import { ActionButtonCell } from './cells/ActionButtonCell'
 import { SignalSourcesCell } from './cells/SignalSourcesCell'
+import { LineChartCell } from './cells/LineChartCell'
+import { TreemapCell } from './cells/TreemapCell'
 import { GeminiStreamText } from './GeminiStreamText'
+
+// Helper for rendering markdown bold and arrows in text
+export function renderMarkdown(str: string) {
+  const parts = str.split(/(\*\*.*?\*\*)/)
+  return parts.map((part, idx) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={idx} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
+    }
+    return part
+  })
+}
+
+// Helper for rendering formatted description bottoms with arrows
+export function DescriptionBottom({ text }: { text: string }) {
+  if (!text) return null
+
+  const lines = text.split('\n\n').map(paragraph => {
+    const lineItems = paragraph.split('\n').filter(line => line.trim())
+
+    // Check if lines contain arrows or bullets
+    const hasArrows = lineItems.some(line => line.trim().startsWith('→'))
+    const hasBullets = lineItems.some(line => line.trim().startsWith('•'))
+
+    if (hasArrows || hasBullets) {
+      return (
+        <div key={Math.random()} className="space-y-2 text-md text-subtle-foreground mb-3">
+          {lineItems.map((line, idx) => {
+            const cleaned = line.trim().replace(/^[•→]\s*/, '')
+            return (
+              <div key={idx} className="flex gap-2">
+                <span className="flex-shrink-0 text-foreground/60">→</span>
+                <div>{renderMarkdown(cleaned)}</div>
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+
+    return <p key={Math.random()} className="text-md text-subtle-foreground leading-relaxed mb-3">{renderMarkdown(paragraph)}</p>
+  })
+
+  return (
+    <div className="px-4 py-3 border-t border-border/20 mt-auto">
+      {lines}
+    </div>
+  )
+}
 
 function KpiCell({ data }: { data: any }) {
   // If data has sparkline trend data, use SparklineCard
@@ -38,18 +88,6 @@ function KpiCell({ data }: { data: any }) {
   )
 }
 
-function LineChartCell({ data }: { data: any }) {
-  return (
-    <div className="flex items-center justify-center h-full">
-      <p className="text-md text-subtle-foreground text-center">
-        Line Chart<br />
-        {data?.length || 0} data points
-      </p>
-    </div>
-  )
-}
-
-
 function NarrativeCell({ data }: { data: any }) {
   const text = typeof data === 'string' ? data : JSON.stringify(data)
 
@@ -68,25 +106,42 @@ function NarrativeCell({ data }: { data: any }) {
     }
   }
 
+  // Parse markdown bold: **text** → <strong>text</strong>
+  const renderMarkdown = (str: string) => {
+    const parts = str.split(/(\*\*.*?\*\*)/)
+    return parts.map((part, idx) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={idx} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
+      }
+      return part
+    })
+  }
+
   // Parse text into paragraphs and lists
   const parts = displayText.split('\n\n').map(paragraph => {
     const lines = paragraph.split('\n').filter(line => line.trim())
 
-    // Check if this paragraph contains bullet points
+    // Check if this paragraph contains bullet points or arrows
     const hasBullets = lines.some(line => line.trim().startsWith('•'))
+    const hasArrows = lines.some(line => line.trim().startsWith('→'))
 
-    if (hasBullets) {
+    if (hasBullets || hasArrows) {
       return (
-        <ul key={Math.random()} className="list-disc list-outside pl-5 space-y-1 text-md text-subtle-foreground mb-3">
+        <div key={Math.random()} className="space-y-2 text-md text-subtle-foreground mb-3">
           {lines.map((line, idx) => {
-            const cleaned = line.trim().replace(/^•\s*/, '')
-            return <li key={idx} className="ml-2">{cleaned}</li>
+            const cleaned = line.trim().replace(/^[•→]\s*/, '')
+            return (
+              <div key={idx} className="flex gap-2">
+                <span className="flex-shrink-0 text-foreground/60">→</span>
+                <div>{renderMarkdown(cleaned)}</div>
+              </div>
+            )
           })}
-        </ul>
+        </div>
       )
     }
 
-    return <p key={Math.random()} className="text-md text-subtle-foreground leading-relaxed mb-3">{paragraph}</p>
+    return <p key={Math.random()} className="text-md text-subtle-foreground leading-relaxed mb-3">{renderMarkdown(paragraph)}</p>
   })
 
   return (
@@ -160,7 +215,10 @@ export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; 
       content = <ForecastChartCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
       break
     case 'line-chart':
-      content = <LineChartCell data={cell.data} />
+      content = <LineChartCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
+      break
+    case 'treemap':
+      content = <TreemapCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
       break
     case 'table':
       content = <TableCell data={cell.data as any} />

@@ -9,11 +9,14 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.tsx'
 import './index.css'
 import 'react-grid-layout/css/styles.css'
+import { TooltipProvider } from '@/components/ui/tooltip'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <TooltipProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </TooltipProvider>
   </React.StrictMode>,
 )

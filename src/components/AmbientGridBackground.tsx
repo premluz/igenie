@@ -48,6 +48,7 @@ interface AmbientGridBackgroundProps {
   activeNodeCount?: number
   magneticStrength?: number
   magneticRadius?: number
+  isAnimated?: boolean
 }
 
 export function AmbientGridBackground({
@@ -67,7 +68,8 @@ export function AmbientGridBackground({
   nodeConnectionCount = 3,
   activeNodeCount = 100,
   magneticStrength = 15,
-  magneticRadius = 600
+  magneticRadius = 600,
+  isAnimated = true
 }: AmbientGridBackgroundProps = {}) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -326,7 +328,7 @@ export function AmbientGridBackground({
 
     // Apply magnetic cursor effect to ALL nodes (active and inactive)
     const updateMagneticCursor = () => {
-      if (!enableMagneticCursor) return
+      if (!enableMagneticCursor || !isAnimated) return
 
       const cursor = cursorRef.current
       // Pull ALL nodes, not just active ones
@@ -434,7 +436,7 @@ export function AmbientGridBackground({
       window.removeEventListener('resize', handleResize)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [showBackground, baseDotRadius, baseOpacity, cursorOpacityMultiplier, autonomousOpacityMultiplier, cursorMaxScale, autonomousMaxScale, autonomousVelocity, showNodeLines, enableMagneticCursor, nodeLineColor, nodeLineOpacity, nodeLineDistance, nodeConnectionCount, activeNodeCount, magneticStrength, magneticRadius])
+  }, [showBackground, baseDotRadius, baseOpacity, cursorOpacityMultiplier, autonomousOpacityMultiplier, cursorMaxScale, autonomousMaxScale, autonomousVelocity, showNodeLines, enableMagneticCursor, nodeLineColor, nodeLineOpacity, nodeLineDistance, nodeConnectionCount, activeNodeCount, magneticStrength, magneticRadius, isAnimated])
 
   return (
     <>

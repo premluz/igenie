@@ -18,7 +18,7 @@ export function BreadcrumbBar({
   onFilterClick,
 }: BreadcrumbBarProps) {
   return (
-    <div className="h-14 border-b border-border flex items-center px-6 justify-between bg-card/20 sticky top-0 z-20">
+    <div className="h-14 border-b border-border flex items-center px-0 justify-between bg-card/20 sticky top-0 z-20">
       <div className="flex items-center gap-2">
         {breadcrumbs && breadcrumbs.length > 0 && (
           <>

@@ -1,4 +1,5 @@
 import { VegaEmbed } from 'react-vega'
+import { DescriptionBottom } from '../WidgetRenderer'
 
 interface DivergingBarCellProps {
   data: Array<{ driver: string; positive: number; negative: number }>
@@ -86,14 +87,10 @@ export function DivergingBarCell({ data, descriptionBottom }: DivergingBarCellPr
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex-1 flex items-center justify-center p-2">
+      <div className="flex-1 flex items-center justify-center min-h-0">
         <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />
       </div>
-      {descriptionBottom && (
-        <div className="px-4 pb-3 border-t border-border/20">
-          <p className="text-md mt-8 bg-insight text-muted-foreground">{descriptionBottom}</p>
-        </div>
-      )}
+      {descriptionBottom && <DescriptionBottom text={descriptionBottom} />}
     </div>
   )
 }

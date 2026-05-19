@@ -7,6 +7,7 @@ import { LandingScreen } from '@/components/LandingScreen'
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export default function App() {
   const location = useLocation()
@@ -42,7 +43,7 @@ export default function App() {
   return (
     <div className="flex h-screen w-full bg-background text-foreground overflow-hidden">
       {/* LEFT SIDEBAR NAV */}
-      <nav className="w-14 border-r border-border bg-background flex flex-col items-center py-4 space-y-6 relative z-10">
+      <nav className="w-16 border-r border-border bg-background flex flex-col items-center py-4 space-y-6 relative z-10">
         <Link
           to="/"
           className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg mb-2 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity duration-150"
@@ -50,72 +51,125 @@ export default function App() {
           <img src="/images/logo.png" alt="Logo" className="w-full h-full object-contain" />
         </Link>
         <div className="flex flex-col space-y-4 text-muted-foreground flex-1">
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
-            <Search size={16} />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
+                <Search size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Search</TooltipContent>
+          </Tooltip>
+
           <Link to="/">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
-                isHome ? 'text-foreground bg-accent/10 border border-accent/20' : 'hover:bg-white/10'
-              }`}
-            >
-              <Home size={16} />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
+                    isHome ? 'text-foreground bg-accent/10 border border-accent/20' : 'hover:bg-white/10'
+                  }`}
+                >
+                  <Home size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Home</TooltipContent>
+            </Tooltip>
           </Link>
+
           <Link to="/insights">
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
-                isInsights ? 'text-foreground bg-accent/10 border border-accent/20 hover:bg-accent/20' : 'hover:bg-white/10'
-              }`}
-            >
-              <Activity size={16} />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
+                    isInsights ? 'text-foreground bg-accent/10 border border-accent/20 hover:bg-accent/20' : 'hover:bg-white/10'
+                  }`}
+                >
+                  <Activity size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Insights</TooltipContent>
+            </Tooltip>
           </Link>
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
-            <Compass size={16} />
-          </Button>
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
-            <Database size={16} />
-          </Button>
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
-            <Box size={16} />
-          </Button>
-          <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
-            <BarChart3 size={16} />
-          </Button>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
+                <Compass size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Explore</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
+                <Database size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Data</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
+                <Box size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Projects</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-8 h-8 rounded-lg hover:bg-white/10 transition-colors duration-150">
+                <BarChart3 size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Analytics</TooltipContent>
+          </Tooltip>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleLogout}
-          className="w-8 h-8 rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors duration-150 text-muted-foreground"
-          title="Logout"
-        >
-          <LogOut size={16} />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleLogout}
+              className="w-8 h-8 rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-colors duration-150 text-muted-foreground"
+            >
+              <LogOut size={16} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Logout</TooltipContent>
+        </Tooltip>
       </nav>
 
-      {/* CENTER CANVAS */}
+      {/* HOLDING CONTAINER - wraps breadcrumb, content, and sidebar */}
       <div className="flex-1 flex flex-col overflow-hidden relative z-10">
+        {/* BREADCRUMB - Spans full width within holding container */}
         {location.pathname.startsWith('/insights') && (
-          <div className="h-15 border-b border-border flex items-center bg-card/0">
+          <div className="h-10 border-b border-border flex items-center bg-card/0">
             <Breadcrumb />
           </div>
         )}
-        <Routes>
-          <Route path="/" element={<LandingScreen shouldAnimate={justLoggedIn} />} />
-          <Route path="/insights" element={<CanvasGrid />} />
-          <Route path="/insights/:scenarioId" element={<CanvasGrid />} />
-        </Routes>
-      </div>
 
-      {/* RIGHT SIDEBAR PRESTO */}
-      {location.pathname.startsWith('/insights') && <PrestoSidebar />}
+        {/* CENTER CANVAS + RIGHT SIDEBAR CONTAINER */}
+        <div className="flex-1 flex overflow-hidden relative z-10">
+          {/* CENTER CANVAS */}
+          <div className="flex-1 flex flex-col overflow-hidden relative z-10">
+            <Routes>
+              <Route path="/" element={<LandingScreen shouldAnimate={justLoggedIn} />} />
+              <Route path="/insights" element={<CanvasGrid />} />
+              <Route path="/insights/:scenarioId" element={<CanvasGrid />} />
+            </Routes>
+          </div>
+
+          {/* RIGHT SIDEBAR PRESTO */}
+          {location.pathname.startsWith('/insights') && <PrestoSidebar />}
+        </div>
+      </div>
     </div>
   )
 }

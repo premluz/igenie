@@ -1,4 +1,4 @@
-import { ChevronUp, ChevronDown, Grid3x3, List } from 'lucide-react'
+import { Grid3x3, List } from 'lucide-react'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { WidgetRenderer } from './WidgetRenderer'
 import { Button } from '@/components/ui/button'
@@ -8,11 +8,10 @@ import { InsightGridCard } from './cells/InsightGridCard'
 import { useParams } from 'react-router-dom'
 import { GeminiStreamText } from './GeminiStreamText'
 import { BorderGlowOverlay } from './BorderGlowOverlay'
-import { AmbientGridBackground } from './AmbientGridBackground'
 
 export function CanvasGrid() {
   const { scenarioId } = useParams<{ scenarioId: string }>()
-  const { currentView, moveRow, cellTypeFilter, cellTitleFilter, isTransitioning, revealCells, revealCellsGradually } = usePrestoStore()
+  const { currentView, cellTypeFilter, cellTitleFilter, isTransitioning, revealCells, revealCellsGradually } = usePrestoStore()
   const [activeTab, setActiveTab] = useState('pulse')
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
   const [cellsRevealed, setCellsRevealed] = useState(false)
@@ -220,26 +219,18 @@ export function CanvasGrid() {
     <div className="w-full h-full flex flex-col overflow-hidden bg-background relative">
       <BorderGlowOverlay isActive={isTransitioning} />
 
-      {/* Ambient grid background - change false to true or isTransitioning to enable */}
-      {false && (
-        <div className="absolute inset-0 pointer-events-none z-0">
-          <AmbientGridBackground
-            showNodeLines={false}
-            enableMagneticCursor={false}
-            nodeLineColor="rgba(255, 255, 255, 0.5)"
-            nodeLineOpacity={0.3}
-            nodeLineDistance={60}
-            nodeConnectionCount={1}
-            activeNodeCount={600}
-            magneticStrength={8}
-            magneticRadius={150}
-          />
-        </div>
-      )}
-
-      {/* Vertical scrollable content */}
-      <div className="flex-1 overflow-y-auto relative z-10">
-        <div className="p-6 max-w-8xl mx-auto space-y-4">
+      {/* Vertical scrollable content with genie background */}
+      <div
+        className="flex-1 overflow-y-auto relative z-10"
+        style={{
+          backgroundImage: 'url(/images/genie-bg.png)',
+          backgroundSize: 'auto 120%',
+          backgroundPosition: '75% 20%',
+          backgroundAttachment: 'fixed',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        <div className="p-6 m-6 border-border border-1 rounded-sm max-w-8xl bg-surface space-y-4">
           {/* Page Header - Title & Description (scrolls with content) */}
           {(currentView.title || isTransitioning) && (
             <div className="mb-4 pb-6 border-b border-border">
@@ -278,28 +269,6 @@ export function CanvasGrid() {
           ) : (
             filteredRows.map((row) => (
               <div key={row.id} className={`group relative transition-opacity duration-700 ${isTransitioning ? 'pointer-events-none' : 'opacity-100'} opacity-100`}>
-                {/* Move controls (on hover, left side) */}
-                <div className={`absolute -left-12 top-2 ${isTransitioning ? 'hidden' : 'opacity-0 group-hover:opacity-100'} transition-opacity flex flex-col gap-1`}>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0"
-                    onClick={() => moveRow(row.id, 'up')}
-                    title="Move row up"
-                  >
-                    <ChevronUp size={14} />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6 p-0"
-                    onClick={() => moveRow(row.id, 'down')}
-                    title="Move row down"
-                  >
-                    <ChevronDown size={14} />
-                  </Button>
-                </div>
-
                 {/* Row: flex container with equal-width columns and equal height */}
                 <div className="flex gap-4 w-full items-stretch">
                   {row.cells.map(cell => (

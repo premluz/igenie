@@ -3,7 +3,7 @@ import { getScenario, scenarioMap } from '@/scenarios'
 
 // ============= TYPES =============
 
-export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'radar' | 'segment-strength' | 'diverging-bar' | 'forecast-chart' | 'line-chart' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources' | 'header'
+export type CellType = 'kpi' | 'combo-chart' | 'radar-chart' | 'radar' | 'segment-strength' | 'diverging-bar' | 'forecast-chart' | 'line-chart' | 'treemap' | 'table' | 'narrative' | 'pulse-list' | 'insight-card' | 'progress-bar' | 'action-button' | 'signal-sources' | 'header'
 
 export type CellStatus = 'thinking' | 'ready' | 'error'
 
@@ -197,9 +197,9 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
 
       const cellsWithData = rowTemplate.cells.map(cellTemplate => {
         let cellData = cellTemplate.data
-        if (scenario.chartData[cellTemplate.title]) {
+        if (scenario.chartData && scenario.chartData[cellTemplate.title]) {
           cellData = scenario.chartData[cellTemplate.title]
-        } else if (scenario.narratives[cellTemplate.title]) {
+        } else if (scenario.narratives && scenario.narratives[cellTemplate.title]) {
           cellData = scenario.narratives[cellTemplate.title]
         }
         const cellId = cellTemplate.id || genId()
@@ -232,7 +232,8 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
     set({
       activeScenario: scenarioId,
       activeInsight: scenario,
-      currentView: detailView
+      currentView: detailView,
+      logs: []
     })
   },
 
@@ -272,9 +273,9 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
       // Inject data into cells - all start as 'thinking'
       const cellsWithData = rowTemplate.cells.map(cellTemplate => {
         let cellData = cellTemplate.data
-        if (scenario.chartData[cellTemplate.title]) {
+        if (scenario.chartData && scenario.chartData[cellTemplate.title]) {
           cellData = scenario.chartData[cellTemplate.title]
-        } else if (scenario.narratives[cellTemplate.title]) {
+        } else if (scenario.narratives && scenario.narratives[cellTemplate.title]) {
           cellData = scenario.narratives[cellTemplate.title]
         }
         const cellId = cellTemplate.id || genId()

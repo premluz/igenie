@@ -1,10 +1,9 @@
-import { useState, useRef } from 'react'
-import { Send, Mic, Plus, Folder } from 'lucide-react'
+import { Folder } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { AmbientGridBackground } from './AmbientGridBackground'
 import { NeuralGridBackground } from './NeuralGridBackground'
 import { CyclingGeminiText } from './CyclingGeminiText'
-import { AnimatedGlow } from './AnimatedGlow'
+import { QueryInputBox } from './QueryInputBox'
 import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { getScenario } from '@/scenarios'
@@ -13,7 +12,8 @@ import { motion } from 'framer-motion'
 const LANDING_TRIGGERS = [
   { keywords: ['genz', 'gen-z', 'gen z'], scenarioId: 'cucumber-mint' },
   { keywords: ['energy'], scenarioId: 'energy-drinks-trends-genz' },
-  { keywords: ['millennial', 'millennials'], scenarioId: 'neutrogena-natural' }
+  { keywords: ['millennial', 'millennials'], scenarioId: 'neutrogena-natural' },
+  { keywords: ['positioning', 'perception', 'cucumber-mint-5'], scenarioId: 'cucumber-mint-5' }
 ]
 
 const REPORTS = [
@@ -54,13 +54,10 @@ const QUICK_ACTIONS = [
 ]
 
 export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boolean }) {
-  const [query, setQuery] = useState('')
-  const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const { pushLog, setTransitioning } = usePrestoStore()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleQuerySubmit = (query: string) => {
     if (!query.trim()) return
 
     const lowerQuery = query.toLowerCase().trim()
@@ -76,8 +73,6 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           const scenario = getScenario(trigger.scenarioId)
 
           if (scenario) {
-            setQuery('')
-
             // Pre-load scenario detail into store BEFORE navigating
             // This prevents the listing view from flashing
             const store = usePrestoStore.getState()
@@ -170,11 +165,6 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
 
     // If no trigger matched, just log it
     console.log('Query:', query)
-    setQuery('')
-  }
-
-  const handleBoxClick = () => {
-    inputRef.current?.focus()
   }
 
   const handleQuickAction = (actionId: string) => {
@@ -308,71 +298,9 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           initial={{ opacity: shouldAnimate ? 0 : 1 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: shouldAnimate ? 0.9 : 0 }}
-          className="px-8 w-full py-4 relative z-10 flex flex-col"
+          className="px-8 w-full py-4 relative z-10"
         >
-          <form onSubmit={handleSubmit} className="max-w-4xl mx-auto w-full">
-            <div
-              onClick={handleBoxClick}
-              className="input-container card-glass card-padding-lg cursor-pointer flex flex-col"
-            >
-            {/* Input field with native placeholder */}
-            <input
-              ref={inputRef}
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask about a brand, trend, or category..."
-              className="w-full bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-lg flex-1"
-            />
-
-            {/* Icons row */}
-            <div className="flex items-center justify-between mt-4">
-              <button
-                type="button"
-                onClick={() => {}}
-                className="text-muted-foreground hover:text-foreground transition-colors p-2"
-              >
-                <Plus size={18} />
-              </button>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => {}}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-2"
-                >
-                  <Mic size={18} />
-                </button>
-                <button
-                  type="submit"
-                  className="text-muted-foreground hover:text-accent transition-colors p-2"
-                >
-                  <Send size={18} />
-                </button>
-              </div>
-            </div>
-          </div>
-          </form>
-
-          {/* Mock glow section beneath input - exact size match */}
-          <div className="max-w-4xl mx-auto w-full -mt-1">
-            <AnimatedGlow
-              glowType="outer"
-              glowSize={6}
-              hoverGlowSize={12}
-              blurAmount={16}
-              hoverBlurAmount={24}
-              baseOpacity={0.4}
-              hoverOpacity={0.7}
-              animationDuration={4}
-              borderRadius={12}
-              borderSize={2}
-              showBorder={false}
-              disableHoverEffect={false}
-              className="w-full"
-            >
-              <div className="h-2" />
-            </AnimatedGlow>
-          </div>
+          <QueryInputBox onSubmit={handleQuerySubmit} />
         </motion.div>
         </div>
       </div>

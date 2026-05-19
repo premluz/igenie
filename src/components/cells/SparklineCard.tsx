@@ -27,9 +27,9 @@ export function SparklineCard({ value, unit, trend }: SparklineCardProps) {
   }
 
   return (
-    <div className="flex items-center h-full gap-6">
+    <div className="flex items-start h-full gap-6">
       {/* Left: Data Point */}
-      <div className="flex-1 flex flex-col items-start justify-center">
+      <div className="flex-1 flex flex-col items-start justify-start">
         <div className="text-3xl font-bold text-accent mb-2">
           {value}
         </div>
@@ -40,7 +40,7 @@ export function SparklineCard({ value, unit, trend }: SparklineCardProps) {
 
       {/* Right: Sparkline */}
       {validTrend && validTrend.length > 0 && (
-        <div className="flex-1 flex items-center justify-end">
+        <div className="flex-1 flex items-start justify-end">
           <VegaEmbed spec={sparklineSpec as any} options={{ actions: false, renderer: 'canvas' }} />
         </div>
       )}

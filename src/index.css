@@ -40,16 +40,20 @@
     @apply bg-[#181924];
   }
 
+  .bg-surface {
+    @apply bg-[#1E1F2C];
+  }
+
 .bg-insight {
     @apply bg-[#ffffff05];
     padding: 6px 10px;
     border-radius:3px;
-    border: 1px #ffffff16 solid;
-    
+    /*border: 1px #ffffff16 solid;*/
+
   }
 
   .bg-card {
-    @apply bg-[#2C2C34];
+    @apply bg-[#202233];
   }
 
   .border-border {
@@ -197,12 +201,12 @@
     border-radius: var(--radius-card);
     backdrop-filter: blur(12px);
     background-color: rgba(36, 36, 46, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s ease;
   }
 
   .card-glass:hover {
-    border-color: rgba(255, 255, 255, 0.24);
+    border-color: rgba(255, 255, 255, 0.02);
   }
 
   .card-glass:active,
@@ -212,6 +216,16 @@
 
   .card-glass:focus-within {
     border-color: rgb(124, 128, 239);
+  }
+
+  .input-container {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background-color: #34365150;
+  }
+  
+    .input-container:hover {
+       border-color: rgb(124, 128, 239);
+  
   }
 
   /* Text list item style (reports, text-heavy lists) - hover bg only, no border */
