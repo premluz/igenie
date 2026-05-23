@@ -105,27 +105,34 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
             <div
               onMouseEnter={() => setShowPrestoPopover(true)}
               onMouseLeave={() => setShowPrestoPopover(false)}
-              className="absolute cursor-pointer"
+              className="absolute cursor-pointer group"
               style={{
                 top: 'calc(var(--spacing, 0.25rem) * 4)',
                 right: 'calc(var(--spacing, 0.25rem) * 4)'
               }}
             >
-              <img src="/images/lamp.svg" alt="Presto Summary" className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity" />
+              <img src="/images/lamp.svg" alt="Presto Summary" className="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" />
 
               {showPrestoPopover && (
-                <div
-                  className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50 relative"
-                  style={{
-                    right: 'calc(var(--spacing, 0.25rem) * -4)'
-                  }}
-                >
-                  <div className="relative z-10">
+                <>
+                  <div
+                    className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50"
+                    style={{
+                      right: 'calc(var(--spacing, 0.25rem) * -4)'
+                    }}
+                  >
                     <p className="text-sm text-foreground leading-relaxed">
                       {cell.prestosummary}
                     </p>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 z-0">
+                  <div
+                    className="absolute w-72 z-40"
+                    style={{
+                      top: 'calc(100% + 0.5rem)',
+                      right: 'calc(var(--spacing, 0.25rem) * -4)',
+                      bottom: '-2px'
+                    }}
+                  >
                     <AnimatedGlow
                       disableHoverEffect={true}
                       glowSize={0}
@@ -138,7 +145,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
                       <div className="h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                     </AnimatedGlow>
                   </div>
-                </div>
+                </>
               )}
             </div>
           )}
