@@ -105,24 +105,34 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
             <div
               onMouseEnter={() => setShowPrestoPopover(true)}
               onMouseLeave={() => setShowPrestoPopover(false)}
-              className="absolute -top-2 -right-2 cursor-pointer"
+              className="absolute cursor-pointer"
+              style={{
+                top: 'calc(var(--spacing, 0.25rem) * 4)',
+                right: 'calc(var(--spacing, 0.25rem) * 4)'
+              }}
             >
               <img src="/images/lamp.svg" alt="Presto Summary" className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity" />
 
               {showPrestoPopover && (
-                <div className="absolute -right-2 top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50">
+                <div
+                  className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50"
+                  style={{
+                    right: 'calc(var(--spacing, 0.25rem) * -4)'
+                  }}
+                >
+                  <p className="text-xs text-foreground leading-relaxed mb-3">
+                    {cell.prestosummary}
+                  </p>
                   <AnimatedGlow
                     disableHoverEffect={true}
-                    glowSize={3}
-                    baseOpacity={0.5}
-                    blurAmount={12}
-                    borderRadius={4}
+                    glowSize={0}
+                    baseOpacity={0.7}
+                    blurAmount={10}
+                    borderRadius={0}
+                    showBorder={false}
+                    className="w-full"
                   >
-                    <div className="bg-background/50 rounded-sm p-2">
-                      <p className="text-xs text-foreground leading-relaxed">
-                        {cell.prestosummary}
-                      </p>
-                    </div>
+                    <div className="h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                   </AnimatedGlow>
                 </div>
               )}
