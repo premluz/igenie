@@ -346,7 +346,7 @@ function generateMultiSeriesSpec(
     return {
       $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       background: 'transparent',
-      width: 'container',
+      width: { step: 50 },
       height: 260,
       data: { values: [] },
       mark: 'point',
