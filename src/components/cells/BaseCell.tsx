@@ -115,7 +115,11 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
 
               {showPrestoPopover && (
                 <>
-                  <div
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
                     className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50"
                     style={{
                       right: 'calc(var(--spacing, 0.25rem) * -4)'
@@ -124,8 +128,12 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
                     <p className="text-sm text-foreground leading-relaxed">
                       {cell.prestosummary}
                     </p>
-                  </div>
-                  <div
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.15 }}
                     className="absolute w-72 -mt-1"
                     style={{
                       top: '100%',
@@ -150,7 +158,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
                     >
                       <div className="h-2" />
                     </AnimatedGlow>
-                  </div>
+                  </motion.div>
                 </>
               )}
             </div>
