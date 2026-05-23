@@ -114,7 +114,7 @@ function generateSingleSeriesSpec(
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
-    width: { step: 50 },
+    width: 700,
     height: 260,
     padding: { left: 16, right: 16, top: 16, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
@@ -346,7 +346,7 @@ function generateMultiSeriesSpec(
     return {
       $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       background: 'transparent',
-      width: { step: 50 },
+      width: 700,
       height: 260,
       data: { values: [] },
       mark: 'point',
@@ -357,7 +357,7 @@ function generateMultiSeriesSpec(
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
-    width: { step: 50 },
+    width: 700,
     height: 260,
     padding: { left: 40, right: 16, top: 16, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
