@@ -83,7 +83,7 @@ function RenderCell({ value, columnName, row }: { value: any; columnName: string
       <div ref={ref} className="flex items-center gap-2 w-full">
         <motion.div
           initial={{ width: 0, opacity: 0 }}
-          animate={isVisible ? { width: `${(value / 100) * 100}%`, opacity: 1 } : { width: 0, opacity: 0 }}
+          animate={isVisible ? { width: `${Math.min(Math.max(value, 0), 100)}%`, opacity: 1 } : { width: 0, opacity: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="h-0.5 bg-blue-600 rounded-full flex-1"
         />
