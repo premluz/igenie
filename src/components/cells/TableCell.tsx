@@ -23,9 +23,59 @@ interface TableCellProps {
   }
 }
 
+// Sparkline renderer for Buzz column
+function SparklineRenderer({ data }: { data: number[] }) {
+  if (!data || !Array.isArray(data) || data.length === 0) return null
+
+  const min = Math.min(...data)
+  const max = Math.max(...data)
+  const range = max - min || 1
+  const width = 60
+  const height = 20
+  const padding = 2
+
+  const points = data
+    .map((val, idx) => {
+      const x = (idx / (data.length - 1)) * (width - padding * 2) + padding
+      const y = height - padding - ((val - min) / range) * (height - padding * 2)
+      return `${x},${y}`
+    })
+    .join(' ')
+
+  const trend = data[data.length - 1] > data[0] ? 'positive' : 'negative'
+
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="inline-block">
+      <polyline
+        points={points}
+        fill="none"
+        stroke={trend === 'positive' ? '#10b981' : '#ef4444'}
+        strokeWidth="1.5"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  )
+}
+
 // Render special cell types
-function RenderCell({ value, columnName }: { value: any; columnName: string }) {
+function RenderCell({ value, columnName, row }: { value: any; columnName: string; row?: any }) {
   const { ref, isVisible } = useInViewAnimation({ delay: 200 })
+
+  // Sparkline in Buzz column
+  if ((columnName === 'Buzz' || columnName === 'buzz') && typeof value === 'number' && row?.sparkline) {
+    return (
+      <div ref={ref} className="flex items-center gap-2">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <SparklineRenderer data={row.sparkline} />
+        </motion.div>
+        <span className="text-xs font-medium text-foreground">{value}</span>
+      </div>
+    )
+  }
 
   // Progress bar for numeric values in progress column
   if ((columnName === 'Progress' || columnName === 'progress') && typeof value === 'number') {
@@ -82,7 +132,8 @@ export function TableCell({ data }: TableCellProps) {
     cell: info => {
       const value = info.getValue()
       const columnName = col.label
-      return <RenderCell value={value} columnName={columnName} />
+      const row = info.row.original
+      return <RenderCell value={value} columnName={columnName} row={row} />
     },
   }))
 

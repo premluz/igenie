@@ -1,5 +1,22 @@
 import type { ScenarioData } from './types'
 
+function generateSparkline(finalBuzz: number, yoyChange: string): number[] {
+  const yoyPercent = parseInt(yoyChange.replace(/[+%-]/g, ''))
+  const isPositive = yoyChange.startsWith('+')
+  const volatility = 5 + Math.random() * 8
+
+  const data: number[] = []
+  let current = finalBuzz - (isPositive ? yoyPercent * 0.8 : -yoyPercent * 0.8)
+
+  for (let i = 0; i < 14; i++) {
+    const noise = (Math.random() - 0.5) * volatility
+    current += (isPositive ? yoyPercent / 14 : -yoyPercent / 14) + noise
+    data.push(Math.max(10, Math.min(100, Math.round(current))))
+  }
+
+  return data
+}
+
 export const buzzCompetitiveAnalysis: ScenarioData = {
   id: 'buzz-competitive-analysis',
   brand: 'Energy Drinks',
@@ -143,28 +160,28 @@ export const buzzCompetitiveAnalysis: ScenarioData = {
               { key: 'progress', label: 'Progress' }
             ],
             rows: [
-              { brand: 'Gatorade', buzz: 89, yoy: '+8%', progress: 89 },
-              { brand: 'Fanta Orange', buzz: 87, yoy: '+8%', progress: 87 },
-              { brand: '7UP', buzz: 87, yoy: '+5%', progress: 87 },
-              { brand: 'Powerade', buzz: 87, yoy: '+2%', progress: 87 },
-              { brand: 'Lipton Iced Tea', buzz: 84, yoy: '+16%', progress: 84 },
-              { brand: 'Mirinda', buzz: 84, yoy: '+11%', progress: 84 },
-              { brand: 'Red Bull', buzz: 82, yoy: '+5%', progress: 82 },
-              { brand: 'Monster Energy', buzz: 82, yoy: '+5%', progress: 82 },
-              { brand: 'Sprite', buzz: 78, yoy: '+6%', progress: 78 },
-              { brand: 'Pepsi Max', buzz: 77, yoy: '+2%', progress: 77 },
-              { brand: 'Schweppes', buzz: 77, yoy: '+8%', progress: 77 },
-              { brand: 'Arizona Iced Tea', buzz: 77, yoy: '-14%', progress: 77 },
-              { brand: 'Nestea', buzz: 76, yoy: '-7%', progress: 76 },
-              { brand: 'Fanta Grape', buzz: 76, yoy: '+5%', progress: 76 },
-              { brand: 'Coca-Cola Original', buzz: 75, yoy: '-14%', progress: 75 },
-              { brand: 'Pepsi', buzz: 73, yoy: '+15%', progress: 73 },
-              { brand: 'Dr Pepper', buzz: 73, yoy: '-5%', progress: 73 },
-              { brand: 'Pepsi Diet', buzz: 69, yoy: '+16%', progress: 69 },
-              { brand: 'Coca-Cola Zero', buzz: 69, yoy: '+6%', progress: 69 },
-              { brand: 'Coca-Cola Zero', buzz: 67, yoy: '+3%', progress: 67 },
-              { brand: 'Sprite Zero', buzz: 66, yoy: '+11%', progress: 66 },
-              { brand: 'Mountain Dew', buzz: 60, yoy: '+8%', progress: 60 }
+              { brand: 'Gatorade', buzz: 89, yoy: '+8%', progress: 89, sparkline: generateSparkline(89, '+8%') },
+              { brand: 'Fanta Orange', buzz: 87, yoy: '+8%', progress: 87, sparkline: generateSparkline(87, '+8%') },
+              { brand: '7UP', buzz: 87, yoy: '+5%', progress: 87, sparkline: generateSparkline(87, '+5%') },
+              { brand: 'Powerade', buzz: 87, yoy: '+2%', progress: 87, sparkline: generateSparkline(87, '+2%') },
+              { brand: 'Lipton Iced Tea', buzz: 84, yoy: '+16%', progress: 84, sparkline: generateSparkline(84, '+16%') },
+              { brand: 'Mirinda', buzz: 84, yoy: '+11%', progress: 84, sparkline: generateSparkline(84, '+11%') },
+              { brand: 'Red Bull', buzz: 82, yoy: '+5%', progress: 82, sparkline: generateSparkline(82, '+5%') },
+              { brand: 'Monster Energy', buzz: 82, yoy: '+5%', progress: 82, sparkline: generateSparkline(82, '+5%') },
+              { brand: 'Sprite', buzz: 78, yoy: '+6%', progress: 78, sparkline: generateSparkline(78, '+6%') },
+              { brand: 'Pepsi Max', buzz: 77, yoy: '+2%', progress: 77, sparkline: generateSparkline(77, '+2%') },
+              { brand: 'Schweppes', buzz: 77, yoy: '+8%', progress: 77, sparkline: generateSparkline(77, '+8%') },
+              { brand: 'Arizona Iced Tea', buzz: 77, yoy: '-14%', progress: 77, sparkline: generateSparkline(77, '-14%') },
+              { brand: 'Nestea', buzz: 76, yoy: '-7%', progress: 76, sparkline: generateSparkline(76, '-7%') },
+              { brand: 'Fanta Grape', buzz: 76, yoy: '+5%', progress: 76, sparkline: generateSparkline(76, '+5%') },
+              { brand: 'Coca-Cola Original', buzz: 75, yoy: '-14%', progress: 75, sparkline: generateSparkline(75, '-14%') },
+              { brand: 'Pepsi', buzz: 73, yoy: '+15%', progress: 73, sparkline: generateSparkline(73, '+15%') },
+              { brand: 'Dr Pepper', buzz: 73, yoy: '-5%', progress: 73, sparkline: generateSparkline(73, '-5%') },
+              { brand: 'Pepsi Diet', buzz: 69, yoy: '+16%', progress: 69, sparkline: generateSparkline(69, '+16%') },
+              { brand: 'Coca-Cola Zero', buzz: 69, yoy: '+6%', progress: 69, sparkline: generateSparkline(69, '+6%') },
+              { brand: 'Coca-Cola Zero', buzz: 67, yoy: '+3%', progress: 67, sparkline: generateSparkline(67, '+3%') },
+              { brand: 'Sprite Zero', buzz: 66, yoy: '+11%', progress: 66, sparkline: generateSparkline(66, '+11%') },
+              { brand: 'Mountain Dew', buzz: 60, yoy: '+8%', progress: 60, sparkline: generateSparkline(60, '+8%') }
             ]
           }
         }
