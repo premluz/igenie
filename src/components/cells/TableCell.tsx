@@ -81,12 +81,14 @@ function RenderCell({ value, columnName, row }: { value: any; columnName: string
   if ((columnName === 'Progress' || columnName === 'progress') && typeof value === 'number') {
     return (
       <div ref={ref} className="flex items-center gap-2 w-full">
-        <motion.div
-          initial={{ width: 0, opacity: 0 }}
-          animate={isVisible ? { width: `${Math.min(Math.max(value, 0), 100)}%`, opacity: 1 } : { width: 0, opacity: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="h-0.5 bg-blue-600 rounded-full flex-1"
-        />
+        <div className="flex-1 bg-background/30 rounded-full h-0.5 overflow-hidden">
+          <motion.div
+            initial={{ width: 0, opacity: 0 }}
+            animate={isVisible ? { width: `${Math.min(Math.max(value, 0), 100)}%`, opacity: 1 } : { width: 0, opacity: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="h-0.5 bg-blue-600 rounded-full"
+          />
+        </div>
         <span className="text-xs text-muted-foreground whitespace-nowrap">{value}</span>
       </div>
     )
