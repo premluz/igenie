@@ -76,6 +76,7 @@ export const buzzCompetitiveAnalysis: ScenarioData = {
           title: 'Biggest winners',
           subtitle: 'Ranked by YoY change',
           status: 'ready',
+          prestosummary: 'Pepsi closing fast — two brands in the top 5 gainers while Coca-Cola Original leads the losers.',
           data: {
             columns: [
               { key: 'brand', label: 'Brand' },
@@ -97,6 +98,7 @@ export const buzzCompetitiveAnalysis: ScenarioData = {
           title: 'Biggest losers',
           subtitle: 'Ranked by YoY change',
           status: 'ready',
+          prestosummary: 'Traditional cola brands losing momentum to emerging energy and sports drink alternatives. Market consolidation favoring larger players.',
           data: {
             columns: [
               { key: 'brand', label: 'Brand' },
@@ -123,6 +125,7 @@ export const buzzCompetitiveAnalysis: ScenarioData = {
           title: 'Buzz trends by brand',
           subtitle: '5 brands selected for momentum, not score - 14 month tracking',
           status: 'ready',
+          prestosummary: 'Red Bull experiencing volatile spikes signaling breakthrough marketing moments. Pepsi gaining steady momentum at expense of Coca-Cola Original market share.',
           descriptionBottom: '→ **Pepsi** showing strongest momentum trajectory from 47 to 55 range with recent spike to 70\n\n→ **Gatorade** maintaining high stability 60-72 range, consistent market leader positioning\n\n→ **Red Bull** volatile but resilient, peaks of 100 (Jan 2025) indicate breakthrough moments\n\n→ **Coca-Cola Original** declining trend from 73 to 66 suggests momentum loss to Pepsi\n\n→ **Pepsi Diet** steady growth from 63 to 70, capturing secondary market momentum',
           data: [
             { date: '2024-08-01', Pepsi: 47, CocaOriginal: 73, RedBull: 57, Gatorade: 74, PepsiDiet: 63 },
@@ -152,6 +155,7 @@ export const buzzCompetitiveAnalysis: ScenarioData = {
           title: 'Buzz ranking',
           subtitle: 'All selected brands',
           status: 'ready',
+          prestosummary: 'Gatorade and premium energy drinks dominating top tier. Mid-market competition intensifying with 5-8% volatility. Legacy cola brands declining across segments.',
           data: {
             columns: [
               { key: 'brand', label: 'Brand' },

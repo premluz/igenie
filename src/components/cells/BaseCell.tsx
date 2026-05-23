@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { usePrestoStore, type Cell } from '@/store/usePrestoStore'
 import { HoverActionBar } from './HoverActionBar'
 import { GeminiStreamText } from '../GeminiStreamText'
+import { AnimatedGlow } from '../AnimatedGlow'
 
 interface BaseCellProps {
   cell: Cell
@@ -14,6 +15,7 @@ interface BaseCellProps {
 export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
   const { replaceCell } = usePrestoStore()
   const [isHovering, setIsHovering] = useState(false)
+  const [showPrestoPopover, setShowPrestoPopover] = useState(false)
 
   // Insight cards don't need the base cell wrapper
   if (cell.type === 'insight-card') {
@@ -98,6 +100,34 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
 
         {/* Header - show skeleton during loading transitions, animate content when ready */}
         <div className="px-4 py-3 flex items-start justify-between gap-2 relative z-20">
+          {/* Presto Summary Lamp Icon */}
+          {cell.prestosummary && (
+            <div
+              onMouseEnter={() => setShowPrestoPopover(true)}
+              onMouseLeave={() => setShowPrestoPopover(false)}
+              className="absolute -top-2 -right-2 cursor-pointer"
+            >
+              <img src="/images/lamp.svg" alt="Presto Summary" className="w-5 h-5 opacity-70 hover:opacity-100 transition-opacity" />
+
+              {showPrestoPopover && (
+                <div className="absolute -right-2 top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50">
+                  <AnimatedGlow
+                    disableHoverEffect={true}
+                    glowSize={3}
+                    baseOpacity={0.5}
+                    blurAmount={12}
+                    borderRadius={4}
+                  >
+                    <div className="bg-background/50 rounded-sm p-2">
+                      <p className="text-xs text-foreground leading-relaxed">
+                        {cell.prestosummary}
+                      </p>
+                    </div>
+                  </AnimatedGlow>
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             {/* During loading with thinking status, show skeleton loaders for h3 */}
             {isTransitioning && cell.status === 'thinking' ? (

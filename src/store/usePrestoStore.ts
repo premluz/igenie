@@ -18,6 +18,7 @@ export interface Cell {
   data: CellData | null
   error?: string
   magicLayer?: string
+  prestosummary?: string
 }
 
 export interface Row {

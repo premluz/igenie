@@ -14,7 +14,7 @@ export function HoverActionBar({ cell }: HoverActionBarProps) {
 
   return (
     <TooltipProvider>
-      <div className="absolute right-3 -top-0 -translate-y-1/2 flex items-center gap-1 p-0 rounded-sm bg-card backdrop-blur-2xl border border-white/10 shadow-lg z-50 pointer-events-auto">
+      <div className="absolute right-3 -top-0 -translate-y-1/2 flex items-center gap-1 p-0 rounded-sm bg-card backdrop-blur-2xl border border-white/10 shadow-lg z-50 pointer-events-auto hidden">
         <div
           onMouseEnter={() => setShowMagicTooltip(true)}
           onMouseLeave={() => setShowMagicTooltip(false)}
