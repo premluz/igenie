@@ -30,15 +30,14 @@ function RenderCell({ value, columnName }: { value: any; columnName: string }) {
   // Progress bar for numeric values in progress column
   if ((columnName === 'Progress' || columnName === 'progress') && typeof value === 'number') {
     return (
-      <div ref={ref} className="flex items-center gap-2">
+      <div ref={ref} className="flex items-center gap-2 w-full">
         <motion.div
           initial={{ width: 0 }}
           animate={isVisible ? { width: `${(value / 100) * 100}%` } : { width: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="h-1.5 bg-blue-600 rounded-full"
-          style={{ maxWidth: '60px' }}
+          className="h-1.5 bg-blue-600 rounded-full flex-1"
         />
-        <span className="text-xs text-muted-foreground">{value}</span>
+        <span className="text-xs text-muted-foreground whitespace-nowrap">{value}</span>
       </div>
     )
   }
