@@ -5,6 +5,7 @@ import { PrestoSidebar } from '@/components/PrestoSidebar'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { LandingScreen } from '@/components/LandingScreen'
 import { PageTransitionOverlay } from '@/components/PageTransitionOverlay'
+import { BrandPerceptionPage } from '@/pages/BrandPerceptionPage'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -166,6 +167,7 @@ export default function App() {
               <Route path="/" element={<LandingScreen shouldAnimate={justLoggedIn} />} />
               <Route path="/insights" element={<CanvasGrid />} />
               <Route path="/insights/:scenarioId" element={<CanvasGrid />} />
+              <Route path="/brand-perception" element={<BrandPerceptionPage />} />
             </Routes>
           </div>
 
