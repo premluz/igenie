@@ -184,7 +184,7 @@ function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }
 }
 
 // Main renderer — pure switch on cell.type
-export function WidgetRenderer({ cell, isTransitioning = false, rowId }: { cell: Cell; isTransitioning?: boolean; rowId?: string }) {
+export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; isTransitioning?: boolean }) {
   // Headers show skeleton during Scenario 1 transitions
   if (cell.type === 'header') {
     return <HeadingCell title={cell.title} isLoading={isTransitioning && cell.status === 'thinking'} />
@@ -246,7 +246,7 @@ export function WidgetRenderer({ cell, isTransitioning = false, rowId }: { cell:
   }
 
   return (
-    <BaseCell cell={cell} isTransitioning={isTransitioning} rowId={rowId}>
+    <BaseCell cell={cell} isTransitioning={isTransitioning}>
       {content}
     </BaseCell>
   )

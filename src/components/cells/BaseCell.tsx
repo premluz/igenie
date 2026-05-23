@@ -9,10 +9,9 @@ interface BaseCellProps {
   cell: Cell
   children: React.ReactNode
   isTransitioning?: boolean
-  rowId?: string
 }
 
-export function BaseCell({ cell, children, isTransitioning, rowId }: BaseCellProps) {
+export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
   const { replaceCell } = usePrestoStore()
   const [isHovering, setIsHovering] = useState(false)
 
@@ -91,9 +90,9 @@ export function BaseCell({ cell, children, isTransitioning, rowId }: BaseCellPro
       {/* Inner content wrapper with overflow hidden for proper clipping */}
       <div className="flex flex-col h-full w-full overflow-hidden rounded-[4px]">
         {/* Hover action bar */}
-        {isHovering && rowId && (
+        {isHovering && (
           <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
-            <HoverActionBar cell={cell} rowId={rowId} />
+            <HoverActionBar cell={cell} />
           </div>
         )}
 

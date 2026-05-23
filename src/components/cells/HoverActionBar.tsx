@@ -1,34 +1,23 @@
 import { Plus, Edit2, MessageSquare, Bell, MoreVertical } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useState, useRef } from 'react'
-import { usePrestoStore } from '@/store/usePrestoStore'
+import { useState } from 'react'
 import type { Cell } from '@/store/usePrestoStore'
+import { AnimatedGlow } from '../AnimatedGlow'
 
 interface HoverActionBarProps {
   cell: Cell
-  rowId: string
 }
 
-export function HoverActionBar({ cell, rowId }: HoverActionBarProps) {
-  const { replaceCell } = usePrestoStore()
-  const [showMagicInput, setShowMagicInput] = useState(false)
-  const [magicInput, setMagicInput] = useState(cell.magicLayer || '')
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const handleMagicLayer = () => {
-    if (magicInput.trim()) {
-      replaceCell(rowId, cell.id, { magicLayer: magicInput })
-      setShowMagicInput(false)
-    }
-  }
+export function HoverActionBar({ cell }: HoverActionBarProps) {
+  const [showMagicTooltip, setShowMagicTooltip] = useState(false)
 
   return (
     <TooltipProvider>
       <div className="absolute right-3 -top-0 -translate-y-1/2 flex items-center gap-1 p-0 rounded-sm bg-card backdrop-blur-2xl border border-white/10 shadow-lg z-50 pointer-events-auto">
         <div
-          onMouseEnter={() => setShowMagicInput(true)}
-          onMouseLeave={() => setShowMagicInput(false)}
+          onMouseEnter={() => setShowMagicTooltip(true)}
+          onMouseLeave={() => setShowMagicTooltip(false)}
           className="relative"
         >
           <Tooltip>
@@ -42,39 +31,25 @@ export function HoverActionBar({ cell, rowId }: HoverActionBarProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent side="bottom" sideOffset={8}>
-              <p>Add magic layer</p>
+              <p>Magic layer</p>
             </TooltipContent>
           </Tooltip>
 
-          {showMagicInput && (
-            <div className="absolute right-0 top-full mt-2 bg-card border border-white/20 rounded-md p-2 shadow-xl w-48 z-50">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder="Describe the insight..."
-                value={magicInput}
-                onChange={(e) => setMagicInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleMagicLayer()}
-                className="w-full px-2 py-1 text-xs bg-background/50 border border-white/10 rounded text-foreground placeholder-muted-foreground focus:outline-none focus:border-white/30"
-                autoFocus
-              />
-              <div className="flex gap-1 mt-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 h-6 text-xs"
-                  onClick={() => setShowMagicInput(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="sm"
-                  className="flex-1 h-6 text-xs"
-                  onClick={handleMagicLayer}
-                >
-                  Add
-                </Button>
-              </div>
+          {showMagicTooltip && cell.magicLayer && (
+            <div className="absolute right-0 top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-64 z-50">
+              <p className="text-sm text-foreground leading-relaxed mb-3">
+                {cell.magicLayer}
+              </p>
+              <AnimatedGlow
+                disableHoverEffect={true}
+                glowSize={4}
+                baseOpacity={0.6}
+                blurAmount={16}
+                borderRadius={4}
+                className="w-full"
+              >
+                <div className="h-1 bg-background/30 rounded-full" />
+              </AnimatedGlow>
             </div>
           )}
         </div>

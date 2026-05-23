@@ -273,7 +273,7 @@ export function CanvasGrid() {
                 <div className="flex gap-4 w-full items-stretch">
                   {row.cells.map(cell => (
                     <div key={cell.id} className={`${getColWidth()} flex`}>
-                      <WidgetRenderer cell={cell} isTransitioning={isTransitioning} rowId={row.id} />
+                      <WidgetRenderer cell={cell} isTransitioning={isTransitioning} />
                     </div>
                   ))}
                 </div>
