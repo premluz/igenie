@@ -126,23 +126,29 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
                     </p>
                   </div>
                   <div
-                    className="absolute w-72 z-40"
+                    className="absolute w-72 -mt-1"
                     style={{
-                      top: 'calc(100% + 0.5rem)',
+                      top: '100%',
                       right: 'calc(var(--spacing, 0.25rem) * -4)',
-                      bottom: '-2px'
+                      zIndex: 40
                     }}
                   >
                     <AnimatedGlow
-                      disableHoverEffect={true}
-                      glowSize={0}
-                      baseOpacity={0.7}
-                      blurAmount={10}
-                      borderRadius={0}
+                      glowType="outer"
+                      glowSize={6}
+                      hoverGlowSize={6}
+                      blurAmount={14}
+                      hoverBlurAmount={14}
+                      baseOpacity={0.6}
+                      hoverOpacity={0.6}
+                      animationDuration={4}
+                      borderRadius={12}
+                      borderSize={0}
                       showBorder={false}
+                      disableHoverEffect={true}
                       className="w-full"
                     >
-                      <div className="h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                      <div className="h-2" />
                     </AnimatedGlow>
                   </div>
                 </>
