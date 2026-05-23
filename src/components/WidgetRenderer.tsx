@@ -215,7 +215,7 @@ export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; 
       content = <ForecastChartCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
       break
     case 'line-chart':
-      content = <LineChartCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
+      content = <LineChartCell data={cell.data as any} title={cell.title} descriptionBottom={cell.descriptionBottom} />
       break
     case 'treemap':
       content = <TreemapCell data={cell.data as any} descriptionBottom={cell.descriptionBottom} />
