@@ -8,6 +8,7 @@ import {
 import { useState } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useInViewAnimation } from '@/hooks/useInViewAnimation'
 
 interface TableCellProps {
   data: {
@@ -24,13 +25,15 @@ interface TableCellProps {
 
 // Render special cell types
 function RenderCell({ value, columnName }: { value: any; columnName: string }) {
+  const { ref, isVisible } = useInViewAnimation({ delay: 200 })
+
   // Progress bar for numeric values in progress column
   if ((columnName === 'Progress' || columnName === 'progress') && typeof value === 'number') {
     return (
-      <div className="flex items-center gap-2">
+      <div ref={ref} className="flex items-center gap-2">
         <motion.div
           initial={{ width: 0 }}
-          animate={{ width: `${(value / 100) * 100}%` }}
+          animate={isVisible ? { width: `${(value / 100) * 100}%` } : { width: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
           className="h-1.5 bg-blue-600 rounded-full"
           style={{ maxWidth: '60px' }}

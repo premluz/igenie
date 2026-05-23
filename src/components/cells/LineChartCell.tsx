@@ -1,39 +1,95 @@
 import { VegaEmbed } from 'react-vega'
 import { DescriptionBottom } from '../WidgetRenderer'
+import { useInViewAnimation } from '@/hooks/useInViewAnimation'
+import { motion } from 'framer-motion'
 
 interface LineChartCellProps {
-  data: Array<{ date: string; value: number }>
+  data: Array<any>
   title?: string
   descriptionBottom?: string
 }
 
 export function LineChartCell({ data, title, descriptionBottom }: LineChartCellProps) {
+  const { ref, isVisible } = useInViewAnimation({ delay: 300 })
+
   if (!data || data.length === 0) {
     return <div className="text-md text-muted-foreground text-center py-8">No data available</div>
   }
 
-  const validData = data.filter(
-    d =>
-      d &&
-      typeof d === 'object' &&
-      typeof d.date === 'string' &&
-      d.date.length > 0 &&
-      typeof d.value === 'number' &&
-      isFinite(d.value)
-  )
+  // Detect data format and extract series names
+  const firstRow = data[0]
+  const isMultiSeries = firstRow && typeof firstRow === 'object' && 'date' in firstRow && !('value' in firstRow)
 
-  if (validData.length === 0) {
+  let seriesNames: string[] = []
+  let normalizedData: Array<{ date: string; [key: string]: any }> = []
+
+  if (isMultiSeries) {
+    // Multi-series format: { date, series1, series2, ... }
+    seriesNames = Object.keys(firstRow).filter(k => k !== 'date')
+    normalizedData = data.filter(d =>
+      d && typeof d === 'object' && typeof d.date === 'string' && d.date.length > 0
+    )
+  } else {
+    // Single-series format: { date, value }
+    normalizedData = data.filter(
+      d =>
+        d &&
+        typeof d === 'object' &&
+        typeof d.date === 'string' &&
+        d.date.length > 0 &&
+        typeof d.value === 'number' &&
+        isFinite(d.value)
+    )
+    seriesNames = ['value']
+  }
+
+  if (normalizedData.length === 0) {
     return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
   }
 
-  // Compute min/max for annotation marks (highlights peak and trough)
-  const sorted = [...validData].sort((a, b) => a.value - b.value)
-  const minPoint = sorted[0]
-  const maxPoint = sorted[sorted.length - 1]
-  const values = validData.map(d => d.value)
-  const mean = values.reduce((s, v) => s + v, 0) / values.length
+  // For single series, compute min/max for annotation marks
+  let minPoint: any = null
+  let maxPoint: any = null
+  let mean: number = 0
 
-  const spec = {
+  if (!isMultiSeries) {
+    const values = normalizedData.map(d => d.value)
+    const sorted = [...normalizedData].sort((a, b) => a.value - b.value)
+    minPoint = sorted[0]
+    maxPoint = sorted[sorted.length - 1]
+    mean = values.reduce((s, v) => s + v, 0) / values.length
+  }
+
+  // Generate spec based on series count
+  const spec = isMultiSeries
+    ? generateMultiSeriesSpec(normalizedData, title, seriesNames)
+    : generateSingleSeriesSpec(normalizedData, title, minPoint, maxPoint, mean)
+
+  return (
+    <div ref={ref} className="w-full h-full flex flex-col">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex-1 flex flex-col"
+      >
+        <div className="flex-1 flex items-center justify-center min-h-0">
+          {isVisible && <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />}
+        </div>
+        {descriptionBottom && <DescriptionBottom text={descriptionBottom} />}
+      </motion.div>
+    </div>
+  )
+}
+
+function generateSingleSeriesSpec(
+  data: Array<any>,
+  title: string | undefined,
+  minPoint: any,
+  maxPoint: any,
+  mean: number
+) {
+  return {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
     width: 'container',
@@ -50,7 +106,7 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
           dx: 4,
         }
       : undefined,
-    data: { values: validData },
+    data: { values: data },
     layer: [
       {
         // Gradient area fill under the line
@@ -240,13 +296,132 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
       font: 'Inter, system-ui, sans-serif',
     },
   }
+}
 
-  return (
-    <div className="w-full h-full flex flex-col">
-      <div className="flex-1 flex items-center justify-center min-h-0">
-        <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />
-      </div>
-      {descriptionBottom && <DescriptionBottom text={descriptionBottom} />}
-    </div>
-  )
+function generateMultiSeriesSpec(
+  data: Array<any>,
+  title: string | undefined,
+  seriesNames: string[]
+) {
+  const colors = ['#7C80EF', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#06b6d4', '#8b5cf6', '#ec4899']
+
+  // Transform data to long format for Vega-Lite
+  const longData: Array<{ date: string; series: string; value: number }> = []
+  data.forEach(row => {
+    seriesNames.forEach((series, idx) => {
+      const value = row[series]
+      if (typeof value === 'number' && isFinite(value)) {
+        longData.push({
+          date: row.date,
+          series,
+          value,
+        })
+      }
+    })
+  })
+
+  return {
+    $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
+    background: 'transparent',
+    width: 'container',
+    height: 260,
+    padding: { left: 16, right: 16, top: 16, bottom: 8 },
+    autosize: { type: 'fit', contains: 'padding', resize: true },
+    title: title
+      ? {
+          text: title,
+          color: '#f4f4f5',
+          fontSize: 12,
+          fontWeight: 600,
+          anchor: 'start',
+          dx: 4,
+        }
+      : undefined,
+    data: { values: longData },
+    mark: {
+      type: 'line',
+      interpolate: 'monotone',
+      point: true,
+      strokeWidth: 2.5,
+    },
+    encoding: {
+      x: {
+        field: 'date',
+        type: 'temporal',
+        axis: {
+          title: null,
+          labelFontSize: 9,
+          format: '%b %Y',
+          labelAngle: 0,
+          tickCount: 6,
+          grid: false,
+        },
+      },
+      y: {
+        field: 'value',
+        type: 'quantitative',
+        axis: {
+          title: 'Value',
+          titleFontSize: 11,
+          labelFontSize: 9,
+          titlePadding: 8,
+          tickCount: 5,
+        },
+        scale: { zero: false, nice: true },
+      },
+      color: {
+        field: 'series',
+        type: 'nominal',
+        scale: {
+          domain: seriesNames,
+          range: colors.slice(0, seriesNames.length),
+        },
+      },
+      opacity: {
+        condition: { param: 'hover', empty: false, value: 1 },
+        value: 0.8,
+      },
+      size: {
+        condition: { param: 'hover', empty: false, value: 100 },
+        value: 50,
+      },
+      tooltip: [
+        { field: 'date', type: 'temporal', title: 'Date', format: '%b %d, %Y' },
+        { field: 'series', type: 'nominal', title: 'Series' },
+        { field: 'value', type: 'quantitative', format: '.2f', title: 'Value' },
+      ],
+    },
+    params: [
+      {
+        name: 'hover',
+        select: {
+          type: 'point',
+          fields: ['series'],
+          nearest: true,
+          on: 'mouseover',
+          clear: 'mouseout',
+        },
+      },
+    ],
+    config: {
+      view: { stroke: 'transparent' },
+      axis: {
+        grid: true,
+        gridOpacity: 0.15,
+        gridColor: '#1d1d20',
+        domainOpacity: 0,
+        labelColor: '#f4f4f5',
+        titleColor: '#f4f4f5',
+        tickColor: '#3a3a44',
+      },
+      legend: {
+        labelColor: '#f4f4f5',
+        titleColor: '#f4f4f5',
+        labelFontSize: 9,
+        titleFontSize: 10,
+      },
+      text: { fontSize: 9, fill: '#f4f4f5' },
+      font: 'Inter, system-ui, sans-serif',
+    },
+  }
 }

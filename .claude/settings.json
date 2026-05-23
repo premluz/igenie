@@ -73,7 +73,8 @@
       "Read(//Users/fremek/iGenie/i-genie-prototype/src/components/cells/**)",
       "Bash(pkill -f \"npm run dev\" -o)",
       "Bash(pkill -f vite)",
-      "Bash(pkill -f \"npm run dev|vite\")"
+      "Bash(pkill -f \"npm run dev|vite\")",
+      "Bash(curl -s http://localhost:5173/insights/buzz-competitive-analysis)"
     ],
     "additionalDirectories": [
       "/private/tmp",
