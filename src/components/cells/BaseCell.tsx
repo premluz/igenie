@@ -41,7 +41,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
         ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
       `}
-      style={{ borderWidth: '1px', contain: 'layout' }}
+      style={{ contain: 'layout' }}
     >
       <style>{`
         @keyframes skeleton-shimmer {
