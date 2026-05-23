@@ -120,7 +120,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50"
+                    className="absolute top-full mt-2 bg-card border border-purple-500/40 rounded-md p-3 shadow-xl w-72 z-50"
                     style={{
                       right: 'calc(var(--spacing, 0.25rem) * -4)'
                     }}
