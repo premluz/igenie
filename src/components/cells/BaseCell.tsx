@@ -115,25 +115,29 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
 
               {showPrestoPopover && (
                 <div
-                  className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50"
+                  className="absolute top-full mt-2 bg-card border border-white/20 rounded-md p-3 shadow-xl w-72 z-50 relative"
                   style={{
                     right: 'calc(var(--spacing, 0.25rem) * -4)'
                   }}
                 >
-                  <p className="text-xs text-foreground leading-relaxed mb-3">
-                    {cell.prestosummary}
-                  </p>
-                  <AnimatedGlow
-                    disableHoverEffect={true}
-                    glowSize={0}
-                    baseOpacity={0.7}
-                    blurAmount={10}
-                    borderRadius={0}
-                    showBorder={false}
-                    className="w-full"
-                  >
-                    <div className="h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                  </AnimatedGlow>
+                  <div className="relative z-10">
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {cell.prestosummary}
+                    </p>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 z-0">
+                    <AnimatedGlow
+                      disableHoverEffect={true}
+                      glowSize={0}
+                      baseOpacity={0.7}
+                      blurAmount={10}
+                      borderRadius={0}
+                      showBorder={false}
+                      className="w-full"
+                    >
+                      <div className="h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                    </AnimatedGlow>
+                  </div>
                 </div>
               )}
             </div>
