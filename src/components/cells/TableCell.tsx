@@ -35,7 +35,7 @@ function RenderCell({ value, columnName }: { value: any; columnName: string }) {
           initial={{ width: 0 }}
           animate={isVisible ? { width: `${(value / 100) * 100}%` } : { width: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="h-1.5 bg-blue-600 rounded-full flex-1"
+          className="h-0.5 bg-blue-600 rounded-full flex-1"
         />
         <span className="text-xs text-muted-foreground whitespace-nowrap">{value}</span>
       </div>
@@ -104,7 +104,10 @@ export function TableCell({ data }: TableCellProps) {
           <thead className="sticky top-0 bg-card/50 border-b border-border">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
+                {headerGroup.headers.map(header => {
+                  const colName = (header.column.columnDef.header as string) || ''
+                  const isSmallCol = ['yoy', 'buzz', 'progress'].some(n => colName.toLowerCase().includes(n))
+                  return (
                   <th
                     key={header.id}
                     className="px-3 py-2 text-left font-semibold text-foreground border-r border-border/30 last:border-r-0 whitespace-nowrap"
@@ -113,7 +116,7 @@ export function TableCell({ data }: TableCellProps) {
                         header.column.toggleSorting()
                       }
                     }}
-                    style={{ cursor: data.features?.sorting ? 'pointer' : 'default' }}
+                    style={{ cursor: data.features?.sorting ? 'pointer' : 'default', width: isSmallCol ? '80px' : undefined }}
                   >
                     <div className="flex items-center gap-1">
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -128,7 +131,8 @@ export function TableCell({ data }: TableCellProps) {
                       )}
                     </div>
                   </th>
-                ))}
+                  )
+                })}
               </tr>
             ))}
           </thead>
@@ -140,14 +144,19 @@ export function TableCell({ data }: TableCellProps) {
                   idx % 2 === 0 ? 'bg-background/50' : ''
                 }`}
               >
-                {row.getVisibleCells().map(cell => (
+                {row.getVisibleCells().map(cell => {
+                  const colName = (cell.column.columnDef.header as string) || ''
+                  const isSmallCol = ['yoy', 'buzz', 'progress'].some(n => colName.toLowerCase().includes(n))
+                  return (
                   <td
                     key={cell.id}
                     className="px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0"
+                    style={{ width: isSmallCol ? '80px' : undefined }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
-                ))}
+                  )
+                })}
               </tr>
             ))}
           </tbody>
