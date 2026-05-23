@@ -157,7 +157,7 @@ export function TableCell({ data }: TableCellProps) {
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
                   const colName = (header.column.columnDef.header as string) || ''
-                  const isSmallCol = ['yoy', 'buzz', 'progress'].some(n => colName.toLowerCase().includes(n))
+                  const isSmallCol = ['yoy', 'buzz'].some(n => colName.toLowerCase().includes(n))
                   return (
                   <th
                     key={header.id}
@@ -197,7 +197,7 @@ export function TableCell({ data }: TableCellProps) {
               >
                 {row.getVisibleCells().map(cell => {
                   const colName = (cell.column.columnDef.header as string) || ''
-                  const isSmallCol = ['yoy', 'buzz', 'progress'].some(n => colName.toLowerCase().includes(n))
+                  const isSmallCol = ['yoy', 'buzz'].some(n => colName.toLowerCase().includes(n))
                   return (
                   <td
                     key={cell.id}
