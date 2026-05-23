@@ -16,54 +16,76 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
     return <div className="text-md text-muted-foreground text-center py-8">No data available</div>
   }
 
-  // Detect data format and extract series names
-  const firstRow = data[0]
-  const isMultiSeries = firstRow && typeof firstRow === 'object' && 'date' in firstRow && !('value' in firstRow)
+  let spec: any = null
+  let error: string | null = null
 
-  let seriesNames: string[] = []
-  let normalizedData: Array<{ date: string; [key: string]: any }> = []
+  try {
+    // Detect data format and extract series names
+    const firstRow = data[0]
+    const isMultiSeries = firstRow && typeof firstRow === 'object' && 'date' in firstRow && !('value' in firstRow)
 
-  if (isMultiSeries) {
-    // Multi-series format: { date, series1, series2, ... }
-    seriesNames = Object.keys(firstRow).filter(k => k !== 'date')
-    normalizedData = data.filter(d =>
-      d && typeof d === 'object' && typeof d.date === 'string' && d.date.length > 0
-    )
-  } else {
-    // Single-series format: { date, value }
-    normalizedData = data.filter(
-      d =>
-        d &&
-        typeof d === 'object' &&
-        typeof d.date === 'string' &&
-        d.date.length > 0 &&
-        typeof d.value === 'number' &&
-        isFinite(d.value)
-    )
-    seriesNames = ['value']
+    console.log('[LineChartCell] Data detected:', { count: data.length, isMultiSeries, firstRow })
+
+    let seriesNames: string[] = []
+    let normalizedData: Array<{ date: string; [key: string]: any }> = []
+
+    if (isMultiSeries) {
+      // Multi-series format: { date, series1, series2, ... }
+      seriesNames = Object.keys(firstRow).filter(k => k !== 'date')
+      normalizedData = data.filter(d =>
+        d && typeof d === 'object' && typeof d.date === 'string' && d.date.length > 0
+      )
+      console.log('[LineChartCell] Multi-series detected:', { seriesNames, rowCount: normalizedData.length })
+    } else {
+      // Single-series format: { date, value }
+      normalizedData = data.filter(
+        d =>
+          d &&
+          typeof d === 'object' &&
+          typeof d.date === 'string' &&
+          d.date.length > 0 &&
+          typeof d.value === 'number' &&
+          isFinite(d.value)
+      )
+      seriesNames = ['value']
+      console.log('[LineChartCell] Single-series detected:', { rowCount: normalizedData.length })
+    }
+
+    if (normalizedData.length === 0) {
+      return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
+    }
+
+    // For single series, compute min/max for annotation marks
+    let minPoint: any = null
+    let maxPoint: any = null
+    let mean: number = 0
+
+    if (!isMultiSeries) {
+      const values = normalizedData.map(d => d.value)
+      const sorted = [...normalizedData].sort((a, b) => a.value - b.value)
+      minPoint = sorted[0]
+      maxPoint = sorted[sorted.length - 1]
+      mean = values.reduce((s, v) => s + v, 0) / values.length
+    }
+
+    // Generate spec based on series count
+    spec = isMultiSeries
+      ? generateMultiSeriesSpec(normalizedData, title, seriesNames)
+      : generateSingleSeriesSpec(normalizedData, title, minPoint, maxPoint, mean)
+
+    console.log('[LineChartCell] Spec generated:', { isMultiSeries, hasTitle: !!title, specKeys: Object.keys(spec) })
+  } catch (err) {
+    console.error('[LineChartCell] Error:', err)
+    error = String(err)
   }
 
-  if (normalizedData.length === 0) {
-    return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
+  if (error) {
+    return <div className="text-sm text-danger text-center py-8">Error rendering chart: {error}</div>
   }
 
-  // For single series, compute min/max for annotation marks
-  let minPoint: any = null
-  let maxPoint: any = null
-  let mean: number = 0
-
-  if (!isMultiSeries) {
-    const values = normalizedData.map(d => d.value)
-    const sorted = [...normalizedData].sort((a, b) => a.value - b.value)
-    minPoint = sorted[0]
-    maxPoint = sorted[sorted.length - 1]
-    mean = values.reduce((s, v) => s + v, 0) / values.length
+  if (!spec) {
+    return <div className="text-sm text-muted-foreground text-center py-8">Unable to generate chart spec</div>
   }
-
-  // Generate spec based on series count
-  const spec = isMultiSeries
-    ? generateMultiSeriesSpec(normalizedData, title, seriesNames)
-    : generateSingleSeriesSpec(normalizedData, title, minPoint, maxPoint, mean)
 
   return (
     <div ref={ref} className="w-full h-full flex flex-col">
