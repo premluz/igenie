@@ -24,15 +24,16 @@ export function QueryInputBox({
   showGlow = true,
   maxWidth = 'max-w-4xl',
   compact = false,
-  glowSize = 6,
+  glowSize = 12,
   hoverGlowSize = 12,
   blurAmount = 16,
   hoverBlurAmount = 24,
-  baseOpacity = 0.4,
-  hoverOpacity = 0.7,
+  baseOpacity = 0.6,
+  hoverOpacity = 0.8,
   animationDuration = 4
 }: QueryInputBoxProps) {
   const [query, setQuery] = useState('')
+  const [isHovering, setIsHovering] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -54,6 +55,8 @@ export function QueryInputBox({
     <form onSubmit={handleSubmit} className={`${maxWidth} mx-auto w-full`}>
       <div
         onClick={handleBoxClick}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
         className={`input-container card-glass ${padding} cursor-pointer flex flex-col`}
       >
         <input
@@ -113,16 +116,16 @@ export function QueryInputBox({
   }
 
   return (
-    <div className="w-full flex flex-col gap-0">
+    <div className={`w-full flex flex-col gap-0 input-box-wrapper ${isHovering ? 'is-hovering' : ''}`}>
       {inputContent}
       <div className={`${maxWidth} mx-auto w-full -mt-1`}>
         <AnimatedGlow
           glowType="outer"
           glowSize={glowSize}
-          hoverGlowSize={hoverGlowSize}
+          hoverGlowSize={isHovering ? hoverGlowSize : glowSize}
           blurAmount={blurAmount}
-          hoverBlurAmount={hoverBlurAmount}
-          baseOpacity={baseOpacity}
+          hoverBlurAmount={isHovering ? hoverBlurAmount : blurAmount}
+          baseOpacity={isHovering ? hoverOpacity : baseOpacity}
           hoverOpacity={hoverOpacity}
           animationDuration={animationDuration}
           borderRadius={12}

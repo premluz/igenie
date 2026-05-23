@@ -9,6 +9,7 @@ import { cucumberMint3 } from './cucumber-mint3'
 import { cucumberMint4 } from './cucumber-mint4'
 import { cucumberMint5 } from './cucumber-mint5'
 import { cucumberMint6 } from './cucumber-mint6'
+import { buzzCompetitiveAnalysis } from './buzz-competitive-analysis'
 
 // import { newScenario } from './new-product' // Uncomment when you create a new scenario
 
@@ -22,7 +23,8 @@ export const scenarioMap = {
   'cucumber-mint3': cucumberMint3,
   'cucumber-mint4': cucumberMint4,
   'cucumber-mint5': cucumberMint5,
-  'cucumber-mint6': cucumberMint6
+  'cucumber-mint6': cucumberMint6,
+  'buzz-competitive-analysis': buzzCompetitiveAnalysis
   // 'new-product': newScenario  // Add your new scenario here
 }
 

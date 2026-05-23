@@ -34,10 +34,10 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 }
-
+nav { display: none}
 @layer utilities {
   .bg-background {
-    @apply bg-[#181924];
+    @apply bg-[#1C1D28];
   }
 
   .bg-surface {
@@ -218,14 +218,32 @@
     border-color: rgb(124, 128, 239);
   }
 
+  /* Card with purple glow on hover (for action cards) */
+  .card-hover-glow {
+    border-radius: var(--radius-card);
+    backdrop-filter: blur(12px);
+    background-color: rgba(36, 36, 46, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .card-hover-glow:hover {
+    border-color: rgba(139, 92, 246, 0.5);
+    background-color: rgba(139, 92, 246, 0.05);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);
+  }
+
   .input-container {
     border: 1px solid rgba(255, 255, 255, 0.16);
     background-color: #34365150;
+    transition: all 0.3s ease;
   }
-  
-    .input-container:hover {
-       border-color: rgb(124, 128, 239);
-  
+
+  .input-container:hover {
+    border-color: rgba(139, 92, 246, 0.6);
+    background-color: rgba(139, 92, 246, 0.08);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);
   }
 
   /* Text list item style (reports, text-heavy lists) - hover bg only, no border */
@@ -310,6 +328,18 @@
   [role="button"],
   .cursor-pointer {
     cursor: pointer;
+  }
+
+  /* Link pressed-in effect on active state */
+  a {
+    transition: all 0.08s ease;
+  }
+
+  a:active {
+    color: #a855f7;
+    transform: scale(0.95);
+    filter: brightness(0.8);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   }
 }
 

@@ -7,10 +7,11 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 interface TableCellProps {
   data: {
-    columns: Array<{ key: string; label: string }>
+    columns: string[] | Array<{ key: string; label: string }>
     rows: Array<Record<string, any>>
     features?: {
       sorting?: boolean
@@ -21,6 +22,41 @@ interface TableCellProps {
   }
 }
 
+// Render special cell types
+function RenderCell({ value, columnName }: { value: any; columnName: string }) {
+  // Progress bar for numeric values in progress column
+  if ((columnName === 'Progress' || columnName === 'progress') && typeof value === 'number') {
+    return (
+      <div className="flex items-center gap-2">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${(value / 100) * 100}%` }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="h-1.5 bg-blue-600 rounded-full"
+          style={{ maxWidth: '60px' }}
+        />
+        <span className="text-xs text-muted-foreground">{value}</span>
+      </div>
+    )
+  }
+
+  // Sentiment color for YoY column
+  if ((columnName === 'YoY' || columnName === 'yoy') && typeof value === 'string') {
+    const isPositive = value.startsWith('+')
+    return (
+      <span className={isPositive ? 'text-emerald-400' : 'text-red-400'}>
+        {value}
+      </span>
+    )
+  }
+
+  // Default rendering
+  if (typeof value === 'number') {
+    return <>{typeof value === 'number' && value > 1 ? value.toFixed(1) : value}</>
+  }
+  return <>{String(value)}</>
+}
+
 export function TableCell({ data }: TableCellProps) {
   if (!data?.rows || data.rows.length === 0) {
     return <div className="text-sm text-muted-foreground text-center py-8">No data available</div>
@@ -28,16 +64,23 @@ export function TableCell({ data }: TableCellProps) {
 
   const [sorting, setSorting] = useState<SortingState>([])
 
+  // Normalize columns to object format
+  const normalizedColumns = Array.isArray(data.columns)
+    ? data.columns.map(col =>
+        typeof col === 'string'
+          ? { key: col, label: col }
+          : col
+      )
+    : data.columns
+
   // Create columns from data structure
-  const columns: ColumnDef<Record<string, any>>[] = data.columns.map(col => ({
+  const columns: ColumnDef<Record<string, any>>[] = normalizedColumns.map(col => ({
     accessorKey: col.key,
     header: col.label,
     cell: info => {
       const value = info.getValue()
-      if (typeof value === 'number') {
-        return typeof value === 'number' && value > 1 ? value.toFixed(1) : value
-      }
-      return String(value)
+      const columnName = col.label
+      return <RenderCell value={value} columnName={columnName} />
     },
   }))
 

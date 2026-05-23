@@ -8,12 +8,14 @@ import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { getScenario } from '@/scenarios'
 import { motion } from 'framer-motion'
+import { usePageTransition } from '@/hooks/usePageTransition'
 
 const LANDING_TRIGGERS = [
   { keywords: ['genz', 'gen-z', 'gen z'], scenarioId: 'cucumber-mint' },
   { keywords: ['energy'], scenarioId: 'energy-drinks-trends-genz' },
   { keywords: ['millennial', 'millennials'], scenarioId: 'neutrogena-natural' },
-  { keywords: ['positioning', 'perception', 'cucumber-mint-5'], scenarioId: 'cucumber-mint-5' }
+  { keywords: ['positioning', 'perception', 'cucumber-mint-5'], scenarioId: 'cucumber-mint-5' },
+  { keywords: ['buzz', 'competitive', 'analysis'], scenarioId: 'buzz-competitive-analysis' }
 ]
 
 const REPORTS = [
@@ -55,7 +57,13 @@ const QUICK_ACTIONS = [
 
 export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boolean }) {
   const navigate = useNavigate()
-  const { pushLog, setTransitioning } = usePrestoStore()
+  const { pushLog, setTransitioning, isPageTransitioning } = usePrestoStore()
+  const { navigateWithTransition } = usePageTransition()
+
+  const handleLinkClick = (href: string) => {
+    // Trigger page transition when link is clicked
+    navigateWithTransition('/insights')
+  }
 
   const handleQuerySubmit = (query: string) => {
     if (!query.trim()) return
@@ -179,7 +187,7 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
         initial={{ x: shouldAnimate ? -320 : 0, opacity: shouldAnimate ? 0 : 1 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: shouldAnimate ? 0.1 : 0 }}
-        className="w-80 flex-shrink-0 border-r border-border overflow-y-auto backdrop-blur-md bg-background/20"
+        className="w-80 hidden flex-shrink-0 border-r border-border overflow-y-auto backdrop-blur-md bg-background/20"
       >
         <ul className="p-3 space-y-0 list-none">
           {REPORTS.map((report) => (
@@ -203,14 +211,14 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
       <div
         className="flex-1 flex flex-col overflow-auto relative"
         style={{
-          backgroundImage: 'url(/images/genie-bg.png)',
+         // backgroundImage: 'url(/images/genie-bg.png)',
           backgroundSize: 'auto 120%',
           backgroundPosition: '75%  20% ',
           backgroundAttachment: 'fixed',
           backgroundRepeat: 'no-repeat'
         }}
       >
-        <AmbientGridBackground
+      {/*  <AmbientGridBackground
           showNodeLines={false}
           enableMagneticCursor={false}
           nodeLineColor="rgba(255, 255, 255, 0.5)"
@@ -220,66 +228,70 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           activeNodeCount={920}
           magneticStrength={12}
           magneticRadius={180}
-        />
+        /> *.}
 
         {/* Top section with greeting and subtitle */}
         <div className="flex-1 flex flex-col items-center justify-center px-8 py-12 relative z-10">
 
         {/* Genie Image */}
         <motion.img
-          src="/images/genie.png"
+          src="/images/genie2.png"
           alt="Genie"
           initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? -20 : 0 }}
-          animate={{ opacity: 1, y: 0 }}
+          animate={{ opacity: 0, y: 0 }}
           transition={{ duration: 0.6, delay: shouldAnimate ? 0.1 : 0 }}
           className="h-48 w-48 mb-6 object-contain"
         />
 
         <motion.h1
           initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: shouldAnimate ? 0.2 : 0 }}
+          animate={{ opacity: isPageTransitioning ? 0 : 1, y: 0, filter: isPageTransitioning ? 'blur(20px)' : 'blur(0px)' }}
+          transition={{ duration: isPageTransitioning ? 0.6 : 0.6, delay: shouldAnimate && !isPageTransitioning ? 0.2 : 0 }}
           className="text-4xl  h-16  font-normal text-foreground mb-3"
         >
           <CyclingGeminiText
             texts={['Insight Intelligence. Infinite wishes.', 'Good morning Trevor!']}
             speed={12}
-            delayBetweenTexts={3000}
+            delayBetweenTexts={2600}
             showCursor={false}
+            maxCycles={0}
           />
         </motion.h1>
         <motion.p
           initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: shouldAnimate ? 0.3 : 0 }}
-          className="text-lg text-muted-foreground text-center mb-12 min-h-14"
+          animate={{ opacity: isPageTransitioning ? 0 : 1, y: 0, filter: isPageTransitioning ? 'blur(20px)' : 'blur(0px)' }}
+          transition={{ duration: isPageTransitioning ? 0.6 : 0.6, delay: shouldAnimate && !isPageTransitioning ? 0.3 : 0 }}
+          className="text-lg opacity-0 text-muted-foreground text-center mb-12 min-h-14"
         >
           <CyclingGeminiText
             texts={[
-              'Ask questions, explore trends, and uncover insights across your data.',
-              'What would you like to do today?'
+              'Finally, data got exciting.',
+              'Pepsi is closing the gap on Coca-Cola Original. <a href="#">Want to dig in?</a>'
             ]}
             speed={1}
-            delayBetweenTexts={3600}
+            delayBetweenTexts={3000}
             showCursor={false}
+            enableLinks={true}
+            maxCycles={0}
+            onLinkClick={handleLinkClick}
           />
         </motion.p>
 
         {/* Quick action cards */}
         <motion.div
           initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: shouldAnimate ? 0.4 : 0 }}
+          animate={{ opacity: isPageTransitioning ? 0 : 1, y: 0, filter: isPageTransitioning ? 'blur(20px)' : 'blur(0px)' }}
+          transition={{ duration: isPageTransitioning ? 0.6 : 0.6, delay: shouldAnimate && !isPageTransitioning ? 0.4 : 0 }}
           className="grid grid-cols-4 gap-3 mb-0 max-w-4xl w-full"
         >
           {QUICK_ACTIONS.map((action, idx) => (
             <motion.button
               key={action.id}
               initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: shouldAnimate ? 0.5 + idx * 0.08 : 0 }}
+              animate={{ opacity: isPageTransitioning ? 0 : 1, y: 0 }}
+              transition={{ duration: shouldAnimate && !isPageTransitioning ? 0.4 : 0.6, delay: shouldAnimate && !isPageTransitioning ? 0.5 + idx * 0.08 : 0 }}
               onClick={() => handleQuickAction(action.id)}
-              className="card-glass card-padding-md text-left group cursor-pointer"
+              className="card-hover-glow card-padding-md text-left group cursor-pointer"
             >
               <div className="flex items-start gap-3 mb-2">
                 <span className="text-xl">{action.icon}</span>
@@ -293,14 +305,29 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
             </motion.button>
           ))}
         </motion.div>
-        {/* Bottom input section */}
+        {/* Bottom input section - always in DOM to preserve layout */}
         <motion.div
-          initial={{ opacity: shouldAnimate ? 0 : 1 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: shouldAnimate ? 0.9 : 0 }}
-          className="px-8 w-full py-4 relative z-10"
+          initial={false}
+          animate={{
+            opacity: isPageTransitioning ? 0 : 1,
+            visibility: isPageTransitioning ? 'hidden' : 'visible'
+          }}
+          transition={{ duration: 0.3 }}
+          className="px-8 w-full py-4 z-10 relative"
         >
           <QueryInputBox onSubmit={handleQuerySubmit} />
+
+          {/* Animated input overlay - starts from original position */}
+          {isPageTransitioning && (
+            <motion.div
+              initial={{ position: 'absolute', width: 'calc(100% - 64px)', paddingLeft: 0, paddingRight: 0, bottom: 0, left: 32, right: 'auto' }}
+              animate={{ position: 'fixed', right: 24, bottom: 24, width: 320, paddingLeft: 0, paddingRight: 0, left: 'auto' }}
+              transition={{ duration: 1.2, ease: 'easeInOut' }}
+              className="py-4 z-20"
+            >
+              <QueryInputBox onSubmit={handleQuerySubmit} />
+            </motion.div>
+          )}
         </motion.div>
         </div>
       </div>

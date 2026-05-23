@@ -4,13 +4,16 @@ import { CanvasGrid } from '@/components/CanvasGrid'
 import { PrestoSidebar } from '@/components/PrestoSidebar'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { LandingScreen } from '@/components/LandingScreen'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import { PageTransitionOverlay } from '@/components/PageTransitionOverlay'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { usePageTransition } from '@/hooks/usePageTransition'
 
 export default function App() {
   const location = useLocation()
+  const { navigateWithTransition } = usePageTransition()
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem('isAuthenticated') === 'true'
   )
@@ -42,14 +45,16 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground overflow-hidden">
+      <PageTransitionOverlay />
+
       {/* LEFT SIDEBAR NAV */}
       <nav className="w-16 border-r border-border bg-background flex flex-col items-center py-4 space-y-6 relative z-10">
-        <Link
-          to="/"
+        <button
+          onClick={() => navigateWithTransition('/')}
           className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg mb-2 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity duration-150"
         >
           <img src="/images/logo.png" alt="Logo" className="w-full h-full object-contain" />
-        </Link>
+        </button>
         <div className="flex flex-col space-y-4 text-muted-foreground flex-1">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -60,39 +65,37 @@ export default function App() {
             <TooltipContent side="right">Search</TooltipContent>
           </Tooltip>
 
-          <Link to="/">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
-                    isHome ? 'text-foreground bg-accent/10 border border-accent/20' : 'hover:bg-white/10'
-                  }`}
-                >
-                  <Home size={16} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Home</TooltipContent>
-            </Tooltip>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigateWithTransition('/')}
+                className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
+                  isHome ? 'text-foreground bg-accent/10 border border-accent/20' : 'hover:bg-white/10'
+                }`}
+              >
+                <Home size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Home</TooltipContent>
+          </Tooltip>
 
-          <Link to="/insights">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
-                    isInsights ? 'text-foreground bg-accent/10 border border-accent/20 hover:bg-accent/20' : 'hover:bg-white/10'
-                  }`}
-                >
-                  <Activity size={16} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Insights</TooltipContent>
-            </Tooltip>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigateWithTransition('/insights')}
+                className={`w-8 h-8 rounded-lg transition-colors duration-150 ${
+                  isInsights ? 'text-foreground bg-accent/10 border border-accent/20 hover:bg-accent/20' : 'hover:bg-white/10'
+                }`}
+              >
+                <Activity size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Insights</TooltipContent>
+          </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>

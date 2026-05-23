@@ -61,6 +61,8 @@ export interface PrestoStore {
   cellTitleFilter: string
   viewStack: ViewFrame[]
   currentView: ViewFrame | null
+  enablePageTransition: boolean
+  isPageTransitioning: boolean
   loadScenario: (id: string) => void
   pushView: (view: ViewFrame) => void
   popView: () => void
@@ -76,6 +78,8 @@ export interface PrestoStore {
   setCellTitleFilter: (title: string) => void
   setTransitioning: (transitioning: boolean) => void
   setLoadingTitle: (title: string) => void
+  setEnablePageTransition: (enabled: boolean) => void
+  setIsPageTransitioning: (transitioning: boolean) => void
   revealCells: () => void
   revealCellsGradually: (duration: number) => void
 }
@@ -163,6 +167,8 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
   cellTitleFilter: '',
   viewStack: [],
   currentView: createListingView(),
+  enablePageTransition: true,
+  isPageTransitioning: false,
 
   pushView: (view: ViewFrame) => {
     set(state => ({
@@ -477,6 +483,14 @@ export const usePrestoStore = create<PrestoStore>((set, get) => ({
 
   setTransitioning: (transitioning: boolean) => {
     set({ isTransitioning: transitioning })
+  },
+
+  setEnablePageTransition: (enabled: boolean) => {
+    set({ enablePageTransition: enabled })
+  },
+
+  setIsPageTransitioning: (transitioning: boolean) => {
+    set({ isPageTransitioning: transitioning })
   },
 
   setLoadingTitle: (title: string) => {
