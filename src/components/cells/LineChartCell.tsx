@@ -308,7 +308,7 @@ function generateMultiSeriesSpec(
   // Transform data to long format for Vega-Lite
   const longData: Array<{ date: string; series: string; value: number }> = []
   data.forEach(row => {
-    seriesNames.forEach((series, idx) => {
+    seriesNames.forEach((series) => {
       const value = row[series]
       if (typeof value === 'number' && isFinite(value)) {
         longData.push({
@@ -320,12 +320,24 @@ function generateMultiSeriesSpec(
     })
   })
 
+  if (longData.length === 0) {
+    return {
+      $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
+      background: 'transparent',
+      width: 'container',
+      height: 260,
+      data: { values: [] },
+      mark: 'point',
+      encoding: { x: { field: 'value', type: 'quantitative' } },
+    }
+  }
+
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
     width: 'container',
     height: 260,
-    padding: { left: 16, right: 16, top: 16, bottom: 8 },
+    padding: { left: 40, right: 16, top: 16, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
     title: title
       ? {
@@ -338,12 +350,7 @@ function generateMultiSeriesSpec(
         }
       : undefined,
     data: { values: longData },
-    mark: {
-      type: 'line',
-      interpolate: 'monotone',
-      point: true,
-      strokeWidth: 2.5,
-    },
+    mark: { type: 'line', interpolate: 'monotone', point: true, strokeWidth: 2.5 },
     encoding: {
       x: {
         field: 'date',
@@ -361,7 +368,7 @@ function generateMultiSeriesSpec(
         field: 'value',
         type: 'quantitative',
         axis: {
-          title: 'Value',
+          title: 'Buzz Score',
           titleFontSize: 11,
           labelFontSize: 9,
           titlePadding: 8,
@@ -376,35 +383,16 @@ function generateMultiSeriesSpec(
           domain: seriesNames,
           range: colors.slice(0, seriesNames.length),
         },
-      },
-      opacity: {
-        condition: { param: 'hover', empty: false, value: 1 },
-        value: 0.8,
-      },
-      size: {
-        condition: { param: 'hover', empty: false, value: 100 },
-        value: 50,
+        legend: { title: 'Brand' },
       },
       tooltip: [
-        { field: 'date', type: 'temporal', title: 'Date', format: '%b %d, %Y' },
-        { field: 'series', type: 'nominal', title: 'Series' },
-        { field: 'value', type: 'quantitative', format: '.2f', title: 'Value' },
+        { field: 'date', type: 'temporal', title: 'Date', format: '%b %Y' },
+        { field: 'series', type: 'nominal', title: 'Brand' },
+        { field: 'value', type: 'quantitative', format: '.0f', title: 'Buzz Score' },
       ],
     },
-    params: [
-      {
-        name: 'hover',
-        select: {
-          type: 'point',
-          fields: ['series'],
-          nearest: true,
-          on: 'mouseover',
-          clear: 'mouseout',
-        },
-      },
-    ],
     config: {
-      view: { stroke: 'transparent' },
+      view: { stroke: 'transparent', continuousWidth: 'container', continuousHeight: 260 },
       axis: {
         grid: true,
         gridOpacity: 0.15,
@@ -419,9 +407,11 @@ function generateMultiSeriesSpec(
         titleColor: '#f4f4f5',
         labelFontSize: 9,
         titleFontSize: 10,
+        disable: false,
       },
       text: { fontSize: 9, fill: '#f4f4f5' },
       font: 'Inter, system-ui, sans-serif',
+      mark: { opacity: 0.85 },
     },
   }
 }
