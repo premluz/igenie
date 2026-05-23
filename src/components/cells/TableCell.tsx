@@ -158,6 +158,8 @@ export function TableCell({ data }: TableCellProps) {
                 {headerGroup.headers.map(header => {
                   const colName = (header.column.columnDef.header as string) || ''
                   const isSmallCol = ['yoy', 'buzz'].some(n => colName.toLowerCase().includes(n))
+                  const isBrand = colName.toLowerCase().includes('brand')
+                  const isProgress = colName.toLowerCase().includes('progress')
                   return (
                   <th
                     key={header.id}
@@ -167,7 +169,12 @@ export function TableCell({ data }: TableCellProps) {
                         header.column.toggleSorting()
                       }
                     }}
-                    style={{ cursor: data.features?.sorting ? 'pointer' : 'default', width: isSmallCol ? '80px' : undefined }}
+                    style={{
+                      cursor: data.features?.sorting ? 'pointer' : 'default',
+                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? '1fr' : undefined,
+                      maxWidth: isProgress ? '400px' : undefined,
+                      paddingRight: isBrand ? '40px' : undefined
+                    }}
                   >
                     <div className="flex items-center gap-1">
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -198,11 +205,17 @@ export function TableCell({ data }: TableCellProps) {
                 {row.getVisibleCells().map(cell => {
                   const colName = (cell.column.columnDef.header as string) || ''
                   const isSmallCol = ['yoy', 'buzz'].some(n => colName.toLowerCase().includes(n))
+                  const isBrand = colName.toLowerCase().includes('brand')
+                  const isProgress = colName.toLowerCase().includes('progress')
                   return (
                   <td
                     key={cell.id}
                     className="px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0"
-                    style={{ width: isSmallCol ? '80px' : undefined }}
+                    style={{
+                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? '1fr' : undefined,
+                      maxWidth: isProgress ? '400px' : undefined,
+                      paddingRight: isBrand ? '40px' : undefined
+                    }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
