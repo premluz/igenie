@@ -17,6 +17,7 @@ export interface Cell {
   descriptionBottom?: string
   data: CellData | null
   error?: string
+  magicLayer?: string
 }
 
 export interface Row {

@@ -6,8 +6,8 @@
   --font-sans: "Barlow", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --color-background: #24242E;
-  --color-card: #29252C;
+  --color-background: #191B24;
+  --color-card: #1F202E;
   --color-card-skeleton: #1a1a1d;
   --color-border: #1d1d20;
   --color-accent: #7C80EF;
@@ -37,11 +37,11 @@
 nav { display: none}
 @layer utilities {
   .bg-background {
-    @apply bg-[#1C1D28];
+    @apply bg-[#191B24];
   }
 
   .bg-surface {
-    @apply bg-[#1E1F2C];
+    @apply bg-[#1F202E];
   }
 
 .bg-insight {
@@ -53,7 +53,7 @@ nav { display: none}
   }
 
   .bg-card {
-    @apply bg-[#202233];
+    @apply bg-[#1F202E];
   }
 
   .border-border {
@@ -200,18 +200,18 @@ nav { display: none}
   .card-glass {
     border-radius: var(--radius-card);
     backdrop-filter: blur(12px);
-    background-color: rgba(36, 36, 46, 0.01);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #1F202E80;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     transition: all 0.2s ease;
   }
 
   .card-glass:hover {
-    border-color: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.06);
   }
 
   .card-glass:active,
   .card-glass.active {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 
   .card-glass:focus-within {
@@ -221,7 +221,7 @@ nav { display: none}
   /* Card with purple glow on hover (for action cards) */
   .card-hover-glow {
     border-radius: var(--radius-card);
-    backdrop-filter: blur(12px);
+    /*ackdrop-filter: blur(12px); */
     background-color: rgba(36, 36, 46, 0.01);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
@@ -231,7 +231,7 @@ nav { display: none}
   .card-hover-glow:hover {
     border-color: rgba(139, 92, 246, 0.5);
     background-color: rgba(139, 92, 246, 0.05);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);
+    /*box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(139, 92, 246, 0.05);*/
   }
 
   .input-container {

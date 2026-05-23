@@ -74,7 +74,21 @@
       "Bash(pkill -f \"npm run dev\" -o)",
       "Bash(pkill -f vite)",
       "Bash(pkill -f \"npm run dev|vite\")",
-      "Bash(curl -s http://localhost:5173/insights/buzz-competitive-analysis)"
+      "Bash(curl -s http://localhost:5173/insights/buzz-competitive-analysis)",
+      "Bash(git commit -m 'fix: pass title prop to LineChartCell for in-chart title rendering *)",
+      "Bash(git commit -m 'feat: integrate real buzz score data from case study *)",
+      "Bash(git commit -m 'fix: simplify multi-series vega-lite spec for reliable rendering *)",
+      "Bash(git commit -m 'debug: add console logging and better error handling to LineChartCell *)",
+      "Bash(git commit -m 'fix: replace invalid '\\\\''container'\\\\'' width with responsive step-based sizing *)",
+      "Bash(git commit -m 'fix: replace remaining '\\\\''container'\\\\'' width in empty data fallback spec *)",
+      "Bash(git commit -m 'fix: remove borderWidth 1px from cell styling *)",
+      "Bash(git commit -m 'fix: replace step width with fixed width for temporal axes in Vega-Lite specs *)",
+      "Bash(git commit -m 'feat: make progress bar 100% width of cell *)",
+      "Bash(git commit -m 'feat: constrain column widths for small content \\(YoY, Buzz, Progress\\) *)",
+      "Bash(git commit -m 'feat: add sparklines to buzz column in ranking table *)",
+      "Bash(git commit -m 'fix: remove width constraint from Progress column *)",
+      "Bash(git commit -m 'feat: add magic layer button with lamp icon to hover action bar *)",
+      "Bash(git commit -m 'feat: implement magic layer with hover input and magiglow effect *)"
     ],
     "additionalDirectories": [
       "/private/tmp",

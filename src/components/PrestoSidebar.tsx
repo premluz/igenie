@@ -80,8 +80,8 @@ export function PrestoSidebar() {
   }
 
   return (
-    <aside className="w-80 flex flex-col bg-background relative overflow-hidden">
-      {/* Ambient Background - Static */}
+    <aside className="w-80 flex flex-col  relative overflow-hidden">
+      {/* Ambient Background - Static 
       <AmbientGridBackground
         showNodeLines={false}
         enableMagneticCursor={false}
@@ -93,7 +93,7 @@ export function PrestoSidebar() {
         magneticStrength={0}
         magneticRadius={0}
         isAnimated={false}
-      />
+      />*/}
 
       {/* Log Terminal */}
       <div className="flex-1 overflow-auto p-4 text-md relative z-10 flex flex-col">

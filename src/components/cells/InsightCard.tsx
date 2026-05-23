@@ -15,9 +15,10 @@ interface InsightCardProps {
   }
   title: string
   subtitle?: string
+  magicLayer?: string
 }
 
-export function InsightCard({ data, title }: InsightCardProps) {
+export function InsightCard({ data, title, magicLayer }: InsightCardProps) {
   const navigate = useNavigate()
 
   const handleClick = () => {
@@ -25,11 +26,11 @@ export function InsightCard({ data, title }: InsightCardProps) {
   }
 
   return (
-    <InsightCardContent data={data} title={title} handleClick={handleClick} />
+    <InsightCardContent data={data} title={title} handleClick={handleClick} magicLayer={magicLayer} />
   )
 }
 
-function InsightCardContent({ data, title, handleClick }: any) {
+function InsightCardContent({ data, title, handleClick, magicLayer }: any) {
 
   const velocityScore = data.velocityScore || 0
   const sentimentScore = data.sentimentScore || 0
@@ -39,10 +40,47 @@ function InsightCardContent({ data, title, handleClick }: any) {
   const statusColor = sentimentScore > 80 ? '#10b981' : sentimentScore > 60 ? '#3b82f6' : '#ef4444'
 
   return (
-    <button
-      onClick={handleClick}
-      className="list-row-item w-full text-left group flex items-stretch gap-3"
-    >
+    <>
+      <style>{magicLayer ? `
+        @keyframes magiglow {
+          0% {
+            background-position: 0% center;
+          }
+          50% {
+            background-position: 100% center;
+          }
+          100% {
+            background-position: 0% center;
+          }
+        }
+        .magiglow-border {
+          position: relative;
+          background: linear-gradient(90deg, #ec4899, #3b82f6, #10b981, #ef4444, #ec4899) 0% center / 200% 100%;
+          background-clip: padding-box;
+          animation: magiglow 3s linear infinite;
+        }
+        .magiglow-border::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border: 1px solid transparent;
+          border-image: linear-gradient(90deg, #ec4899, #3b82f6, #10b981, #ef4444, #ec4899) 1;
+          border-image-slice: 1;
+          pointer-events: none;
+          animation: magiglow 3s linear infinite;
+        }
+      ` : ''}</style>
+      <button
+        onClick={handleClick}
+        className={`list-row-item w-full text-left group flex items-stretch gap-3 relative ${magicLayer ? 'rounded-lg overflow-hidden' : ''}`}
+        style={magicLayer ? {
+          borderBottom: '1px solid transparent',
+          backgroundImage: 'linear-gradient(90deg, #ec4899, #3b82f6, #10b981, #ef4444, #ec4899)',
+          backgroundSize: '200% 100%',
+          backgroundPosition: '0% center',
+          animation: 'magiglow 3s linear infinite',
+        } : undefined}
+      >
 
       {/* Left Column - Sparkline */}
       <div className="flex flex-col items-center justify-center py-1 px-2 w-28 flex-shrink-0 sparkline-animate" style={{ aspectRatio: '2.4' }}>
@@ -108,5 +146,6 @@ function InsightCardContent({ data, title, handleClick }: any) {
       </div>
 
     </button>
+    </>
   )
 }

@@ -184,7 +184,7 @@ function HeadingCell({ title, isLoading }: { title: string; isLoading: boolean }
 }
 
 // Main renderer — pure switch on cell.type
-export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; isTransitioning?: boolean }) {
+export function WidgetRenderer({ cell, isTransitioning = false, rowId }: { cell: Cell; isTransitioning?: boolean; rowId?: string }) {
   // Headers show skeleton during Scenario 1 transitions
   if (cell.type === 'header') {
     return <HeadingCell title={cell.title} isLoading={isTransitioning && cell.status === 'thinking'} />
@@ -230,7 +230,7 @@ export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; 
       content = <PulseListCell />
       break
     case 'insight-card':
-      content = <InsightCard data={cell.data as any} title={cell.title} subtitle={cell.subtitle} />
+      content = <InsightCard data={cell.data as any} title={cell.title} subtitle={cell.subtitle} magicLayer={cell.magicLayer} />
       break
     case 'progress-bar':
       content = <ProgressBarCell title={cell.title} subtitle={cell.subtitle || ''} descriptionTop={cell.descriptionTop} descriptionBottom={cell.descriptionBottom} metric={cell.data as any} />
@@ -246,7 +246,7 @@ export function WidgetRenderer({ cell, isTransitioning = false }: { cell: Cell; 
   }
 
   return (
-    <BaseCell cell={cell} isTransitioning={isTransitioning}>
+    <BaseCell cell={cell} isTransitioning={isTransitioning} rowId={rowId}>
       {content}
     </BaseCell>
   )

@@ -223,14 +223,14 @@ export function CanvasGrid() {
       <div
         className="flex-1 overflow-y-auto relative z-10"
         style={{
-          backgroundImage: 'url(/images/genie-bg.png)',
+          //backgroundImage: 'url(/images/genie-bg.png)',
           backgroundSize: 'auto 120%',
           backgroundPosition: '75% 20%',
           backgroundAttachment: 'fixed',
           backgroundRepeat: 'no-repeat'
         }}
       >
-        <div className="p-6 m-6 border-border border-1 rounded-sm max-w-8xl bg-surface space-y-4">
+        <div className="p-6 m-6 border-border border-1 rounded-sm max-w-8xl space-y-4">
           {/* Page Header - Title & Description (scrolls with content) */}
           {(currentView.title || isTransitioning) && (
             <div className="mb-4 pb-6 border-b border-border">
@@ -273,7 +273,7 @@ export function CanvasGrid() {
                 <div className="flex gap-4 w-full items-stretch">
                   {row.cells.map(cell => (
                     <div key={cell.id} className={`${getColWidth()} flex`}>
-                      <WidgetRenderer cell={cell} isTransitioning={isTransitioning} />
+                      <WidgetRenderer cell={cell} isTransitioning={isTransitioning} rowId={row.id} />
                     </div>
                   ))}
                 </div>

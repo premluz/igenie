@@ -44,7 +44,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-background text-foreground overflow-hidden">
+    <div className="flex h-screen w-full text-foreground overflow-hidden">
       <PageTransitionOverlay />
 
       {/* LEFT SIDEBAR NAV */}
@@ -198,9 +198,9 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
     <motion.div
       exit={{ opacity: 0, filter: 'blur(10px)', scale: 0.95 }}
       transition={{ duration: 0.8 }}
-      className="fixed inset-0 w-screen h-screen flex items-center justify-center bg-background"
+      className="fixed inset-0 w-screen h-screen flex items-center justify-center "
       style={{
-        backgroundImage: 'url(/images/genie-bg.png)',
+       /*backgroundImage: 'url(/images/genie-bg.png)',*/
         backgroundSize: 'auto 120%',
         backgroundPosition: '75% 20%',
         backgroundAttachment: 'fixed',

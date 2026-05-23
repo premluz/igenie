@@ -9,9 +9,10 @@ interface BaseCellProps {
   cell: Cell
   children: React.ReactNode
   isTransitioning?: boolean
+  rowId?: string
 }
 
-export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
+export function BaseCell({ cell, children, isTransitioning, rowId }: BaseCellProps) {
   const { replaceCell } = usePrestoStore()
   const [isHovering, setIsHovering] = useState(false)
 
@@ -38,7 +39,7 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
       onMouseLeave={() => setIsHovering(false)}
       className={`
         relative flex flex-col card-glass rounded-[4px] w-full h-full border-[#FFFFFF2E] overflow-visible
-        ${cell.status === 'ready' ? 'cell-ready cell-border-glow' : ''}
+        ${cell.status === 'ready' ? 'cell-ready' : ''}
         ${cell.status === 'error' ? 'border-danger' : ''}
       `}
       style={{ contain: 'layout' }}
@@ -90,9 +91,9 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
       {/* Inner content wrapper with overflow hidden for proper clipping */}
       <div className="flex flex-col h-full w-full overflow-hidden rounded-[4px]">
         {/* Hover action bar */}
-        {isHovering && (
+        {isHovering && rowId && (
           <div onMouseEnter={() => setIsHovering(true)} onMouseLeave={() => setIsHovering(false)}>
-            <HoverActionBar />
+            <HoverActionBar cell={cell} rowId={rowId} />
           </div>
         )}
 
