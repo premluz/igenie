@@ -1,6 +1,6 @@
 import { X, TrendingUp, Zap, CheckCircle2, MessageCircle, ShoppingCart, Search } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface ValidationMetric {
   value: string
@@ -48,6 +48,17 @@ export function InsightInspectorModal({
 }: InsightInspectorModalProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'audit'>('overview')
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -62,13 +73,13 @@ export function InsightInspectorModal({
             onClick={onClose}
           />
 
-          {/* Modal - Right Aligned, 2x Width */}
+          {/* Modal - Right Drawer with Margins */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-4 right-4 bottom-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden w-[48rem] relative"
+            className="fixed top-4 right-4 bottom-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden w-[48rem]"
           >
             {/* Header - Sticky */}
             <div className="sticky top-0 z-10 bg-card p-6 border-b border-border/20">
