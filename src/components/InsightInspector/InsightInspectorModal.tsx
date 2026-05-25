@@ -47,7 +47,6 @@ export function InsightInspectorModal({
   summary
 }: InsightInspectorModalProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'audit'>('overview')
-  const [activeMetric, setActiveMetric] = useState<'trend' | 'strength' | 'trust'>('trend')
 
   return (
     <AnimatePresence>
@@ -114,44 +113,26 @@ export function InsightInspectorModal({
             <div className="flex-1 overflow-auto p-6 space-y-6">
               {activeTab === 'overview' && (
                 <>
-                  {/* Insight Validation - Pill Buttons */}
+                  {/* Insight Validation - 3 Column Grid */}
                   <div>
                     <h3 className="text-lg font-semibold text-foreground mb-4">Insight validation</h3>
-                    <div className="flex gap-3 mb-6">
+                    <div className="grid grid-cols-3 gap-6">
                       {(['trend', 'strength', 'trust'] as const).map((key) => {
                         const metric = validation[key]
                         return (
-                          <button
-                            key={key}
-                            onClick={() => setActiveMetric(key)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-sm transition-colors ${
-                              activeMetric === key
-                                ? 'bg-surface text-foreground'
-                                : 'bg-background/30 border border-border/20 text-muted-foreground hover:text-foreground'
-                            }`}
-                          >
-                            <span className="text-lg">{metric.icon}</span>
-                            <span className="font-medium">{metric.label}</span>
-                          </button>
+                          <div key={key}>
+                            <div className="flex items-center gap-3 mb-3">
+                              <div className={`p-2 rounded bg-background/50 ${metric.color}`}>
+                                {metric.icon}
+                              </div>
+                              <p className={`text-2xl font-bold ${metric.color}`}>{metric.value}</p>
+                            </div>
+                            <p className="text-sm font-medium text-foreground mb-2">{metric.label}</p>
+                            <p className="text-xs text-muted-foreground mb-2">{metric.subtitle}</p>
+                            <p className="text-xs text-muted-foreground">{metric.description}</p>
+                          </div>
                         )
                       })}
-                    </div>
-
-                    {/* Selected Metric Details */}
-                    <div className="bg-background/30 border border-border/20 rounded-sm p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-2">
-                            {validation[activeMetric].label}
-                          </p>
-                          <p className={`text-4xl font-bold ${validation[activeMetric].color}`}>{validation[activeMetric].value}</p>
-                        </div>
-                        <div className={`p-3 rounded bg-background/50 ${validation[activeMetric].color}`}>
-                          {validation[activeMetric].icon}
-                        </div>
-                      </div>
-                      <p className="text-sm font-medium text-muted-foreground mb-3">{validation[activeMetric].subtitle}</p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{validation[activeMetric].description}</p>
                     </div>
                   </div>
 
