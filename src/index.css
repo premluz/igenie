@@ -343,6 +343,11 @@
   }
 }
 
+/* ─── Table row hover — applied via DOM classList to avoid React re-renders ─── */
+tr.row-hovered {
+  background-color: rgba(31, 32, 46, 0.8); /* bg-card/80 */
+}
+
 /* ─── Root-level keyframes (must live outside @layer for reliable browser support) ─── */
 
 @keyframes rainbow-sweep {

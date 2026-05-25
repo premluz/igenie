@@ -7,7 +7,7 @@ interface UseInViewAnimationOptions {
 }
 
 export function useInViewAnimation({
-  threshold = 0.1,
+  threshold = 0,
   rootMargin = '0px',
   delay = 0
 }: UseInViewAnimationOptions = {}) {

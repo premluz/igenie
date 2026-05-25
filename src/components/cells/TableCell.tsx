@@ -5,7 +5,7 @@ import {
   type ColumnDef,
   type SortingState,
 } from '@tanstack/react-table'
-import { useState } from 'react'
+import { useState, memo, useMemo, useRef } from 'react'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useInViewAnimation } from '@/hooks/useInViewAnimation'
@@ -24,7 +24,7 @@ interface TableCellProps {
 }
 
 // Sparkline renderer for Buzz column
-function SparklineRenderer({ data, isVisible }: { data: number[]; isVisible?: boolean }) {
+const SparklineRenderer = memo(function SparklineRenderer({ data, isVisible }: { data: number[]; isVisible?: boolean }) {
   if (!data || !Array.isArray(data) || data.length === 0) return null
 
   const min = Math.min(...data)
@@ -59,17 +59,27 @@ function SparklineRenderer({ data, isVisible }: { data: number[]; isVisible?: bo
       />
     </svg>
   )
-}
+})
 
-// Render special cell types
-function RenderCell({ value, columnName, row, rowIndex = 0 }: { value: any; columnName: string; row?: any; rowIndex?: number }) {
-  const { ref, isVisible } = useInViewAnimation({ delay: 20 + rowIndex * 30 })
+// Render special cell types.
+// `sparkline` is passed as a stable prop so memo can compare it without
+// the whole `row` object (which has a new reference every render).
+const RenderCell = memo(function RenderCell({
+  value,
+  columnName,
+  sparkline,
+}: {
+  value: any
+  columnName: string
+  sparkline?: number[]
+}) {
+  const { ref, isVisible } = useInViewAnimation({ delay: 0 })
 
   // Sparkline in Buzz column
-  if ((columnName === 'Buzz' || columnName === 'buzz') && typeof value === 'number' && row?.sparkline) {
+  if ((columnName === 'Buzz' || columnName === 'buzz') && typeof value === 'number' && sparkline) {
     return (
       <div ref={ref} className="flex items-center gap-2">
-        <SparklineRenderer data={row.sparkline} isVisible={isVisible} />
+        <SparklineRenderer data={sparkline} isVisible={isVisible} />
         <span className="text-xs font-medium text-foreground">{value}</span>
       </div>
     )
@@ -87,7 +97,6 @@ function RenderCell({ value, columnName, row, rowIndex = 0 }: { value: any; colu
             className="h-0.5 bg-blue-600 rounded-full"
           />
         </div>
-        <span className="text-xs text-muted-foreground whitespace-nowrap">{value}</span>
       </div>
     )
   }
@@ -104,9 +113,28 @@ function RenderCell({ value, columnName, row, rowIndex = 0 }: { value: any; colu
 
   // Default rendering
   if (typeof value === 'number') {
-    return <>{typeof value === 'number' && value > 1 ? value.toFixed(1) : value}</>
+    return <>{value > 1 ? value.toFixed(1) : value}</>
   }
   return <>{String(value)}</>
+})
+
+// Row hover is tracked with a CSS class via a ref so it never triggers a
+// React state update (and therefore never causes a re-render).
+function useHoverClass(hoverClass: string) {
+  const tbodyRef = useRef<HTMLTableSectionElement>(null)
+
+  function onMouseEnter(e: React.MouseEvent<HTMLTableRowElement>) {
+    const row = e.currentTarget
+    // Remove from any previously hovered row first
+    tbodyRef.current?.querySelectorAll('tr.' + hoverClass).forEach(el => el.classList.remove(hoverClass))
+    row.classList.add(hoverClass)
+  }
+
+  function onMouseLeave(e: React.MouseEvent<HTMLTableRowElement>) {
+    e.currentTarget.classList.remove(hoverClass)
+  }
+
+  return { tbodyRef, onMouseEnter, onMouseLeave }
 }
 
 export function TableCell({ data }: TableCellProps) {
@@ -115,35 +143,46 @@ export function TableCell({ data }: TableCellProps) {
   }
 
   const [sorting, setSorting] = useState<SortingState>([])
+  const { tbodyRef, onMouseEnter, onMouseLeave } = useHoverClass('row-hovered')
 
-  // Normalize columns to object format
-  const normalizedColumns = Array.isArray(data.columns)
-    ? data.columns.map(col =>
-        typeof col === 'string'
-          ? { key: col, label: col }
-          : col
-      )
-    : data.columns
+  // Normalize columns to object format — stable as long as data.columns doesn't change
+  const normalizedColumns = useMemo(
+    () =>
+      Array.isArray(data.columns)
+        ? data.columns.map(col =>
+            typeof col === 'string' ? { key: col, label: col } : col
+          )
+        : data.columns,
+    [data.columns]
+  )
 
-  // Create columns from data structure
-  const columns: ColumnDef<Record<string, any>>[] = normalizedColumns.map(col => ({
-    accessorKey: col.key,
-    header: col.label,
-    cell: info => {
-      const value = info.getValue()
-      const columnName = col.label
-      const row = info.row.original
-      const rowIndex = info.row.index
-      return <RenderCell value={value} columnName={columnName} row={row} rowIndex={rowIndex} />
-    },
-  }))
+  // Memoize column definitions so TanStack Table never sees new column objects
+  // on unrelated re-renders. The cell renderer only receives stable scalar
+  // props, which lets RenderCell's own memo bail out on hover.
+  const columns: ColumnDef<Record<string, any>>[] = useMemo(
+    () =>
+      normalizedColumns.map(col => ({
+        accessorKey: col.key,
+        header: col.label,
+        cell: info => {
+          const value = info.getValue()
+          const row = info.row.original
+          return (
+            <RenderCell
+              value={value}
+              columnName={col.label}
+              sparkline={row.sparkline}
+            />
+          )
+        },
+      })),
+    [normalizedColumns]
+  )
 
   const table = useReactTable({
     data: data.rows,
     columns,
-    state: {
-      sorting,
-    },
+    state: { sorting },
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: data.features?.pagination ? true : false,
@@ -162,44 +201,43 @@ export function TableCell({ data }: TableCellProps) {
                   const isBrand = colName.toLowerCase().includes('brand')
                   const isProgress = colName.toLowerCase().includes('progress')
                   return (
-                  <th
-                    key={header.id}
-                    className="px-3 py-2 text-left font-semibold text-foreground border-r border-border/30 last:border-r-0 whitespace-nowrap"
-                    onClick={() => {
-                      if (data.features?.sorting && header.column.columnDef.enableSorting !== false) {
-                        header.column.toggleSorting()
-                      }
-                    }}
-                    style={{
-                      cursor: data.features?.sorting ? 'pointer' : 'default',
-                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? 'auto' : undefined,
-                      minWidth: isProgress ? '200px' : undefined,
-                      paddingRight: isBrand ? '40px' : undefined
-                    }}
-                  >
-                    <div className="flex items-center gap-1">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {data.features?.sorting && header.column.getIsSorted() && (
-                        <div className="flex-shrink-0">
-                          {header.column.getIsSorted() === 'asc' ? (
-                            <ChevronUp size={12} />
-                          ) : (
-                            <ChevronDown size={12} />
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </th>
+                    <th
+                      key={header.id}
+                      className={`px-3 py-2 text-left font-semibold text-foreground border-r border-border/30 last:border-r-0 whitespace-nowrap ${
+                        isSmallCol ? 'max-w-40' : isBrand ? 'max-w-16' : isProgress ? 'min-w-52' : ''
+                      }`}
+                      onClick={() => {
+                        if (data.features?.sorting && header.column.columnDef.enableSorting !== false) {
+                          header.column.toggleSorting()
+                        }
+                      }}
+                      style={{ cursor: data.features?.sorting ? 'pointer' : 'default' }}
+                    >
+                      <div className="flex items-center gap-1">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {data.features?.sorting && header.column.getIsSorted() && (
+                          <div className="flex-shrink-0">
+                            {header.column.getIsSorted() === 'asc' ? (
+                              <ChevronUp size={12} />
+                            ) : (
+                              <ChevronDown size={12} />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </th>
                   )
                 })}
               </tr>
             ))}
           </thead>
-          <tbody>
+          <tbody ref={tbodyRef}>
             {table.getRowModel().rows.map((row, idx) => (
               <tr
                 key={row.id}
-                className={`border-b border-border/30 hover:bg-card/50 transition-colors ${
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                className={`border-b border-border/30 transition-colors ${
                   idx % 2 === 0 ? 'bg-background/50' : ''
                 }`}
               >
@@ -209,17 +247,14 @@ export function TableCell({ data }: TableCellProps) {
                   const isBrand = colName.toLowerCase().includes('brand')
                   const isProgress = colName.toLowerCase().includes('progress')
                   return (
-                  <td
-                    key={cell.id}
-                    className="px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0"
-                    style={{
-                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? 'auto' : undefined,
-                      minWidth: isProgress ? '200px' : undefined,
-                      paddingRight: isBrand ? '40px' : undefined
-                    }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                    <td
+                      key={cell.id}
+                      className={`px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0 ${
+                        isSmallCol ? 'max-w-16' : isBrand ? 'max-w-40' : isProgress ? 'min-w-52' : ''
+                      }`}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
                   )
                 })}
               </tr>

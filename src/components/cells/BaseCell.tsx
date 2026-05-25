@@ -172,13 +172,13 @@ export function BaseCell({ cell, children, isTransitioning }: BaseCellProps) {
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-2 mb-1" key={`title-${cell.status}`}>
+                <div className="flex items-center gap-2 mb-1">
                   <h3 className="text-lg font-semibold text-foreground truncate">
                     <GeminiStreamText text={cell.title} speed={8} showCursor={false} />
                   </h3>
                 </div>
                 {cell.subtitle && (
-                  <div key={`subtitle-${cell.status}`}>
+                  <div>
                     <p className="text-md mt-4 mb-8 text-muted-foreground truncate">
                       <GeminiStreamText text={cell.subtitle} speed={8} showCursor={false} />
                     </p>

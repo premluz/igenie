@@ -80,7 +80,7 @@ export const brandPerception: ScenarioData = {
         {
           id: 'perception-trends',
           type: 'line-chart',
-          title: 'Buzz trends by brand',
+          title: 'Buzz trends',
           subtitle: '5 brands selected for momentum, not score - 14 month tracking',
           status: 'thinking',
           prestosummary: 'Red Bull showing volatile peaks indicating breakthrough perception moments.',
@@ -110,7 +110,7 @@ export const brandPerception: ScenarioData = {
         {
           id: 'perception-ranking',
           type: 'table',
-          title: 'Brand perception ranking',
+          title: 'Buzz ranking',
           subtitle: 'All selected brands',
           status: 'thinking',
           prestosummary: 'Gatorade and premium energy drinks dominating perception tiers.',

@@ -266,7 +266,7 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           <p>
             <CyclingGeminiText
               texts={[
-                'Pepsi is closing the gap on Coca-Cola Original. <a href="/brand-perceptionf">Want to dig in?</a>'
+                'Pepsi is closing the gap on Coca-Cola Original. <a href="/brand-perception">Want to dig in?</a>'
 
               ]}
               speed={1}

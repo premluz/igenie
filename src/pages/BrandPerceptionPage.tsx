@@ -8,12 +8,8 @@ export function BrandPerceptionPage() {
   const [cellsRevealed, setCellsRevealed] = useState(false)
 
   useEffect(() => {
-    // Reveal cells after a delay (shimmer effect during load)
-    const timer = setTimeout(() => {
-      setCellsRevealed(true)
-    }, 1200)
-
-    return () => clearTimeout(timer)
+    // Reveal cells immediately — no shimmer delay needed
+    setCellsRevealed(true)
   }, [])
   const allRows = brandPerception.initialLayout
   const topRow = allRows[0]
@@ -30,7 +26,7 @@ export function BrandPerceptionPage() {
         {/* Header with Title and Search Bar */}
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-foreground mb-4">Brand perception</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-4">Brand Pulse</h1>
 
             {/* Tabs - Main dimensions */}
             <Tabs

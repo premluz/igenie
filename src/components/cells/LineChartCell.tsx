@@ -114,8 +114,8 @@ function generateSingleSeriesSpec(
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
-    width: 700,
-    height: 260,
+    width: 660,
+    height: 240,
     padding: { left: 16, right: 16, top: 16, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
     title: title
@@ -198,7 +198,7 @@ function generateSingleSeriesSpec(
             value: 0.85,
           },
           size: {
-            condition: { param: 'hover', empty: false, value: 140 },
+            condition: { param: 'hover', empty: false, value: 250 },
             value: 50,
           },
           tooltip: [
@@ -346,8 +346,9 @@ function generateMultiSeriesSpec(
     return {
       $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
       background: 'transparent',
-      width: 700,
+      width: 'container',
       height: 260,
+      autosize: { type: 'fit', contains: 'padding' },
       data: { values: [] },
       mark: 'point',
       encoding: { x: { field: 'value', type: 'quantitative' } },
@@ -357,9 +358,9 @@ function generateMultiSeriesSpec(
   return {
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
-    width: 700,
-    height: 260,
-    padding: { left: 40, right: 16, top: 16, bottom: 8 },
+    width: 660,
+    height: 240,
+    padding: { left: 40, right: 16, top: 60, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
     title: title
       ? {
@@ -372,7 +373,14 @@ function generateMultiSeriesSpec(
         }
       : undefined,
     data: { values: longData },
-    mark: { type: 'line', interpolate: 'monotone', point: true, strokeWidth: 2.5 },
+    layer: [
+      {
+        mark: { type: 'line', interpolate: 'monotone', strokeWidth: 2.5 },
+      },
+      {
+        mark: { type: 'point', filled: true, size: 40, strokeWidth: 1.5 },
+      },
+    ],
     encoding: {
       x: {
         field: 'date',
@@ -405,7 +413,7 @@ function generateMultiSeriesSpec(
           domain: seriesNames,
           range: colors.slice(0, seriesNames.length),
         },
-        legend: { title: 'Brand' },
+        legend: { title: 'Brand', orient: 'top', direction: 'horizontal', titlePadding: 0, labelPadding: 0 },
       },
       tooltip: [
         { field: 'date', type: 'temporal', title: 'Date', format: '%b %Y' },
