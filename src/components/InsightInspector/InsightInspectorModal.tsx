@@ -62,16 +62,16 @@ export function InsightInspectorModal({
             onClick={onClose}
           />
 
-          {/* Modal - 2x Larger */}
+          {/* Modal - Right Aligned */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden max-w-3xl right-4 left-auto relative"
+            className="fixed top-4 right-4 bottom-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden max-w-2xl w-96 relative"
           >
-            {/* Header */}
-            <div className="p-6 border-b border-border/20">
+            {/* Header - Sticky */}
+            <div className="sticky top-0 z-10 bg-card p-6 border-b border-border/20">
               <div>
                 <h2 className="text-2xl font-semibold text-foreground">Insight Inspector</h2>
                 <p className="text-sm text-foreground mt-1 font-medium">{title}</p>
@@ -85,8 +85,8 @@ export function InsightInspectorModal({
               </button>
             </div>
 
-            {/* Tabs - Line Style */}
-            <div className="flex border-b border-border/20 px-6">
+            {/* Tabs - Line Style - Sticky */}
+            <div className="sticky top-20 z-10 bg-card flex border-b border-border/20 px-6">
               <button
                 onClick={() => setActiveTab('overview')}
                 className={`px-4 py-3 text-sm font-medium transition-colors relative ${
@@ -115,9 +115,7 @@ export function InsightInspectorModal({
                 <>
                   {/* Summary - Above Validation */}
                   {summary && (
-                    <div className="bg-background/30 border border-border/20 rounded-sm p-4">
-                      <p className="text-sm text-foreground leading-relaxed">{summary}</p>
-                    </div>
+                    <p className="text-sm text-foreground leading-relaxed">{summary}</p>
                   )}
 
                   {/* Insight Validation - 3 Column Grid with Cards */}
