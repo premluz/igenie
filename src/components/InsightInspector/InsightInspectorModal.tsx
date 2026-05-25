@@ -116,7 +116,7 @@ export function InsightInspectorModal({
                     : 'text-muted-foreground hover:text-foreground'
                 } ${activeTab === 'audit' ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent" : ""}`}
               >
-                Audit
+                Reasoning trail
               </button>
             </div>
 

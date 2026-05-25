@@ -6,8 +6,8 @@ import {
   type SortingState,
 } from '@tanstack/react-table'
 import { useState, memo, useMemo, useRef } from 'react'
-import { ChevronUp, ChevronDown } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { ChevronUp, ChevronDown, Lightbulb } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInViewAnimation } from '@/hooks/useInViewAnimation'
 
 interface TableCellProps {
@@ -143,6 +143,7 @@ export function TableCell({ data }: TableCellProps) {
   }
 
   const [sorting, setSorting] = useState<SortingState>([])
+  const [openPopover, setOpenPopover] = useState<string | null>(null)
   const { tbodyRef, onMouseEnter, onMouseLeave } = useHoverClass('row-hovered')
 
   // Normalize columns to object format — stable as long as data.columns doesn't change
@@ -232,33 +233,79 @@ export function TableCell({ data }: TableCellProps) {
             ))}
           </thead>
           <tbody ref={tbodyRef}>
-            {table.getRowModel().rows.map((row, idx) => (
-              <tr
-                key={row.id}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                className={`border-b border-border/30 transition-colors ${
-                  idx % 2 === 0 ? 'bg-background/50' : ''
-                }`}
-              >
-                {row.getVisibleCells().map(cell => {
-                  const colName = (cell.column.columnDef.header as string) || ''
-                  const isSmallCol = ['yoy', 'buzz'].some(n => colName.toLowerCase().includes(n))
-                  const isBrand = colName.toLowerCase().includes('brand')
-                  const isProgress = colName.toLowerCase().includes('progress')
-                  return (
-                    <td
-                      key={cell.id}
-                      className={`px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0 ${
-                        isSmallCol ? 'max-w-16' : isBrand ? 'max-w-40' : isProgress ? 'min-w-52' : ''
-                      }`}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            {table.getRowModel().rows.map((row, idx) => {
+              const rowId = row.id
+              const insight = row.original.insight
+
+              return (
+                <tr
+                  key={row.id}
+                  onMouseEnter={onMouseEnter}
+                  onMouseLeave={onMouseLeave}
+                  className={`border-b border-border/30 transition-colors relative ${
+                    idx % 2 === 0 ? 'bg-background/50' : ''
+                  }`}
+                >
+                  {row.getVisibleCells().map(cell => {
+                    const colName = (cell.column.columnDef.header as string) || ''
+                    const isSmallCol = ['yoy', 'buzz'].some(n => colName.toLowerCase().includes(n))
+                    const isBrand = colName.toLowerCase().includes('brand')
+                    const isProgress = colName.toLowerCase().includes('progress')
+                    return (
+                      <td
+                        key={cell.id}
+                        className={`px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0 ${
+                          isSmallCol ? 'max-w-16' : isBrand ? 'max-w-40' : isProgress ? 'min-w-52' : ''
+                        }`}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    )
+                  })}
+
+                  {/* Insight Hotspot */}
+                  {insight && (
+                    <td className="px-2 py-2 relative">
+                      <div className="relative inline-block">
+                        <button
+                          onClick={() => setOpenPopover(openPopover === rowId ? null : rowId)}
+                          className="p-1 hover:bg-background/50 rounded transition-colors"
+                          title="View insight"
+                        >
+                          <Lightbulb size={14} className={`${insight.color === 'green' ? 'text-green-400' : insight.color === 'red' ? 'text-red-400' : 'text-blue-400'}`} />
+                        </button>
+
+                        {/* Popover */}
+                        <AnimatePresence>
+                          {openPopover === rowId && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                              transition={{ duration: 0.2 }}
+                              className="absolute right-0 top-full mt-2 z-20"
+                            >
+                              <div className={`bg-background/95 border rounded-sm p-3 w-64 backdrop-blur-sm shadow-lg ${
+                                insight.color === 'green' ? 'border-green-400/30 shadow-green-500/20' :
+                                insight.color === 'red' ? 'border-red-400/30 shadow-red-500/20' :
+                                'border-blue-400/30 shadow-blue-500/20'
+                              }`}>
+                                <p className={`text-sm font-medium mb-2 ${
+                                  insight.color === 'green' ? 'text-green-400' :
+                                  insight.color === 'red' ? 'text-red-400' :
+                                  'text-blue-400'
+                                }`}>{row.original.brand}</p>
+                                <p className="text-sm text-foreground leading-relaxed">{insight.description}</p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </td>
-                  )
-                })}
-              </tr>
-            ))}
+                  )}
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
