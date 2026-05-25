@@ -62,20 +62,20 @@ export function InsightInspectorModal({
             onClick={onClose}
           />
 
-          {/* Modal - Right Aligned */}
+          {/* Modal - Right Aligned, 2x Width */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-4 right-4 bottom-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden max-w-2xl w-96 relative"
+            className="fixed top-4 right-4 bottom-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden w-[48rem] relative"
           >
             {/* Header - Sticky */}
             <div className="sticky top-0 z-10 bg-card p-6 border-b border-border/20">
+              <h2 className="text-2xl font-semibold text-foreground mb-6">Insight Inspector</h2>
               <div>
-                <h2 className="text-2xl font-semibold text-foreground">Insight Inspector</h2>
-                <p className="text-sm text-foreground mt-1 font-medium">{title}</p>
-                {subtitle && <p className="text-sm text-muted-foreground mt-6">{subtitle}</p>}
+                <p className="text-sm text-foreground font-medium">{title}</p>
+                {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
               </div>
               <button
                 onClick={onClose}
