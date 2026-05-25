@@ -1,14 +1,15 @@
-import { Folder } from 'lucide-react'
+import { Folder, TrendingUp, Zap, CheckCircle2, MessageCircle, ShoppingCart, Search } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { AmbientGridBackground } from './AmbientGridBackground'
 import { NeuralGridBackground } from './NeuralGridBackground'
 import { CyclingGeminiText } from './CyclingGeminiText'
 import { QueryInputBox } from './QueryInputBox'
+import { InspectButton, InsightInspectorModal } from './InsightInspector'
 import { useNavigate } from 'react-router-dom'
 import { usePrestoStore } from '@/store/usePrestoStore'
 import { getScenario } from '@/scenarios'
 import { motion } from 'framer-motion'
-import { usePageTransition } from '@/hooks/usePageTransition'
+import { useState } from 'react'
 
 const LANDING_TRIGGERS = [
   { keywords: ['genz', 'gen-z', 'gen z'], scenarioId: 'cucumber-mint' },
@@ -58,11 +59,10 @@ const QUICK_ACTIONS = [
 export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boolean }) {
   const navigate = useNavigate()
   const { pushLog, setTransitioning, isPageTransitioning } = usePrestoStore()
-  const { navigateWithTransition } = usePageTransition()
+  const [showInspector, setShowInspector] = useState(false)
 
   const handleLinkClick = (href: string) => {
-    // Trigger page transition when link is clicked
-    navigateWithTransition('/insights')
+    navigate('/brand-perception')
   }
 
   const handleQuerySubmit = (query: string) => {
@@ -250,32 +250,102 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           className="text-4xl  h-16  font-normal text-foreground mb-3"
         >
           <CyclingGeminiText
-            texts={['Insight Intelligence. Infinite wishes.', 'Good morning Trevor!']}
+            texts={['Good morning Trevor.']}
             speed={12}
             delayBetweenTexts={2600}
             showCursor={false}
             maxCycles={0}
           />
         </motion.h1>
-        <motion.p
+        <motion.div
           initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? 10 : 0 }}
           animate={{ opacity: isPageTransitioning ? 0 : 1, y: 0, filter: isPageTransitioning ? 'blur(20px)' : 'blur(0px)' }}
           transition={{ duration: isPageTransitioning ? 0.6 : 0.6, delay: shouldAnimate && !isPageTransitioning ? 0.3 : 0 }}
-          className="text-lg opacity-0 text-muted-foreground text-center mb-12 min-h-14"
+          className="text-lg opacity-0 text-muted-foreground text-center mb-12 min-h-14 flex items-center justify-center gap-2"
         >
-          <CyclingGeminiText
-            texts={[
-              'Finally, data got exciting.',
-              'Pepsi is closing the gap on Coca-Cola Original. <a href="#">Want to dig in?</a>'
-            ]}
-            speed={1}
-            delayBetweenTexts={3000}
-            showCursor={false}
-            enableLinks={true}
-            maxCycles={0}
-            onLinkClick={handleLinkClick}
-          />
-        </motion.p>
+          <p>
+            <CyclingGeminiText
+              texts={[
+                'Pepsi is closing the gap on Coca-Cola Original. <a href="/brand-perceptionf">Want to dig in?</a>'
+
+              ]}
+              speed={1}
+              delayBetweenTexts={3000}
+              showCursor={false}
+              enableLinks={true}
+              maxCycles={0}
+              onLinkClick={handleLinkClick}
+            />
+          </p>
+          <InspectButton onClick={() => setShowInspector(true)} />
+        </motion.div>
+
+        {/* Insight Inspector Modal */}
+        <InsightInspectorModal
+          isOpen={showInspector}
+          onClose={() => setShowInspector(false)}
+          title="Pepsi vs Coca-Cola Original"
+          validation={{
+            trend: {
+              value: '+15%',
+              label: 'Trend',
+              subtitle: 'YoY momentum delta',
+              description: 'Structural shift — not a seasonal spike. Sustained across 6 consecutive months.',
+              icon: <TrendingUp size={20} />,
+              color: 'text-emerald-400'
+            },
+            strength: {
+              value: '8.7',
+              label: 'Strength',
+              subtitle: '89th percentile',
+              description: 'High viral durability. Signal is amplifying, not plateauing. Act with confidence.',
+              icon: <Zap size={20} />,
+              color: 'text-blue-400'
+            },
+            trust: {
+              value: '92%',
+              label: 'Trust',
+              subtitle: '38-channel validated',
+              description: 'Cross-channel convergence confirmed. Social, retail and search all pointing the same direction simultaneously.',
+              icon: <CheckCircle2 size={20} />,
+              color: 'text-green-400'
+            }
+          }}
+          signalSources={[
+            {
+              id: 'social',
+              label: 'Social Buzz',
+              count: 4_400,
+              icon: <MessageCircle size={20} />,
+              description: 'TikTok & Instagram lifestyle mentions, challenger brand narrative building'
+            },
+            {
+              id: 'retail',
+              label: 'Retail Velocity',
+              count: 3_100,
+              icon: <ShoppingCart size={20} />,
+              description: 'Convenience and e-commerce pull, repeat purchase uptick'
+            },
+            {
+              id: 'search',
+              label: 'Search Demand',
+              count: 2_900,
+              icon: <Search size={20} />,
+              description: 'Ingredient curiosity and brand comparison queries rising'
+            }
+          ]}
+          signalSummary="All three sources converging = high conviction."
+          assumptions={[
+            'Gap defined as Buzz score delta between Pepsi and Coca-Cola Original across 14-month window',
+            'Gap was 18 points at period start (Aug 2024), currently 2 points',
+            "Both Pepsi's gain and Coca-Cola's decline contribute equally to the closing trajectory",
+            'Momentum based on 6-month rolling average, not point-in-time snapshot',
+            'December 2024 spike seasonally adjusted and excluded from trend line',
+            'Confidence reduces if Pepsi momentum reverses across 2 consecutive data cycles',
+            'Retail velocity sourced from verified channels only — unverified marketplace data excluded'
+          ]}
+          summary="6,234 data points across 42 verified channels show convergence: Social Buzz > Search Demand > Retail Intent confirmation."
+        />
 
         {/* Quick action cards */}
         <motion.div
@@ -310,12 +380,13 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           initial={false}
           animate={{
             opacity: isPageTransitioning ? 0 : 1,
-            visibility: isPageTransitioning ? 'hidden' : 'visible'
+            visibility: isPageTransitioning ? 'hidden' : 'visible',
+           
           }}
           transition={{ duration: 0.3 }}
           className="px-8 w-full py-4 z-10 relative"
         >
-          <QueryInputBox onSubmit={handleQuerySubmit} />
+          <QueryInputBox onSubmit={handleQuerySubmit} showGlow={true} />
 
           {/* Animated input overlay - starts from original position */}
           {isPageTransitioning && (
@@ -325,7 +396,7 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
               transition={{ duration: 1.2, ease: 'easeInOut' }}
               className="py-4 z-20"
             >
-              <QueryInputBox onSubmit={handleQuerySubmit} />
+              <QueryInputBox onSubmit={handleQuerySubmit} showGlow={true} compact={true} glowSize={3} hoverGlowSize={16} />
             </motion.div>
           )}
         </motion.div>

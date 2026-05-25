@@ -34,7 +34,7 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 }
-nav { display: none}
+
 @layer utilities {
   .bg-background {
     @apply bg-[#191B24];

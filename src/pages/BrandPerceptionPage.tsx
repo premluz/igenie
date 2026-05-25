@@ -2,76 +2,93 @@ import { Tabs } from '@/components/Tabs'
 import { SearchFilterBar } from '@/components/SearchFilterBar'
 import { WidgetRenderer } from '@/components/WidgetRenderer'
 import { brandPerception } from '@/scenarios/brand-perception'
+import { useEffect, useState } from 'react'
 
 export function BrandPerceptionPage() {
-  // Get cells from scenario - handle both flat and nested structure
-  const allRows = brandPerception.initialLayout
-  const leftRowCells = allRows[0]
-  const rightRowCells = allRows[1]
+  const [cellsRevealed, setCellsRevealed] = useState(false)
 
-  // Left column cells
-  const winnerCell = leftRowCells.cells[0]
-  const trendCell = leftRowCells.cells[1]
-  
-  // Right column cell
-  const rankingCell = rightRowCells.cells[0]
+  useEffect(() => {
+    // Reveal cells after a delay (shimmer effect during load)
+    const timer = setTimeout(() => {
+      setCellsRevealed(true)
+    }, 1200)
+
+    return () => clearTimeout(timer)
+  }, [])
+  const allRows = brandPerception.initialLayout
+  const topRow = allRows[0]
+  const bottomRow = allRows[1]
+
+  const winnerCell = { ...topRow.cells[0], status: cellsRevealed ? 'ready' : 'thinking' }
+  const loserCell = { ...topRow.cells[1], status: cellsRevealed ? 'ready' : 'thinking' }
+  const trendCell = { ...topRow.cells[2], status: cellsRevealed ? 'ready' : 'thinking' }
+  const rankingCell = { ...bottomRow.cells[0], status: cellsRevealed ? 'ready' : 'thinking' }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="px-6 py-4">
-        <h1 className="text-3xl font-bold text-foreground mb-4">Brand perception</h1>
+    <div className="min-h-screen flex items-start justify-center py-6">
+      <div className="p-6 m-6 border border-border rounded-sm max-w-8xl w-full space-y-4">
+        {/* Header with Title and Search Bar */}
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-foreground mb-4">Brand perception</h1>
 
-        {/* Tabs - Main dimensions */}
-        <Tabs
-          tabs={[
-            { id: 'dimensions', label: 'Dimensions' },
-            { id: 'social', label: 'Social + retail' },
-            { id: 'composite', label: 'Composite' }
-          ]}
-          className="mb-6"
-        />
+            {/* Tabs - Main dimensions */}
+            <Tabs
+              tabs={[
+                { id: 'dimensions', label: 'Dimensions' },
+                { id: 'social', label: 'Social + retail' },
+                { id: 'composite', label: 'Composite' }
+              ]}
+              className="mb-4"
+            />
 
-        {/* Tabs - Sub dimensions */}
-        <Tabs
-          tabs={[
-            { id: 'buzz', label: 'Buzz' },
-            { id: 'superiority', label: 'Superiority' },
-            { id: 'advocacy', label: 'Advocacy' }
-          ]}
-          variant="pill"
-          className="mb-6"
-        />
-      </div>
-
-      {/* Search/Filter Bar */}
-      <SearchFilterBar />
-
-      {/* Narrative/Insight */}
-      <div className="px-6 py-4 text-sm text-muted-foreground">
-        <p>Challenger momentum is accelerating — Pepsi gaining fastest across the category while legacy brands face broad declines.</p>
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="px-6 py-6 grid grid-cols-3 gap-6">
-        {/* Left Column - 2 rows */}
-        <div className="col-span-2 space-y-6">
-          {/* Row 1: Will contain winners + losers when we have them */}
-          {/* For now just show the first cell from left column */}
-          <div className="bg-card rounded-lg border border-border/20 overflow-hidden">
-            <WidgetRenderer cell={winnerCell as any} />
+            {/* Tabs - Sub dimensions */}
+            <Tabs
+              tabs={[
+                { id: 'buzz', label: 'Buzz' },
+                { id: 'superiority', label: 'Superiority' },
+                { id: 'advocacy', label: 'Advocacy' }
+              ]}
+              variant="pill"
+            />
           </div>
 
-          {/* Row 2: Trends Chart */}
-          <div className="bg-card rounded-lg border border-border/20 overflow-hidden">
+          {/* Search/Filter Bar - Right aligned */}
+          <div className="flex-shrink-0">
+            <SearchFilterBar />
+          </div>
+        </div>
+
+        {/* Narrative/Insight */}
+        <div className="text-lg text-muted-foreground">
+          <p>Challenger momentum is accelerating — Pepsi gaining fastest across the category while legacy brands face broad declines.</p>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-2 gap-4">
+        {/* Left Column */}
+        <div className="col-span-1 space-y-4">
+          {/* Row 1: Winners and Losers side by side */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-card rounded border border-border/20 overflow-hidden">
+              <WidgetRenderer cell={winnerCell as any} />
+            </div>
+            <div className="bg-card rounded border border-border/20 overflow-hidden">
+              <WidgetRenderer cell={loserCell as any} />
+            </div>
+          </div>
+
+          {/* Row 2: Buzz Trends Chart */}
+          <div className="bg-card rounded border border-border/20 overflow-hidden">
             <WidgetRenderer cell={trendCell as any} />
           </div>
         </div>
 
-        {/* Right Column: Full Height Ranking Table */}
-        <div className="col-span-1 bg-card rounded-lg border border-border/20 overflow-hidden">
+        {/* Right Column: Ranking Table */}
+        <div className="col-span-1 bg-card rounded border border-border/20 overflow-hidden">
           <WidgetRenderer cell={rankingCell as any} />
         </div>
+      </div>
       </div>
     </div>
   )

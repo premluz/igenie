@@ -57,13 +57,8 @@ export function CanvasGrid() {
       )
 
       if (hasThinkingCells) {
-        // Show shimmer for a short period, then gradually reveal cells
-        const timer = setTimeout(() => {
-          revealCellsGradually(600)
-          setCellsRevealed(true)
-        }, 800)
-
-        return () => clearTimeout(timer)
+        revealCellsGradually(600)
+        setCellsRevealed(true)
       }
     }
   }, [isTransitioning, currentView?.rows, currentView?.id, cellsRevealed, revealCells, revealCellsGradually])

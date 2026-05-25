@@ -162,7 +162,7 @@ export default function App() {
         {/* CENTER CANVAS + RIGHT SIDEBAR CONTAINER */}
         <div className="flex-1 flex overflow-hidden relative z-10">
           {/* CENTER CANVAS */}
-          <div className="flex-1 flex flex-col overflow-hidden relative z-10">
+          <div className="flex-1 flex flex-col overflow-auto relative z-10">
             <Routes>
               <Route path="/" element={<LandingScreen shouldAnimate={justLoggedIn} />} />
               <Route path="/insights" element={<CanvasGrid />} />
@@ -172,7 +172,7 @@ export default function App() {
           </div>
 
           {/* RIGHT SIDEBAR PRESTO */}
-          {location.pathname.startsWith('/insights') && <PrestoSidebar />}
+          {(location.pathname.startsWith('/insights') || location.pathname === '/brand-perception') && <PrestoSidebar />}
         </div>
       </div>
     </div>

@@ -5,24 +5,29 @@ interface GeminiStreamProps {
   speed?: number
   showCursor?: boolean
   className?: string
-  renderLinks?: boolean; // Parse and render links after streaming
-  onLinkClick?: (href: string) => void; // Callback when link is clicked
+  renderLinks?: boolean;
+  onLinkClick?: (href: string) => void;
 }
 
-// Parse markdown-style links [text](url) and HTML <a> tags
-const parseLinksToJSX = (text: string, onLinkClick?: (href: string) => void): (string | React.ReactNode)[] => {
+type ContentSegment =
+  | { type: 'text'; content: string }
+  | { type: 'link'; url: string; text: string };
+
+// Parse text into segments: text parts and links
+const parseIntoSegments = (text: string): ContentSegment[] => {
   const markdownRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   const htmlLinkRegex = /<a\s+href=["']([^"']*)["'][^>]*>([^<]+)<\/a>/g;
 
-  const parts: (string | React.ReactNode)[] = [];
+  const segments: ContentSegment[] = [];
   let lastIndex = 0;
-  let matches: Array<{ index: number; end: number; linkText: string; url: string }> = [];
+  let matches: Array<{ index: number; end: number; type: 'markdown' | 'html'; linkText: string; url: string }> = [];
 
   let match;
   while ((match = markdownRegex.exec(text)) !== null) {
     matches.push({
       index: match.index,
       end: markdownRegex.lastIndex,
+      type: 'markdown',
       linkText: match[1],
       url: match[2]
     });
@@ -32,44 +37,39 @@ const parseLinksToJSX = (text: string, onLinkClick?: (href: string) => void): (s
     matches.push({
       index: match.index,
       end: htmlLinkRegex.lastIndex,
-      url: match[1],
-      linkText: match[2]
+      type: 'html',
+      linkText: match[2],
+      url: match[1]
     });
   }
 
   matches.sort((a, b) => a.index - b.index);
 
-  matches.forEach((linkMatch, idx) => {
+  matches.forEach((linkMatch) => {
     if (linkMatch.index > lastIndex) {
-      parts.push(text.substring(lastIndex, linkMatch.index));
+      segments.push({
+        type: 'text',
+        content: text.substring(lastIndex, linkMatch.index)
+      });
     }
 
-    parts.push(
-      <a
-        key={`link-${idx}`}
-        href={linkMatch.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-purple underline hover:text-purple/80 transition-colors"
-        onClick={(e) => {
-          if (onLinkClick) {
-            e.preventDefault();
-            onLinkClick(linkMatch.url);
-          }
-        }}
-      >
-        {linkMatch.linkText}
-      </a>
-    );
+    segments.push({
+      type: 'link',
+      url: linkMatch.url,
+      text: linkMatch.linkText
+    });
 
     lastIndex = linkMatch.end;
   });
 
   if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex));
+    segments.push({
+      type: 'text',
+      content: text.substring(lastIndex)
+    });
   }
 
-  return parts.length > 0 ? parts : [text];
+  return segments.length > 0 ? segments : [{ type: 'text', content: text }];
 };
 
 export const GeminiStreamText: React.FC<GeminiStreamProps> = ({
@@ -80,33 +80,35 @@ export const GeminiStreamText: React.FC<GeminiStreamProps> = ({
   renderLinks = false,
   onLinkClick
 }) => {
-  const [displayedText, setDisplayedText] = useState<string[]>([]);
-  const fullTextArray = useRef<string[]>([]);
-  const currentIndex = useRef<number>(0);
+  const [displayedChars, setDisplayedChars] = useState<number>(0);
+  const fullTextLength = useRef<number>(text.length);
   const rafId = useRef<number | null>(null);
   const lastFrameTime = useRef<number>(0);
+  const segments = useRef<ContentSegment[]>([]);
 
   useEffect(() => {
-    fullTextArray.current = text.split("");
-    setDisplayedText([]);
-    currentIndex.current = 0;
+    segments.current = renderLinks ? parseIntoSegments(text) : [{ type: 'text', content: text }];
+    fullTextLength.current = text.length;
+    setDisplayedChars(0);
     lastFrameTime.current = performance.now();
 
     const streamEngine = (timestamp: number) => {
       const elapsed = timestamp - lastFrameTime.current;
 
       if (elapsed >= speed) {
-        if (currentIndex.current < fullTextArray.current.length) {
-          const nextChar = fullTextArray.current[currentIndex.current];
-          setDisplayedText((prev) => [...prev, nextChar]);
-          currentIndex.current++;
-          lastFrameTime.current = timestamp;
-        } else {
-          if (rafId.current) cancelAnimationFrame(rafId.current);
-          return;
-        }
+        setDisplayedChars((prev) => {
+          const next = prev + 1;
+          if (next >= fullTextLength.current) {
+            if (rafId.current) cancelAnimationFrame(rafId.current);
+            return fullTextLength.current;
+          }
+          return next;
+        });
+        lastFrameTime.current = timestamp;
       }
-      rafId.current = requestAnimationFrame(streamEngine);
+      if (displayedChars < fullTextLength.current) {
+        rafId.current = requestAnimationFrame(streamEngine);
+      }
     };
 
     rafId.current = requestAnimationFrame(streamEngine);
@@ -114,29 +116,13 @@ export const GeminiStreamText: React.FC<GeminiStreamProps> = ({
     return () => {
       if (rafId.current) cancelAnimationFrame(rafId.current);
     };
-  }, [text, speed]);
+  }, [text, speed, renderLinks]);
 
-  // Get the fully streamed text
-  const streamedText = displayedText.join("");
-  const isFullyStreamed = streamedText.length === text.length;
-
-  // If renderLinks is enabled and text is fully streamed, parse and show links
-  if (renderLinks && isFullyStreamed) {
-    const parsedLinks = parseLinksToJSX(streamedText, onLinkClick);
-    return (
-      <span className={`inline tracking-wide leading-relaxed ${className}`}>
-        {parsedLinks}
-        {showCursor && (
-          <span className="inline-block w-[2px] h-[1em] bg-accent ml-1 rounded-sm animate-pulse" />
-        )}
-      </span>
-    );
-  }
-
-  // Default: show animated streaming text
-  return (
-    <span className={`inline tracking-wide leading-relaxed ${className}`}>
-      {displayedText.map((char, index) => (
+  // Render segments with streaming text
+  const renderContent = () => {
+    if (!renderLinks) {
+      // No link rendering: stream plain text
+      return text.split("").slice(0, displayedChars).map((char, index) => (
         <span
           key={index}
           className="inline animate-gemini-fade"
@@ -144,7 +130,72 @@ export const GeminiStreamText: React.FC<GeminiStreamProps> = ({
         >
           {char}
         </span>
-      ))}
+      ));
+    }
+
+    // With link rendering: render segments with text parts streamed and links shown immediately
+    const content: React.ReactNode[] = [];
+    let charCount = 0;
+    let linkIdx = 0;
+
+    for (const segment of segments.current) {
+      if (segment.type === 'text') {
+        const textLength = segment.content.length;
+        const endChar = charCount + textLength;
+
+        if (charCount >= displayedChars) {
+          // Haven't reached this text yet
+          break;
+        }
+
+        const displayUntil = Math.min(displayedChars, endChar);
+        const displayedText = segment.content.substring(0, displayUntil - charCount);
+
+        displayedText.split("").forEach((char, idx) => {
+          content.push(
+            <span
+              key={`text-${charCount}-${idx}`}
+              className="inline animate-gemini-fade"
+              style={{ whiteSpace: char === " " ? "pre" : "normal" }}
+            >
+              {char}
+            </span>
+          );
+        });
+
+        charCount = endChar;
+      } else {
+        // Link segment: always show if we've streamed past the start of this link
+        if (displayedChars > charCount) {
+          content.push(
+            <a
+              key={`link-${linkIdx}`}
+              href={segment.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple underline hover:text-purple/80 transition-colors"
+              onClick={(e) => {
+                if (onLinkClick) {
+                  e.preventDefault();
+                  onLinkClick(segment.url);
+                }
+              }}
+            >
+              {segment.text}
+            </a>
+          );
+          charCount += segment.text.length;
+        }
+        linkIdx++;
+      }
+    }
+
+    return content;
+  };
+
+  return (
+    <span className={`inline tracking-wide leading-relaxed ${className}`}>
+      {renderContent()}
       {showCursor && (
         <span className="inline-block w-[2px] h-[1em] bg-accent ml-1 rounded-sm animate-pulse" />
       )}

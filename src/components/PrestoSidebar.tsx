@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
 import { usePrestoStore } from '@/store/usePrestoStore'
-import genieImage from '@/assets/genie.png'
 import { useScenarioDetection } from '@/hooks/useScenarioDetection'
 import { LoadingTimeline } from './LoadingTimeline'
 import { GeminiStreamText } from './GeminiStreamText'
@@ -80,7 +79,7 @@ export function PrestoSidebar() {
   }
 
   return (
-    <aside className="w-80 flex flex-col  relative overflow-hidden">
+    <aside className="w-80 flex flex-col relative overflow-visible">
       {/* Ambient Background - Static 
       <AmbientGridBackground
         showNodeLines={false}
@@ -96,10 +95,10 @@ export function PrestoSidebar() {
       />*/}
 
       {/* Log Terminal */}
-      <div className="flex-1 overflow-auto p-4 text-md relative z-10 flex flex-col">
+      <div className="flex-1 overflow-auto text-md relative z-10 flex flex-col mr-1">
         {/* Presto Image + Text - Only in empty state, fades out when logs appear */}
         <div className={`flex flex-col items-center justify-center flex-1 transition-all duration-300 ${logs.length > 0 ? 'opacity-0 blur-sm' : 'opacity-100 blur-none'}`}>
-          <img src={genieImage} alt="Presto" className="h-48 w-40 opacity-60 mb-6" />
+          <img src="/images/genie.png" alt="Presto" className="h-48 w-40 opacity-60 mb-6" />
           <h2 className="text-lg font-semibold text-foreground mb-2">
             What do you want to know?
           </h2>
@@ -227,7 +226,7 @@ export function PrestoSidebar() {
       </div>
 
       {/* Input Area */}
-      <div className="p-3 mb-1">
+      <div className="mb-1">
         <QueryInputBox
           onSubmit={handleQuerySubmit}
           placeholder="Ask a question..."

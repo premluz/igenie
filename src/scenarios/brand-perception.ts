@@ -20,7 +20,7 @@ function generateSparkline(finalBuzz: number, yoyChange: string): number[] {
 export const brandPerception: ScenarioData = {
   id: 'brand-perception',
   brand: 'Energy Drinks',
-  category: 'Brand Perception',
+  category: 'Brand Pulse',
   title: 'Brand Perception Dashboard',
   description: 'Comprehensive brand perception analysis across dimensions',
   date: new Date().toISOString(),
@@ -33,63 +33,56 @@ export const brandPerception: ScenarioData = {
     {
       columns: 2,
       cells: [
-        // LEFT COLUMN - Row 1: Winners and Losers side by side
         {
-          columns: 2,
-          cells: [
-            {
-              id: 'perception-winners',
-              type: 'table',
-              title: 'Biggest winners',
-              subtitle: 'Ranked by YoY change',
-              status: 'ready',
-              prestosummary: 'Pepsi and premium variants gaining fastest momentum across perception metrics.',
-              data: {
-                columns: [
-                  { key: 'brand', label: 'Brand' },
-                  { key: 'buzz', label: 'Buzz' },
-                  { key: 'yoy', label: 'YoY' }
-                ],
-                rows: [
-                  { brand: 'Pepsi Diet', buzz: 69, yoy: '+16%' },
-                  { brand: 'Pepsi', buzz: 73, yoy: '+15%' },
-                  { brand: 'Sprite Zero', buzz: 66, yoy: '+11%' },
-                  { brand: 'Mirinda', buzz: 84, yoy: '+11%' },
-                  { brand: 'Mountain Dew', buzz: 60, yoy: '+8%' }
-                ]
-              }
-            },
-            {
-              id: 'perception-losers',
-              type: 'table',
-              title: 'Biggest losers',
-              subtitle: 'Ranked by YoY change',
-              status: 'ready',
-              prestosummary: 'Traditional cola brands losing perception share to emerging alternatives.',
-              data: {
-                columns: [
-                  { key: 'brand', label: 'Brand' },
-                  { key: 'buzz', label: 'Buzz' },
-                  { key: 'yoy', label: 'YoY' }
-                ],
-                rows: [
-                  { brand: 'Coca-Cola Original', buzz: 75, yoy: '-14%' },
-                  { brand: 'Dr Pepper', buzz: 73, yoy: '-14%' },
-                  { brand: 'Arizona Iced Tea', buzz: 77, yoy: '-14%' },
-                  { brand: 'Fanta Orange', buzz: 87, yoy: '-14%' },
-                  { brand: 'Schweppes', buzz: 77, yoy: '-14%' }
-                ]
-              }
-            }
-          ]
-        } as any,
-        // LEFT COLUMN - Row 2: Buzz Trends Chart
+          id: 'perception-winners',
+          type: 'table',
+          title: 'Biggest winners',
+          subtitle: 'Ranked by YoY change',
+          status: 'thinking',
+          prestosummary: 'Pepsi and premium variants gaining fastest momentum across perception metrics.',
+          data: {
+            columns: [
+              { key: 'brand', label: 'Brand' },
+              { key: 'buzz', label: 'Buzz' },
+              { key: 'yoy', label: 'YoY' }
+            ],
+            rows: [
+              { brand: 'Pepsi Diet', buzz: 69, yoy: '+16%' },
+              { brand: 'Pepsi', buzz: 73, yoy: '+15%' },
+              { brand: 'Sprite Zero', buzz: 66, yoy: '+11%' },
+              { brand: 'Mirinda', buzz: 84, yoy: '+11%' },
+              { brand: 'Mountain Dew', buzz: 60, yoy: '+8%' }
+            ]
+          }
+        },
+        {
+          id: 'perception-losers',
+          type: 'table',
+          title: 'Biggest losers',
+          subtitle: 'Ranked by YoY change',
+          status: 'thinking',
+          prestosummary: 'Traditional cola brands losing perception share to emerging alternatives.',
+          data: {
+            columns: [
+              { key: 'brand', label: 'Brand' },
+              { key: 'buzz', label: 'Buzz' },
+              { key: 'yoy', label: 'YoY' }
+            ],
+            rows: [
+              { brand: 'Coca-Cola Original', buzz: 75, yoy: '-14%' },
+              { brand: 'Dr Pepper', buzz: 73, yoy: '-14%' },
+              { brand: 'Arizona Iced Tea', buzz: 77, yoy: '-14%' },
+              { brand: 'Fanta Orange', buzz: 87, yoy: '-14%' },
+              { brand: 'Schweppes', buzz: 77, yoy: '-14%' }
+            ]
+          }
+        },
         {
           id: 'perception-trends',
           type: 'line-chart',
           title: 'Buzz trends by brand',
           subtitle: '5 brands selected for momentum, not score - 14 month tracking',
-          status: 'ready',
+          status: 'thinking',
           prestosummary: 'Red Bull showing volatile peaks indicating breakthrough perception moments.',
           descriptionBottom: '→ **Pepsi** showing strongest momentum trajectory from 47 to 55 range\n\n→ **Gatorade** maintaining high stability 60-72 range\n\n→ **Red Bull** volatile but resilient, peaks indicate breakthrough moments\n\n→ **Coca-Cola Original** declining trend suggests perception loss\n\n→ **Pepsi Diet** steady growth capturing secondary market',
           data: [
@@ -110,8 +103,7 @@ export const brandPerception: ScenarioData = {
           ]
         }
       ]
-    } as any,
-    // RIGHT COLUMN: Full height ranking table
+    },
     {
       columns: 1,
       cells: [
@@ -120,7 +112,7 @@ export const brandPerception: ScenarioData = {
           type: 'table',
           title: 'Brand perception ranking',
           subtitle: 'All selected brands',
-          status: 'ready',
+          status: 'thinking',
           prestosummary: 'Gatorade and premium energy drinks dominating perception tiers.',
           data: {
             columns: [

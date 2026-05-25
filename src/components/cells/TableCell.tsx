@@ -24,7 +24,7 @@ interface TableCellProps {
 }
 
 // Sparkline renderer for Buzz column
-function SparklineRenderer({ data }: { data: number[] }) {
+function SparklineRenderer({ data, isVisible }: { data: number[]; isVisible?: boolean }) {
   if (!data || !Array.isArray(data) || data.length === 0) return null
 
   const min = Math.min(...data)
@@ -43,35 +43,33 @@ function SparklineRenderer({ data }: { data: number[] }) {
     .join(' ')
 
   const trend = data[data.length - 1] > data[0] ? 'positive' : 'negative'
+  const color = trend === 'positive' ? '#10b981' : '#ef4444'
 
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="inline-block">
-      <polyline
+      <motion.polyline
         points={points}
         fill="none"
-        stroke={trend === 'positive' ? '#10b981' : '#ef4444'}
+        stroke={color}
         strokeWidth="1.5"
         vectorEffect="non-scaling-stroke"
+        initial={{ strokeDashoffset: 100, strokeDasharray: 100 }}
+        animate={isVisible ? { strokeDashoffset: 0 } : { strokeDashoffset: 100 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
       />
     </svg>
   )
 }
 
 // Render special cell types
-function RenderCell({ value, columnName, row }: { value: any; columnName: string; row?: any }) {
-  const { ref, isVisible } = useInViewAnimation({ delay: 200 })
+function RenderCell({ value, columnName, row, rowIndex = 0 }: { value: any; columnName: string; row?: any; rowIndex?: number }) {
+  const { ref, isVisible } = useInViewAnimation({ delay: 20 + rowIndex * 30 })
 
   // Sparkline in Buzz column
   if ((columnName === 'Buzz' || columnName === 'buzz') && typeof value === 'number' && row?.sparkline) {
     return (
       <div ref={ref} className="flex items-center gap-2">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <SparklineRenderer data={row.sparkline} />
-        </motion.div>
+        <SparklineRenderer data={row.sparkline} isVisible={isVisible} />
         <span className="text-xs font-medium text-foreground">{value}</span>
       </div>
     )
@@ -85,7 +83,7 @@ function RenderCell({ value, columnName, row }: { value: any; columnName: string
           <motion.div
             initial={{ width: 0, opacity: 0 }}
             animate={isVisible ? { width: `${Math.min(Math.max(value, 0), 100)}%`, opacity: 1 } : { width: 0, opacity: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
             className="h-0.5 bg-blue-600 rounded-full"
           />
         </div>
@@ -135,7 +133,8 @@ export function TableCell({ data }: TableCellProps) {
       const value = info.getValue()
       const columnName = col.label
       const row = info.row.original
-      return <RenderCell value={value} columnName={columnName} row={row} />
+      const rowIndex = info.row.index
+      return <RenderCell value={value} columnName={columnName} row={row} rowIndex={rowIndex} />
     },
   }))
 
@@ -173,8 +172,8 @@ export function TableCell({ data }: TableCellProps) {
                     }}
                     style={{
                       cursor: data.features?.sorting ? 'pointer' : 'default',
-                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? '1fr' : undefined,
-                      maxWidth: isProgress ? '400px' : undefined,
+                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? 'auto' : undefined,
+                      minWidth: isProgress ? '200px' : undefined,
                       paddingRight: isBrand ? '40px' : undefined
                     }}
                   >
@@ -214,8 +213,8 @@ export function TableCell({ data }: TableCellProps) {
                     key={cell.id}
                     className="px-3 py-2 text-muted-foreground border-r border-border/20 last:border-r-0"
                     style={{
-                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? '1fr' : undefined,
-                      maxWidth: isProgress ? '400px' : undefined,
+                      width: isSmallCol ? '80px' : isBrand ? 'fit-content' : isProgress ? 'auto' : undefined,
+                      minWidth: isProgress ? '200px' : undefined,
                       paddingRight: isBrand ? '40px' : undefined
                     }}
                   >
