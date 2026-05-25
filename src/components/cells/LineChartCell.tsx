@@ -360,7 +360,7 @@ function generateMultiSeriesSpec(
     background: 'transparent',
     width: 660,
     height: 480,
-    padding: { left: 40, right: 16, top: 60, bottom: 8 },
+    padding: { left: 40, right: 16, top: 0, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
     title: title
       ? {
