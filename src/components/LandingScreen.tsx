@@ -285,6 +285,7 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
           isOpen={showInspector}
           onClose={() => setShowInspector(false)}
           title="Pepsi vs Coca-Cola Original"
+          subtitle="Pepsi is closing the gap on Coca-Cola Original"
           validation={{
             trend: {
               value: '+15%',

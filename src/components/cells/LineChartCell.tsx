@@ -359,17 +359,19 @@ function generateMultiSeriesSpec(
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
     width: 660,
-    height: 480,
-    padding: { left: 40, right: 16, top: 0, bottom: 8 },
+    height: 380,
+    padding: { left: 24, right: 24, top: 0, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
     title: title
       ? {
           text: title,
           color: '#f4f4f5',
-          fontSize: 12,
+          fontSize: 14,
           fontWeight: 600,
           anchor: 'start',
           dx: 4,
+          offset: 100
+          
         }
       : undefined,
     data: { values: longData },
@@ -413,7 +415,7 @@ function generateMultiSeriesSpec(
           domain: seriesNames,
           range: colors.slice(0, seriesNames.length),
         },
-        legend: { title: 'Brand', orient: 'top', direction: 'horizontal', titlePadding: 0, labelPadding: 0 },
+        legend: { title: 'Brand', offset: '20', orient: 'none', legendY: '-80', legendX: '-38', direction: 'horizontal', titlePadding: 0, labelPadding: 0 },
       },
       tooltip: [
         { field: 'date', type: 'temporal', title: 'Date', format: '%b %Y' },
@@ -435,7 +437,7 @@ function generateMultiSeriesSpec(
       legend: {
         labelColor: '#f4f4f5',
         titleColor: '#f4f4f5',
-        labelFontSize: 9,
+        labelFontSize: 10,
         titleFontSize: 10,
         disable: false,
       },
