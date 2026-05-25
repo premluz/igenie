@@ -266,9 +266,12 @@ export function TableCell({ data }: TableCellProps) {
                   {/* Insight Hotspot */}
                   {insight && (
                     <td className="px-2 py-2 relative">
-                      <div className="relative inline-block">
+                      <div
+                        className="relative inline-block"
+                        onMouseEnter={() => setOpenPopover(rowId)}
+                        onMouseLeave={() => setOpenPopover(null)}
+                      >
                         <button
-                          onClick={() => setOpenPopover(openPopover === rowId ? null : rowId)}
                           className="p-1 hover:bg-background/50 rounded transition-colors"
                           title="View insight"
                         >
