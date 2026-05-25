@@ -5,10 +5,11 @@ import {
   type ColumnDef,
   type SortingState,
 } from '@tanstack/react-table'
-import { useState, memo, useMemo, useRef } from 'react'
+import { useState, memo, useMemo, useRef, useEffect } from 'react'
 import { ChevronUp, ChevronDown, Lightbulb } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInViewAnimation } from '@/hooks/useInViewAnimation'
+import { createPortal } from 'react-dom'
 
 interface TableCellProps {
   data: {
@@ -144,7 +145,17 @@ export function TableCell({ data }: TableCellProps) {
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [openPopover, setOpenPopover] = useState<string | null>(null)
+  const [popoverPos, setPopoverPos] = useState({ x: 0, y: 0 })
   const { tbodyRef, onMouseEnter, onMouseLeave } = useHoverClass('row-hovered')
+
+  const handleHotspotEnter = (e: React.MouseEvent) => {
+    const btn = e.currentTarget as HTMLButtonElement
+    const rect = btn.getBoundingClientRect()
+    setPopoverPos({
+      x: rect.left + rect.width / 2,
+      y: rect.top
+    })
+  }
 
   // Normalize columns to object format — stable as long as data.columns doesn't change
   const normalizedColumns = useMemo(
@@ -265,45 +276,50 @@ export function TableCell({ data }: TableCellProps) {
 
                   {/* Insight Hotspot */}
                   {insight && (
-                    <td className="px-2 py-2 relative overflow-visible">
-                      <div
-                        className="relative inline-block"
-                        onMouseEnter={() => setOpenPopover(rowId)}
+                    <td className="px-2 py-2">
+                      <button
+                        onMouseEnter={(e) => {
+                          handleHotspotEnter(e)
+                          setOpenPopover(rowId)
+                        }}
                         onMouseLeave={() => setOpenPopover(null)}
+                        className="p-1 hover:bg-background/50 rounded transition-colors"
+                        title="View insight"
                       >
-                        <button
-                          className="p-1 hover:bg-background/50 rounded transition-colors"
-                          title="View insight"
-                        >
-                          <Lightbulb size={14} className={`${insight.color === 'green' ? 'text-green-400' : insight.color === 'red' ? 'text-red-400' : 'text-blue-400'}`} />
-                        </button>
+                        <Lightbulb size={14} className={`${insight.color === 'green' ? 'text-green-400' : insight.color === 'red' ? 'text-red-400' : 'text-blue-400'}`} />
+                      </button>
 
-                        {/* Popover */}
+                      {/* Popover - Using Portal to escape table overflow */}
+                      {openPopover === rowId && createPortal(
                         <AnimatePresence>
-                          {openPopover === rowId && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                              animate={{ opacity: 1, scale: 1, y: 0 }}
-                              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              transition={{ duration: 0.2 }}
-                              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 whitespace-nowrap"
-                            >
-                              <div className={`bg-background/95 border rounded-sm p-3 w-64 backdrop-blur-sm shadow-lg ${
-                                insight.color === 'green' ? 'border-green-400/30 shadow-green-500/20' :
-                                insight.color === 'red' ? 'border-red-400/30 shadow-red-500/20' :
-                                'border-blue-400/30 shadow-blue-500/20'
-                              }`}>
-                                <p className={`text-sm font-medium mb-2 ${
-                                  insight.color === 'green' ? 'text-green-400' :
-                                  insight.color === 'red' ? 'text-red-400' :
-                                  'text-blue-400'
-                                }`}>{row.original.brand}</p>
-                                <p className="text-sm text-foreground leading-relaxed">{insight.description}</p>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed z-50"
+                            style={{
+                              left: `${popoverPos.x}px`,
+                              top: `${popoverPos.y - 60}px`,
+                              transform: 'translateX(-50%)'
+                            }}
+                          >
+                            <div className={`bg-background/95 border rounded-sm p-3 w-64 backdrop-blur-sm shadow-lg ${
+                              insight.color === 'green' ? 'border-green-400/30 shadow-green-500/20' :
+                              insight.color === 'red' ? 'border-red-400/30 shadow-red-500/20' :
+                              'border-blue-400/30 shadow-blue-500/20'
+                            }`}>
+                              <p className={`text-sm font-medium mb-2 ${
+                                insight.color === 'green' ? 'text-green-400' :
+                                insight.color === 'red' ? 'text-red-400' :
+                                'text-blue-400'
+                              }`}>{row.original.brand}</p>
+                              <p className="text-sm text-foreground leading-relaxed">{insight.description}</p>
+                            </div>
+                          </motion.div>
+                        </AnimatePresence>,
+                        document.body
+                      )}
                     </td>
                   )}
                 </tr>
