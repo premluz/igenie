@@ -68,42 +68,42 @@ export function InsightInspectorModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden max-w-3xl right-4 left-auto"
+            className="fixed inset-4 bg-card border border-border rounded-sm shadow-2xl flex flex-col z-50 overflow-hidden max-w-3xl right-4 left-auto relative"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border/20">
+            <div className="p-6 border-b border-border/20">
               <div>
                 <h2 className="text-2xl font-semibold text-foreground">Insight Inspector</h2>
                 <p className="text-sm text-foreground mt-1 font-medium">{title}</p>
-                {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+                {subtitle && <p className="text-sm text-muted-foreground mt-6">{subtitle}</p>}
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-background/50 rounded transition-colors text-muted-foreground hover:text-foreground"
+                className="absolute top-4 right-4 p-2 hover:bg-background/50 rounded transition-colors text-muted-foreground hover:text-foreground"
               >
                 <X size={20} />
               </button>
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-2 px-6 py-4">
+            {/* Tabs - Line Style */}
+            <div className="flex border-b border-border/20 px-6">
               <button
                 onClick={() => setActiveTab('overview')}
-                className={`px-4 py-2 text-sm font-medium transition-colors rounded-sm ${
+                className={`px-4 py-3 text-sm font-medium transition-colors relative ${
                   activeTab === 'overview'
-                    ? 'text-foreground bg-surface'
+                    ? 'text-foreground'
                     : 'text-muted-foreground hover:text-foreground'
-                }`}
+                } ${activeTab === 'overview' ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent" : ""}`}
               >
                 Overview
               </button>
               <button
                 onClick={() => setActiveTab('audit')}
-                className={`px-4 py-2 text-sm font-medium transition-colors rounded-sm ${
+                className={`px-4 py-3 text-sm font-medium transition-colors relative ${
                   activeTab === 'audit'
-                    ? 'text-foreground bg-surface'
+                    ? 'text-foreground'
                     : 'text-muted-foreground hover:text-foreground'
-                }`}
+                } ${activeTab === 'audit' ? "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent" : ""}`}
               >
                 Audit
               </button>
@@ -113,14 +113,21 @@ export function InsightInspectorModal({
             <div className="flex-1 overflow-auto p-6 space-y-6">
               {activeTab === 'overview' && (
                 <>
-                  {/* Insight Validation - 3 Column Grid */}
+                  {/* Summary - Above Validation */}
+                  {summary && (
+                    <div className="bg-background/30 border border-border/20 rounded-sm p-4">
+                      <p className="text-sm text-foreground leading-relaxed">{summary}</p>
+                    </div>
+                  )}
+
+                  {/* Insight Validation - 3 Column Grid with Cards */}
                   <div>
                     <h3 className="text-lg font-semibold text-foreground mb-4">Insight validation</h3>
                     <div className="grid grid-cols-3 gap-6">
                       {(['trend', 'strength', 'trust'] as const).map((key) => {
                         const metric = validation[key]
                         return (
-                          <div key={key}>
+                          <div key={key} className="bg-background/40 border border-border/30 rounded-sm p-4">
                             <p className={`text-3xl font-bold ${metric.color} mb-3`}>{metric.value}</p>
                             <div className="flex items-center gap-2 mb-3">
                               <div className={`p-2 rounded bg-background/50 ${metric.color}`}>
@@ -128,8 +135,8 @@ export function InsightInspectorModal({
                               </div>
                               <p className={`text-sm font-medium ${metric.color}`}>{metric.label}</p>
                             </div>
-                            <p className="text-sm text-muted-foreground mb-2">{metric.subtitle}</p>
-                            <p className="text-sm text-muted-foreground">{metric.description}</p>
+                            <p className="text-sm font-medium text-muted-foreground mb-2">{metric.subtitle}</p>
+                            <p className="text-sm font-medium text-muted-foreground">{metric.description}</p>
                           </div>
                         )
                       })}
@@ -157,13 +164,6 @@ export function InsightInspectorModal({
                       <p className="text-sm text-muted-foreground leading-relaxed">{signalSummary}</p>
                     </div>
                   </div>
-
-                  {/* Summary */}
-                  {summary && (
-                    <div className="bg-background/30 border border-border/20 rounded-sm p-4">
-                      <p className="text-sm text-foreground leading-relaxed">{summary}</p>
-                    </div>
-                  )}
 
                   {/* Assumptions */}
                   <div>
