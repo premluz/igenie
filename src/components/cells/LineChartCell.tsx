@@ -2,6 +2,9 @@ import { VegaEmbed } from 'react-vega'
 import { DescriptionBottom } from '../WidgetRenderer'
 import { useInViewAnimation } from '@/hooks/useInViewAnimation'
 import { motion } from 'framer-motion'
+import { AnomalyHotspot } from './AnomalyHotspot'
+import { detectAnomalies, getColorForSeries } from '@/utils/anomalyDetection'
+import { useState } from 'react'
 
 interface LineChartCellProps {
   data: Array<any>
@@ -11,6 +14,7 @@ interface LineChartCellProps {
 
 export function LineChartCell({ data, title, descriptionBottom }: LineChartCellProps) {
   const { ref, isVisible } = useInViewAnimation({ delay: 300 })
+  const [anomalies, setAnomalies] = useState<any[]>([])
 
   if (!data || data.length === 0) {
     return <div className="text-md text-muted-foreground text-center py-8">No data available</div>
@@ -18,15 +22,17 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
 
   let spec: any = null
   let error: string | null = null
+  let seriesNames: string[] = []
+  let isMultiSeries = false
 
   try {
     // Detect data format and extract series names
     const firstRow = data[0]
-    const isMultiSeries = firstRow && typeof firstRow === 'object' && 'date' in firstRow && !('value' in firstRow)
+    isMultiSeries = firstRow && typeof firstRow === 'object' && 'date' in firstRow && !('value' in firstRow)
 
     console.log('[LineChartCell] Data detected:', { count: data.length, isMultiSeries, firstRow })
 
-    let seriesNames: string[] = []
+    seriesNames = []
     let normalizedData: Array<{ date: string; [key: string]: any }> = []
 
     if (isMultiSeries) {
@@ -36,6 +42,9 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
         d && typeof d === 'object' && typeof d.date === 'string' && d.date.length > 0
       )
       console.log('[LineChartCell] Multi-series detected:', { seriesNames, rowCount: normalizedData.length })
+
+      // Detect anomalies for multi-series data
+      setAnomalies(detectAnomalies(normalizedData, seriesNames))
     } else {
       // Single-series format: { date, value }
       normalizedData = data.filter(
@@ -52,7 +61,7 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
     }
 
     if (normalizedData.length === 0) {
-      return <div className="text-xs text-muted-foreground text-center py-8">No valid data</div>
+      return <div className="text-sm text-muted-foreground text-center py-8">No valid data</div>
     }
 
     // For single series, compute min/max for annotation marks
@@ -95,8 +104,35 @@ export function LineChartCell({ data, title, descriptionBottom }: LineChartCellP
         transition={{ duration: 0.6 }}
         className="flex-1 flex flex-col"
       >
-        <div className="flex-1 flex items-center justify-center min-h-0">
+        <div className="flex-1 flex items-center justify-center min-h-0 relative">
           {isVisible && <VegaEmbed spec={spec as any} options={{ actions: false, renderer: 'canvas' }} />}
+
+          {/* Anomaly Hotspots Overlay */}
+          {anomalies.length > 0 && (
+            <div className="absolute inset-0 pointer-events-none">
+              {anomalies.map((anomaly, idx) => {
+                // Estimate pixel position based on data index and chart dimensions
+                const chartWidth = 660
+                const chartHeight = 480
+                const xRatio = anomaly.index / (data.length - 1)
+                const x = 40 + (xRatio * (chartWidth - 80)) // Account for padding
+                const y = chartHeight - 100 // Approximate y position (center area)
+
+                return (
+                  <div key={idx} className="pointer-events-auto" style={{ position: 'relative' }}>
+                    <AnomalyHotspot
+                      x={x}
+                      y={y}
+                      type={anomaly.type}
+                      color={getColorForSeries(anomaly.series || '')}
+                      label={anomaly.label}
+                      description={anomaly.description}
+                    />
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
         {descriptionBottom && <DescriptionBottom text={descriptionBottom} />}
       </motion.div>
