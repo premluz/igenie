@@ -9,13 +9,22 @@ interface Anomaly {
 
 export function detectAnomalies(data: Array<any>, seriesNames: string[]): Anomaly[] {
   const anomalies: Anomaly[] = []
+  const meanValues: { [key: string]: number } = {}
+
+  // Calculate mean for each series first
+  seriesNames.forEach((series) => {
+    const values = data.map(d => d[series]).filter(v => typeof v === 'number')
+    if (values.length > 0) {
+      meanValues[series] = values.reduce((a, b) => a + b, 0) / values.length
+    }
+  })
 
   seriesNames.forEach((series) => {
     const values = data.map(d => d[series]).filter(v => typeof v === 'number')
 
     if (values.length < 3) return
 
-    const mean = values.reduce((a, b) => a + b, 0) / values.length
+    const mean = meanValues[series]
     const variance = values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length
     const stdDev = Math.sqrt(variance)
 
@@ -67,8 +76,7 @@ export function detectAnomalies(data: Array<any>, seriesNames: string[]): Anomal
     })
   })
 
-  // Limit to top 5 most significant anomalies
-  return anomalies.sort((a, b) => Math.abs(b.value - mean) - Math.abs(a.value - mean)).slice(0, 5)
+  return anomalies
 }
 
 function getColorForSeries(series: string): 'red' | 'green' | 'blue' {
