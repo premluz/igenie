@@ -121,15 +121,15 @@ export function InsightInspectorModal({
                         const metric = validation[key]
                         return (
                           <div key={key}>
+                            <p className={`text-3xl font-bold ${metric.color} mb-3`}>{metric.value}</p>
                             <div className="flex items-center gap-2 mb-3">
                               <div className={`p-2 rounded bg-background/50 ${metric.color}`}>
                                 {metric.icon}
                               </div>
-                              <p className="text-sm font-medium text-foreground">{metric.label}</p>
+                              <p className={`text-sm font-medium ${metric.color}`}>{metric.label}</p>
                             </div>
-                            <p className={`text-3xl font-bold ${metric.color} mb-2`}>{metric.value}</p>
-                            <p className="text-xs text-muted-foreground mb-2">{metric.subtitle}</p>
-                            <p className="text-xs text-muted-foreground">{metric.description}</p>
+                            <p className="text-sm text-muted-foreground mb-2">{metric.subtitle}</p>
+                            <p className="text-sm text-muted-foreground">{metric.description}</p>
                           </div>
                         )
                       })}
@@ -143,14 +143,14 @@ export function InsightInspectorModal({
                       <div className="grid grid-cols-3 gap-6 mb-6">
                         {signalSources.map((source) => (
                           <div key={source.id}>
+                            <p className="text-3xl font-bold text-purple-400 mb-3">{source.count}</p>
                             <div className="flex items-center gap-2 mb-3">
                               <div className="p-2 rounded bg-background/50 text-purple-400">
                                 {source.icon}
                               </div>
-                              <p className="text-sm font-medium text-foreground">{source.label}</p>
+                              <p className="text-sm font-medium text-purple-400">{source.label}</p>
                             </div>
-                            <p className="text-3xl font-bold text-purple-400 mb-2">{source.count}</p>
-                            <p className="text-xs text-muted-foreground">{source.description}</p>
+                            <p className="text-sm text-muted-foreground">{source.description}</p>
                           </div>
                         ))}
                       </div>
