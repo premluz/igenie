@@ -359,7 +359,7 @@ function generateMultiSeriesSpec(
     $schema: 'https://vega.github.io/schema/vega-lite/v6.json',
     background: 'transparent',
     width: 660,
-    height: 240,
+    height: 480,
     padding: { left: 40, right: 16, top: 60, bottom: 8 },
     autosize: { type: 'fit', contains: 'padding', resize: true },
     title: title
