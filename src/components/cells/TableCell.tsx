@@ -144,18 +144,7 @@ export function TableCell({ data }: TableCellProps) {
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [openPopover, setOpenPopover] = useState<string | null>(null)
-  const [popoverPos, setPopoverPos] = useState({ x: 0, y: 0 })
   const { tbodyRef, onMouseEnter, onMouseLeave } = useHoverClass('row-hovered')
-
-  const handleHotspotHover = (e: React.MouseEvent, rowId: string) => {
-    setOpenPopover(rowId)
-    const btn = e.currentTarget
-    const rect = btn.getBoundingClientRect()
-    setPopoverPos({
-      x: rect.left - 250,
-      y: rect.bottom + 8
-    })
-  }
 
   // Normalize columns to object format — stable as long as data.columns doesn't change
   const normalizedColumns = useMemo(
@@ -202,8 +191,8 @@ export function TableCell({ data }: TableCellProps) {
 
   return (
     <div className="w-full h-full flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-auto relative z-0">
-        <table className="w-full text-sm border-collapse relative">
+      <div className="flex-1 overflow-auto">
+        <table className="w-full text-sm border-collapse">
           <thead className="sticky top-0 bg-card/50 border-b border-border">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
@@ -276,20 +265,20 @@ export function TableCell({ data }: TableCellProps) {
 
                   {/* Insight Hotspot */}
                   {insight && (
-                    <td className="px-2 py-2">
+                    <td className="px-2 py-2 relative overflow-visible">
                       <div
                         className="relative inline-block"
+                        onMouseEnter={() => setOpenPopover(rowId)}
                         onMouseLeave={() => setOpenPopover(null)}
                       >
                         <button
-                          onMouseEnter={(e) => handleHotspotHover(e, rowId)}
                           className="p-1 hover:bg-background/50 rounded transition-colors"
                           title="View insight"
                         >
                           <Lightbulb size={14} className={`${insight.color === 'green' ? 'text-green-400' : insight.color === 'red' ? 'text-red-400' : 'text-blue-400'}`} />
                         </button>
 
-                        {/* Popover - Using fixed positioning to avoid clipping */}
+                        {/* Popover */}
                         <AnimatePresence>
                           {openPopover === rowId && (
                             <motion.div
@@ -297,11 +286,7 @@ export function TableCell({ data }: TableCellProps) {
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
                               transition={{ duration: 0.2 }}
-                              className="fixed z-50"
-                              style={{
-                                left: `${popoverPos.x}px`,
-                                top: `${popoverPos.y}px`,
-                              }}
+                              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 whitespace-nowrap"
                             >
                               <div className={`bg-background/95 border rounded-sm p-3 w-64 backdrop-blur-sm shadow-lg ${
                                 insight.color === 'green' ? 'border-green-400/30 shadow-green-500/20' :
