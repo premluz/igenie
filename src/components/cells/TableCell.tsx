@@ -146,15 +146,34 @@ export function TableCell({ data }: TableCellProps) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [openPopover, setOpenPopover] = useState<string | null>(null)
   const [popoverPos, setPopoverPos] = useState({ x: 0, y: 0 })
+  const popoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const { tbodyRef, onMouseEnter, onMouseLeave } = useHoverClass('row-hovered')
 
-  const handleHotspotEnter = (e: React.MouseEvent) => {
+  const handleHotspotEnter = (e: React.MouseEvent, rowId: string) => {
     const btn = e.currentTarget as HTMLButtonElement
     const rect = btn.getBoundingClientRect()
     setPopoverPos({
-      x: rect.left + rect.width / 2,
-      y: rect.top
+      x: rect.left - 264 + 34,
+      y: rect.top + 32,
     })
+    setOpenPopover(rowId)
+    if (popoverTimeoutRef.current) clearTimeout(popoverTimeoutRef.current)
+  }
+
+  const handleHotspotLeave = () => {
+    popoverTimeoutRef.current = setTimeout(() => {
+      setOpenPopover(null)
+    }, 200)
+  }
+
+  const handlePopoverEnter = () => {
+    if (popoverTimeoutRef.current) clearTimeout(popoverTimeoutRef.current)
+  }
+
+  const handlePopoverLeave = () => {
+    popoverTimeoutRef.current = setTimeout(() => {
+      setOpenPopover(null)
+    }, 200)
   }
 
   // Normalize columns to object format — stable as long as data.columns doesn't change
@@ -278,11 +297,8 @@ export function TableCell({ data }: TableCellProps) {
                   {insight && (
                     <td className="px-2 py-2">
                       <button
-                        onMouseEnter={(e) => {
-                          handleHotspotEnter(e)
-                          setOpenPopover(rowId)
-                        }}
-                        onMouseLeave={() => setOpenPopover(null)}
+                        onMouseEnter={(e) => handleHotspotEnter(e, rowId)}
+                        onMouseLeave={handleHotspotLeave}
                         className="p-1 hover:bg-background/50 rounded transition-colors"
                         title="View insight"
                       >
@@ -298,10 +314,11 @@ export function TableCell({ data }: TableCellProps) {
                             exit={{ opacity: 0, scale: 0.95, y: 10 }}
                             transition={{ duration: 0.2 }}
                             className="fixed z-50"
+                            onMouseEnter={handlePopoverEnter}
+                            onMouseLeave={handlePopoverLeave}
                             style={{
                               left: `${popoverPos.x}px`,
-                              top: `${popoverPos.y - 60}px`,
-                              transform: 'translateX(-50%)'
+                              top: `${popoverPos.y}px`
                             }}
                           >
                             <div className={`bg-background/95 border rounded-sm p-3 w-64 backdrop-blur-sm shadow-lg ${

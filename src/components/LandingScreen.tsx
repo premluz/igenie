@@ -235,10 +235,10 @@ export function LandingScreen({ shouldAnimate = false }: { shouldAnimate?: boole
 
         {/* Genie Image */}
         <motion.img
-          src="/images/genie2.png"
+          src="/images/genie.png"
           alt="Genie"
           initial={{ opacity: shouldAnimate ? 0 : 1, y: shouldAnimate ? -20 : 0 }}
-          animate={{ opacity: 0, y: 0 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: shouldAnimate ? 0.1 : 0 }}
           className="h-48 w-48 mb-6 object-contain"
         />

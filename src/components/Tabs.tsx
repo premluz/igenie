@@ -29,8 +29,8 @@ export function Tabs({ tabs, defaultTab, variant = 'line', className = '' }: Tab
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`
-              px-1 py-2 text-sm font-medium transition-colors whitespace-nowrap relative
-              ${variant === 'pill' ? 'px-3 py-1.5 rounded-sm' : 'pb-3'}
+              px-1 py-2 text-base font-medium transition-colors whitespace-nowrap relative
+              ${variant === 'pill' ? 'px-3 py-1.5 rounded-sm' : 'pb-2'}
               ${
                 activeTab === tab.id
                   ? variant === 'pill'

@@ -98,12 +98,12 @@ export function PrestoSidebar() {
       <div className="flex-1 overflow-auto text-md relative z-10 flex flex-col mr-1">
         {/* Presto Image + Text - Always visible */}
         <div className={`flex flex-col items-center justify-center flex-1 transition-all duration-300 ${logs.length > 0 ? 'opacity-100' : 'opacity-100'}`}>
-          <img src="/images/genie.png" alt="Presto" className="h-48 w-40 opacity-60 mb-6" />
+          <img src="/images/genie.png" alt="Presto" className="h-48 w-36 opacity-60 mb-6" />
           <h2 className="text-lg font-semibold text-foreground mb-2">
             What do you want to know?
           </h2>
           <p className="text-sm text-muted-foreground text-center">
-            Ask questions about data, insights, and trends.{' '}
+            Ask any question.{' '}
           
           </p>
         </div>

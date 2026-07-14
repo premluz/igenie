@@ -3,6 +3,7 @@ import { SearchFilterBar } from '@/components/SearchFilterBar'
 import { WidgetRenderer } from '@/components/WidgetRenderer'
 import { brandPerception } from '@/scenarios/brand-perception'
 import { useEffect, useState } from 'react'
+import { Sparkles } from 'lucide-react'
 
 export function BrandPerceptionPage() {
   const [cellsRevealed, setCellsRevealed] = useState(false)
@@ -22,7 +23,7 @@ export function BrandPerceptionPage() {
 
   return (
     <div className="min-h-screen flex items-start justify-center py-6">
-      <div className="p-6 m-6 border border-border rounded-sm max-w-8xl w-full space-y-4">
+      <div className="p-6 m-6 mt-0 border border-border rounded-sm max-w-8xl w-full space-y-4">
         {/* Header with Title and Search Bar */}
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1">
@@ -56,8 +57,15 @@ export function BrandPerceptionPage() {
         </div>
 
         {/* Narrative/Insight */}
-        <div className="text-lg text-muted-foreground">
-          <p>Challenger momentum is accelerating — Pepsi gaining fastest across the category while legacy brands face broad declines.</p>
+        <div className="flex items-center gap-3 mb-8">
+          <p className="text-lg text-muted-foreground">Challenger momentum is accelerating — Pepsi gaining fastest across the category while legacy brands face broad declines.</p>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button className="flex items-center gap-2 px-3 py-1.5 border border-border text-subtle-foreground hover:border-purple-500 hover:text-accent transition-colors rounded-sm text-md">
+              <Sparkles size={16} />
+              Generate recommendations
+            </button>
+            <span className="text-xs text-muted-foreground whitespace-nowrap">Powered by Innov8</span>
+          </div>
         </div>
 
         {/* Main Content Grid */}
